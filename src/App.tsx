@@ -8,9 +8,11 @@ import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
 import Exam from "./pages/Exam";
 import Notes from "./pages/Notes";
-import Flashcards from "./pages/Flashcards";
+import StudyRoom from "./pages/StudyRoom";
 import Planner from "./pages/Planner";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,9 +29,11 @@ const App = () => (
           <Route path="/upload" element={<Upload />} />
           <Route path="/exam" element={<Exam />} />
           <Route path="/notes" element={<Notes />} />
-          <Route path="/flashcards" element={<Flashcards />} />
+          <Route path="/study-room" element={<StudyRoom />} />
           <Route path="/planner" element={<Planner />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

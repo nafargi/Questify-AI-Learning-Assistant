@@ -6,13 +6,14 @@ import {
   Brain,
   BookOpen,
   Calendar,
-  Layers,
+  GraduationCap,
   User,
   Settings,
   LogOut,
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  Bell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -23,8 +24,9 @@ const navItems = [
   { icon: Brain, label: "Smart Exam", path: "/exam" },
   { icon: BookOpen, label: "Notes", path: "/notes" },
   { icon: Calendar, label: "Planner", path: "/planner" },
-  { icon: Layers, label: "Flashcards", path: "/flashcards" },
+  { icon: GraduationCap, label: "Study Room", path: "/study-room" },
   { icon: User, label: "Profile", path: "/profile" },
+  { icon: Bell, label: "Notifications", path: "/notifications" },
 ];
 
 const bottomItems = [
