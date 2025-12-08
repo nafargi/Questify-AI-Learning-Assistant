@@ -47,16 +47,19 @@ export function AIAssistantButton() {
 
   const getAIResponse = (query: string): string => {
     const lowerQuery = query.toLowerCase();
-    if (lowerQuery.includes("weak") || lowerQuery.includes("struggle")) {
-      return "Based on your recent exams, I notice you're struggling with Database Normalization and Recursion. Would you like me to create a focused study plan for these topics?";
+    if (lowerQuery.includes("weak") || lowerQuery.includes("struggle") || lowerQuery.includes("help")) {
+      return "Based on your exam history, I see you're struggling with Database Normalization (42% accuracy) and Linear Algebra Eigenvalues (35% accuracy). Your main issue with normalization is confusing 2NF and 3NF dependency rules. I recommend using the Cornell note method to break down each normal form systematically. Would you like me to create a focused study plan?";
     }
     if (lowerQuery.includes("exam") || lowerQuery.includes("test")) {
-      return "Your next recommended exam is on Algorithms. Based on your peak performance time (7-9 PM), I suggest scheduling it for tomorrow evening. Shall I set that up?";
+      return "Your next recommended exam should focus on Algorithms. Based on your peak performance time (7-9 PM), I suggest scheduling it for tomorrow evening. Your recursion accuracy is 55% - you understand the concept but struggle with base cases. Want me to generate practice questions for this specific weakness?";
     }
     if (lowerQuery.includes("study") || lowerQuery.includes("plan")) {
-      return "I can create a personalized study plan based on your learning patterns. You perform best with 45-60 minute focused sessions. Would you like me to generate a weekly schedule?";
+      return "Looking at your patterns: You perform best with 45-60 minute focused sessions. Your peak hours are 7-9 PM. I recommend the Pomodoro technique for your Database chapter (it's dense), and Feynman Learning for Recursion since explaining it simply will reveal your gaps. Should I set up this schedule?";
     }
-    return "I'm here to help with your studies! You can ask me about your weak areas, exam recommendations, study planning, or any course content. What would you like to explore?";
+    if (lowerQuery.includes("performance") || lowerQuery.includes("score")) {
+      return "Your overall average is 78%. You've improved 8% this month! Strongest areas: Cell Biology (88%), Variables & Data Types (85%). Areas needing work: Differential Equations (28%), Linear Algebra (35%). The pattern I see: you rush under time pressure, losing 23% accuracy in the last 5 minutes. Try time-boxing practice!";
+    }
+    return "I know your complete learning history! Ask me about your weak areas, exam recommendations, study planning, performance patterns, or any course content. I can analyze your mistakes, suggest the best note-taking methods for each topic, and create personalized study plans based on when you learn best.";
   };
 
   return (
