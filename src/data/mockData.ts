@@ -22,13 +22,13 @@ export interface Question {
   id: string;
   courseId: string;
   unitId: string;
-  type: 'mcq' | 'true-false' | 'fill-blank' | 'matching' | 'short-answer' | 'coding' | 'debugging';
+  type: 'mcq' | 'true-false' | 'fill-blank' | 'matching' | 'short-answer' | 'coding' | 'debugging' | 'essay' | 'ordering' | 'diagram' | 'case-study' | 'calculation';
   difficulty: 'easy' | 'medium' | 'hard';
   question: string;
   options?: string[];
   correctAnswer: string | string[];
   explanation: string;
-  timeEstimate: number; // in seconds
+  timeEstimate: number;
   matchingPairs?: { left: string; right: string }[];
   codeSnippet?: string;
 }
@@ -42,16 +42,16 @@ export interface ExamResult {
   totalQuestions: number;
   correctAnswers: number;
   difficulty: 'easy' | 'medium' | 'hard' | 'mixed';
-  timeTaken: number; // in minutes
+  timeTaken: number;
   weakTopics: string[];
   strongTopics: string[];
-  improvement: number; // percentage change from previous
+  improvement: number;
 }
 
 export interface StudySession {
   id: string;
   date: string;
-  duration: number; // in minutes
+  duration: number;
   courseId: string;
   type: 'exam' | 'flashcards' | 'notes' | 'review';
   performance?: number;
@@ -77,6 +77,10 @@ export interface WeakArea {
   mistakePattern: string;
   recommendation: string;
   timePressureImpact: 'low' | 'medium' | 'high';
+  whyStruggling: string;
+  conceptExplanation: string;
+  howToFix: string;
+  suggestedNoteMethods: string[];
 }
 
 export interface AIInsight {
@@ -255,6 +259,22 @@ export const courses: Course[] = [
   },
 ];
 
+// Enhanced Question Types
+export const questionTypes = [
+  { id: 'mcq', label: 'Multiple Choice', icon: '🔘', color: 'from-blue-500 to-cyan-500', description: 'Select the best answer from options' },
+  { id: 'true-false', label: 'True/False', icon: '✓✗', color: 'from-green-500 to-emerald-500', description: 'Determine if statement is correct' },
+  { id: 'fill-blank', label: 'Fill in Blank', icon: '📝', color: 'from-purple-500 to-pink-500', description: 'Complete the missing word/phrase' },
+  { id: 'matching', label: 'Matching', icon: '🔗', color: 'from-orange-500 to-amber-500', description: 'Match related items together' },
+  { id: 'short-answer', label: 'Short Answer', icon: '✏️', color: 'from-teal-500 to-cyan-500', description: 'Brief written response' },
+  { id: 'coding', label: 'Coding', icon: '💻', color: 'from-indigo-500 to-purple-500', description: 'Write code to solve problem' },
+  { id: 'debugging', label: 'Debugging', icon: '🔧', color: 'from-red-500 to-rose-500', description: 'Find and fix code errors' },
+  { id: 'essay', label: 'Essay', icon: '📄', color: 'from-slate-500 to-gray-500', description: 'Extended written response' },
+  { id: 'ordering', label: 'Ordering', icon: '📋', color: 'from-violet-500 to-purple-500', description: 'Arrange items in sequence' },
+  { id: 'diagram', label: 'Diagram Label', icon: '🏷️', color: 'from-pink-500 to-rose-500', description: 'Label parts of a diagram' },
+  { id: 'case-study', label: 'Case Study', icon: '📊', color: 'from-yellow-500 to-orange-500', description: 'Analyze real-world scenario' },
+  { id: 'calculation', label: 'Calculation', icon: '🔢', color: 'from-cyan-500 to-blue-500', description: 'Solve mathematical problems' },
+];
+
 // Sample Questions
 export const sampleQuestions: Question[] = [
   {
@@ -266,7 +286,7 @@ export const sampleQuestions: Question[] = [
     question: 'What is the correct way to declare a variable in JavaScript?',
     options: ['var x = 5;', 'variable x = 5;', 'x := 5;', 'int x = 5;'],
     correctAnswer: 'var x = 5;',
-    explanation: 'In JavaScript, variables are declared using var, let, or const keywords. "var x = 5;" is the correct syntax for declaring a variable with the var keyword.',
+    explanation: 'In JavaScript, variables are declared using var, let, or const keywords.',
     timeEstimate: 30,
   },
   {
@@ -278,7 +298,7 @@ export const sampleQuestions: Question[] = [
     question: 'What is the time complexity of searching in a balanced Binary Search Tree?',
     options: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'],
     correctAnswer: 'O(log n)',
-    explanation: 'In a balanced BST, the height is log(n), and we traverse from root to a leaf at most, making the search complexity O(log n).',
+    explanation: 'In a balanced BST, the height is log(n), making the search complexity O(log n).',
     timeEstimate: 45,
   },
   {
@@ -289,7 +309,7 @@ export const sampleQuestions: Question[] = [
     difficulty: 'easy',
     question: 'Quick Sort always has a time complexity of O(n log n).',
     correctAnswer: 'false',
-    explanation: 'Quick Sort has an average time complexity of O(n log n), but in the worst case (when the pivot is always the smallest or largest element), it degrades to O(n²).',
+    explanation: 'Quick Sort has an average time complexity of O(n log n), but worst case is O(n²).',
     timeEstimate: 20,
   },
   {
@@ -300,7 +320,7 @@ export const sampleQuestions: Question[] = [
     difficulty: 'medium',
     question: 'The process of organizing data to minimize redundancy is called ____.',
     correctAnswer: 'normalization',
-    explanation: 'Database normalization is the process of structuring a relational database to reduce data redundancy and improve data integrity.',
+    explanation: 'Database normalization reduces data redundancy and improves data integrity.',
     timeEstimate: 25,
   },
   {
@@ -317,7 +337,7 @@ export const sampleQuestions: Question[] = [
       { left: 'Binary Tree', right: 'Hierarchical data' },
     ],
     correctAnswer: ['Stack-LIFO operations', 'Queue-FIFO operations', 'Hash Table-Fast lookups', 'Binary Tree-Hierarchical data'],
-    explanation: 'Each data structure is optimized for specific operations and use cases.',
+    explanation: 'Each data structure is optimized for specific operations.',
     timeEstimate: 60,
   },
   {
@@ -329,7 +349,7 @@ export const sampleQuestions: Question[] = [
     question: 'Write a function that reverses a string without using built-in reverse methods.',
     codeSnippet: 'function reverseString(str) {\n  // Your code here\n}',
     correctAnswer: 'function reverseString(str) {\n  let reversed = "";\n  for (let i = str.length - 1; i >= 0; i--) {\n    reversed += str[i];\n  }\n  return reversed;\n}',
-    explanation: 'This solution iterates through the string from the end to the beginning, building a new reversed string.',
+    explanation: 'This solution iterates through the string from the end to the beginning.',
     timeEstimate: 180,
   },
   {
@@ -341,19 +361,18 @@ export const sampleQuestions: Question[] = [
     question: 'Find and fix the bug in this code that should print numbers 1 to 5:',
     codeSnippet: 'for (let i = 1; i < 5; i++) {\n  console.log(i);\n}',
     correctAnswer: 'for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}',
-    explanation: 'The condition should be i <= 5 instead of i < 5 to include 5 in the output.',
+    explanation: 'The condition should be i <= 5 instead of i < 5 to include 5.',
     timeEstimate: 60,
   },
   {
     id: 'q8',
     courseId: 'math201',
     unitId: 'math201-u1',
-    type: 'mcq',
+    type: 'calculation',
     difficulty: 'medium',
-    question: 'What is the derivative of f(x) = x³ + 2x² - 5x + 3?',
-    options: ['3x² + 4x - 5', '3x² + 2x - 5', 'x² + 4x - 5', '3x² + 4x + 5'],
+    question: 'Calculate the derivative of f(x) = x³ + 2x² - 5x + 3',
     correctAnswer: '3x² + 4x - 5',
-    explanation: 'Using the power rule: d/dx(xⁿ) = nxⁿ⁻¹. So d/dx(x³) = 3x², d/dx(2x²) = 4x, d/dx(-5x) = -5, and d/dx(3) = 0.',
+    explanation: 'Using the power rule: d/dx(xⁿ) = nxⁿ⁻¹.',
     timeEstimate: 45,
   },
   {
@@ -365,7 +384,7 @@ export const sampleQuestions: Question[] = [
     question: 'Which organelle is known as the "powerhouse of the cell"?',
     options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Golgi Apparatus'],
     correctAnswer: 'Mitochondria',
-    explanation: 'Mitochondria generate most of the cell\'s supply of ATP through cellular respiration, hence the nickname "powerhouse of the cell".',
+    explanation: 'Mitochondria generate most of the cell\'s supply of ATP.',
     timeEstimate: 20,
   },
   {
@@ -375,8 +394,8 @@ export const sampleQuestions: Question[] = [
     type: 'short-answer',
     difficulty: 'medium',
     question: 'Explain the difference between DNA and RNA in terms of structure.',
-    correctAnswer: 'DNA is double-stranded with deoxyribose sugar and thymine base; RNA is single-stranded with ribose sugar and uracil instead of thymine.',
-    explanation: 'The key structural differences relate to the sugar backbone and one of the nitrogenous bases.',
+    correctAnswer: 'DNA is double-stranded with deoxyribose sugar and thymine; RNA is single-stranded with ribose sugar and uracil.',
+    explanation: 'Key structural differences relate to the sugar backbone and nitrogenous bases.',
     timeEstimate: 90,
   },
 ];
@@ -506,7 +525,7 @@ export const flashcards: Flashcard[] = [
     courseId: 'math201',
     unitId: 'math201-u2',
     front: 'What is an eigenvalue?',
-    back: 'A scalar λ such that Av = λv for some non-zero vector v. It represents the factor by which the eigenvector is scaled during the transformation.',
+    back: 'A scalar λ such that Av = λv for some non-zero vector v.',
     difficulty: 'hard',
     timesReviewed: 2,
     mastered: false,
@@ -514,7 +533,7 @@ export const flashcards: Flashcard[] = [
   },
 ];
 
-// Sample Weak Areas
+// Enhanced Weak Areas with deep explanations
 export const weakAreas: WeakArea[] = [
   {
     topic: 'Database Normalization',
@@ -524,6 +543,10 @@ export const weakAreas: WeakArea[] = [
     mistakePattern: 'Confusion between 2NF and 3NF requirements',
     recommendation: 'Review normalization forms with practical examples',
     timePressureImpact: 'high',
+    whyStruggling: 'You tend to confuse the dependency rules between different normal forms. Specifically, you struggle to identify transitive dependencies which are key to understanding 3NF.',
+    conceptExplanation: 'Normalization is about organizing data to reduce redundancy. 1NF eliminates repeating groups, 2NF removes partial dependencies, and 3NF removes transitive dependencies. The key insight is understanding that each higher form builds upon the previous one.',
+    howToFix: 'Start by practicing with simple tables. Draw dependency diagrams for each table. Ask yourself: "Does any non-key column depend on another non-key column?" If yes, it violates 3NF.',
+    suggestedNoteMethods: ['cornell', 'flowchart', 'outline'],
   },
   {
     topic: 'Linear Algebra - Eigenvalues',
@@ -533,6 +556,10 @@ export const weakAreas: WeakArea[] = [
     mistakePattern: 'Calculation errors in determinant computation',
     recommendation: 'Practice more eigenvalue calculations step-by-step',
     timePressureImpact: 'medium',
+    whyStruggling: 'Eigenvalue problems require multiple steps: setting up the characteristic equation, computing determinants, and solving polynomial equations. You often make arithmetic errors in the determinant step.',
+    conceptExplanation: 'Eigenvalues tell us how a linear transformation scales vectors along certain directions. The equation det(A - λI) = 0 gives us the characteristic polynomial, whose roots are the eigenvalues.',
+    howToFix: 'Break the problem into clear steps: 1) Write A - λI, 2) Compute determinant carefully, 3) Solve the polynomial. Practice determinants separately before combining with eigenvalue problems.',
+    suggestedNoteMethods: ['cornell', 'charting', 'calculation-steps'],
   },
   {
     topic: 'Recursion',
@@ -542,6 +569,10 @@ export const weakAreas: WeakArea[] = [
     mistakePattern: 'Difficulty identifying base cases',
     recommendation: 'Start with simple recursive problems and trace through execution',
     timePressureImpact: 'high',
+    whyStruggling: 'You understand the concept of recursion but struggle to identify when to stop (base case). This leads to infinite loops or incorrect termination conditions in your solutions.',
+    conceptExplanation: 'Every recursive function needs: 1) A base case that stops recursion, 2) A recursive case that breaks the problem into smaller subproblems, 3) Progress toward the base case with each call.',
+    howToFix: 'For every recursive problem, first ask: "What is the simplest version of this problem I can solve directly?" That is your base case. Then figure out how to reduce any larger problem to a smaller one.',
+    suggestedNoteMethods: ['mindmap', 'flowchart', 'outline'],
   },
   {
     topic: 'Differential Equations',
@@ -551,6 +582,10 @@ export const weakAreas: WeakArea[] = [
     mistakePattern: 'Selecting wrong solving method for equation type',
     recommendation: 'Create a decision tree for identifying DE types',
     timePressureImpact: 'low',
+    whyStruggling: 'There are many methods for solving DEs (separation of variables, integrating factors, substitution), and you struggle to identify which method fits which equation type.',
+    conceptExplanation: 'Different DE forms require different approaches. Separable equations can be rearranged to isolate x and y. First-order linear equations use integrating factors. Homogeneous equations use substitution.',
+    howToFix: 'Create a flowchart: Is it separable? → Use separation. Is it first-order linear? → Use integrating factor. Is it homogeneous? → Use y = vx substitution. Practice identifying types before solving.',
+    suggestedNoteMethods: ['flowchart', 'charting', 'cornell'],
   },
 ];
 
@@ -603,7 +638,7 @@ export const aiInsights: AIInsight[] = [
   },
 ];
 
-// Note-taking Methods
+// Enhanced Note-taking Methods (10 methods)
 export interface NoteMethod {
   id: string;
   name: string;
@@ -611,48 +646,121 @@ export interface NoteMethod {
   bestFor: string;
   structure: string[];
   example: string;
+  icon: string;
+  color: string;
+  layout: 'cornell' | 'mindmap' | 'outline' | 'flow' | 'boxing' | 'charting' | 'sentence' | 'zettelkasten' | 'feynman' | 'sketchnote';
 }
 
 export const noteMethods: NoteMethod[] = [
   {
     id: 'cornell',
     name: 'Cornell Method',
-    description: 'Systematic format for condensing and organizing notes with cues, notes, and summary sections.',
-    bestFor: 'Lecture notes, summarizing large chapters, exam preparation',
+    description: 'Two-column format with cues, notes, and summary sections for effective review.',
+    bestFor: 'Lectures, textbook reading, exam preparation',
     structure: ['Cue Column (left)', 'Note-Taking Area (right)', 'Summary Section (bottom)'],
-    example: 'Perfect for classes that cover a lot of factual information that needs to be memorized.',
+    example: 'Perfect for classes with dense factual information.',
+    icon: '📋',
+    color: 'from-blue-500 to-indigo-500',
+    layout: 'cornell',
   },
   {
-    id: 'zettelkasten',
-    name: 'Zettelkasten',
-    description: 'Interconnected note-taking system that creates a web of linked ideas and concepts.',
-    bestFor: 'Research, deep conceptual understanding, connecting ideas across subjects',
-    structure: ['Unique ID for each note', 'Single concept per note', 'Links to related notes', 'Tags for categorization'],
-    example: 'Ideal for building a personal knowledge base over time.',
+    id: 'mindmap',
+    name: 'Mind Mapping',
+    description: 'Visual diagram with central topic branching into related subtopics hierarchically.',
+    bestFor: 'Visual learners, brainstorming, topic overviews',
+    structure: ['Central Topic', 'Main Branches', 'Sub-branches', 'Colors & Keywords'],
+    example: 'Excellent for seeing the big picture and relationships.',
+    icon: '🧠',
+    color: 'from-purple-500 to-pink-500',
+    layout: 'mindmap',
   },
   {
     id: 'outline',
     name: 'Outline Method',
     description: 'Hierarchical structure using headings, subheadings, and bullet points.',
-    bestFor: 'Step-by-step processes, well-organized lectures, textbook material',
-    structure: ['Main Topics (Roman numerals)', 'Subtopics (Capital letters)', 'Supporting details (Numbers)', 'Specific facts (Lowercase letters)'],
-    example: 'Great for subjects with clear hierarchical relationships.',
+    bestFor: 'Well-organized content, step-by-step processes',
+    structure: ['Main Topics (I, II)', 'Subtopics (A, B)', 'Details (1, 2)', 'Examples (a, b)'],
+    example: 'Great for logical, structured subjects.',
+    icon: '📑',
+    color: 'from-green-500 to-teal-500',
+    layout: 'outline',
   },
   {
-    id: 'flowbased',
-    name: 'Flow-Based Notes',
-    description: 'Non-linear approach focusing on understanding over memorization.',
-    bestFor: 'Complex topics, narrative subjects, connecting cause and effect',
-    structure: ['Central idea', 'Flowing connections', 'Arrows showing relationships', 'Personal insights in margins'],
-    example: 'Best for understanding how concepts relate to each other.',
+    id: 'flowchart',
+    name: 'Flow Chart Notes',
+    description: 'Visual flow showing processes, decisions, and outcomes with arrows.',
+    bestFor: 'Processes, algorithms, cause-effect relationships',
+    structure: ['Start/End nodes', 'Process boxes', 'Decision diamonds', 'Arrows & connections'],
+    example: 'Ideal for understanding sequences and logic.',
+    icon: '🔄',
+    color: 'from-cyan-500 to-blue-500',
+    layout: 'flow',
   },
   {
-    id: 'mindmap',
-    name: 'Mind Mapping',
-    description: 'Visual diagram starting from a central concept branching outward.',
-    bestFor: 'Visual learners, brainstorming, overview of topics',
-    structure: ['Central topic', 'Main branches', 'Sub-branches', 'Colors and images', 'Keywords only'],
-    example: 'Excellent for getting a bird\'s-eye view of a subject.',
+    id: 'boxing',
+    name: 'Boxing Method',
+    description: 'Information grouped in boxes by topic for clear visual separation.',
+    bestFor: 'Comparing topics, separating concepts',
+    structure: ['Topic Boxes', 'Grouped Information', 'Visual Separation', 'Color Coding'],
+    example: 'Perfect for subjects with distinct categories.',
+    icon: '📦',
+    color: 'from-orange-500 to-amber-500',
+    layout: 'boxing',
+  },
+  {
+    id: 'charting',
+    name: 'Charting Method',
+    description: 'Table format organizing information into rows and columns for comparison.',
+    bestFor: 'Comparing multiple items, facts with categories',
+    structure: ['Column Headers', 'Row Categories', 'Data Cells', 'Comparison Points'],
+    example: 'Best for subjects requiring comparison.',
+    icon: '📊',
+    color: 'from-rose-500 to-red-500',
+    layout: 'charting',
+  },
+  {
+    id: 'sentence',
+    name: 'Sentence Method',
+    description: 'Each new fact or topic written as a numbered sentence on a new line.',
+    bestFor: 'Fast-paced lectures, detailed information',
+    structure: ['Numbered Sentences', 'One idea per line', 'Sequential order', 'Quick capture'],
+    example: 'Good for rapid note-taking during lectures.',
+    icon: '📝',
+    color: 'from-slate-500 to-gray-500',
+    layout: 'sentence',
+  },
+  {
+    id: 'zettelkasten',
+    name: 'Zettelkasten',
+    description: 'Interconnected atomic notes creating a web of linked knowledge.',
+    bestFor: 'Research, deep learning, knowledge building',
+    structure: ['Unique IDs', 'Single concept per note', 'Links to related notes', 'Tags'],
+    example: 'Ideal for building a personal knowledge base.',
+    icon: '🔗',
+    color: 'from-violet-500 to-purple-500',
+    layout: 'zettelkasten',
+  },
+  {
+    id: 'feynman',
+    name: 'Feynman Technique',
+    description: 'Explain concepts in simple terms as if teaching a child.',
+    bestFor: 'Deep understanding, identifying knowledge gaps',
+    structure: ['Concept Name', 'Simple Explanation', 'Gaps Identified', 'Refined Explanation'],
+    example: 'Best for truly mastering difficult concepts.',
+    icon: '💡',
+    color: 'from-yellow-500 to-orange-500',
+    layout: 'feynman',
+  },
+  {
+    id: 'sketchnote',
+    name: 'Sketchnotes',
+    description: 'Visual notes combining text, drawings, and symbols for memorable learning.',
+    bestFor: 'Visual/creative learners, memorable notes',
+    structure: ['Text + Drawings', 'Icons & Symbols', 'Visual Hierarchy', 'Color Emphasis'],
+    example: 'Great for making notes memorable and engaging.',
+    icon: '🎨',
+    color: 'from-pink-500 to-rose-500',
+    layout: 'sketchnote',
   },
 ];
 
@@ -733,4 +841,32 @@ export const weeklyPlan: StudyBlock[] = [
   { id: 'sb7', day: 'Friday', startTime: '16:00', endTime: '17:00', courseId: 'bus101', courseName: 'Business', topic: 'Marketing Review', type: 'review', priority: 'low', completed: false },
   { id: 'sb8', day: 'Saturday', startTime: '10:00', endTime: '11:30', courseId: 'cs101', courseName: 'Computer Science', topic: 'Full Practice Exam', type: 'exam', priority: 'high', completed: false },
   { id: 'sb9', day: 'Sunday', startTime: '14:00', endTime: '15:00', courseId: 'bio101', courseName: 'Biology', topic: 'Weekly Review', type: 'review', priority: 'medium', completed: false },
+];
+
+// Dashboard chart data
+export const performanceData = [
+  { day: 'Mon', score: 65, exams: 2 },
+  { day: 'Tue', score: 72, exams: 3 },
+  { day: 'Wed', score: 68, exams: 1 },
+  { day: 'Thu', score: 85, exams: 4 },
+  { day: 'Fri', score: 78, exams: 2 },
+  { day: 'Sat', score: 82, exams: 3 },
+  { day: 'Sun', score: 88, exams: 2 },
+];
+
+export const subjectPerformance = [
+  { subject: 'Computer Science', score: 78, color: 'hsl(var(--primary))' },
+  { subject: 'Mathematics', score: 62, color: 'hsl(var(--secondary))' },
+  { subject: 'Biology', score: 85, color: 'hsl(var(--accent))' },
+  { subject: 'History', score: 72, color: 'hsl(var(--warning))' },
+  { subject: 'Business', score: 58, color: 'hsl(var(--success))' },
+];
+
+export const monthlyProgress = [
+  { month: 'Jan', completed: 12, target: 15 },
+  { month: 'Feb', completed: 18, target: 15 },
+  { month: 'Mar', completed: 14, target: 15 },
+  { month: 'Apr', completed: 20, target: 15 },
+  { month: 'May', completed: 16, target: 15 },
+  { month: 'Jun', completed: 22, target: 15 },
 ];

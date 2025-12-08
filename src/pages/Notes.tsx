@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   BookOpen,
-  FileText,
   Sparkles,
   ChevronRight,
   Download,
@@ -13,354 +12,315 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Layout } from "@/components/layout/Layout";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { cn } from "@/lib/utils";
 import { courses, noteMethods } from "@/data/mockData";
+
+// Visual Note Renderers
+function CornellNote({ content }: { content: any }) {
+  return (
+    <div className="border-2 border-primary/20 rounded-2xl overflow-hidden">
+      <div className="grid grid-cols-3 min-h-[400px]">
+        <div className="col-span-1 bg-primary/5 p-4 border-r-2 border-primary/20">
+          <h4 className="font-bold text-sm text-primary mb-4 uppercase tracking-wide">Cue Column</h4>
+          <div className="space-y-4">
+            {content.cues.map((cue: string, i: number) => (
+              <div key={i} className="p-3 bg-card rounded-xl border border-primary/10">
+                <p className="text-sm font-medium text-primary">{cue}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="col-span-2 p-4">
+          <h4 className="font-bold text-sm text-muted-foreground mb-4 uppercase tracking-wide">Notes</h4>
+          <div className="space-y-3">
+            {content.notes.map((note: string, i: number) => (
+              <p key={i} className="text-sm leading-relaxed">{note}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="border-t-2 border-primary/20 bg-secondary/5 p-4">
+        <h4 className="font-bold text-sm text-secondary mb-2 uppercase tracking-wide">Summary</h4>
+        <p className="text-sm text-muted-foreground">{content.summary}</p>
+      </div>
+    </div>
+  );
+}
+
+function MindMapNote({ content }: { content: any }) {
+  return (
+    <div className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-2xl min-h-[400px]">
+      <div className="flex flex-col items-center">
+        <div className="w-40 h-40 rounded-full gradient-primary flex items-center justify-center mb-8 shadow-lg shadow-primary/30">
+          <span className="text-white font-bold text-center text-lg px-4">{content.center}</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+          {content.branches.map((branch: any, i: number) => (
+            <div key={i} className="flex flex-col items-center">
+              <div className="w-2 h-12 bg-gradient-to-b from-primary to-secondary rounded-full mb-2" />
+              <div className={cn("p-4 rounded-2xl text-center w-full", branch.color)}>
+                <h4 className="font-bold text-sm mb-2">{branch.title}</h4>
+                <ul className="text-xs space-y-1 text-muted-foreground">
+                  {branch.items.map((item: string, j: number) => (
+                    <li key={j}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OutlineNote({ content }: { content: any }) {
+  return (
+    <div className="p-6 bg-muted/30 rounded-2xl space-y-4">
+      {content.sections.map((section: any, i: number) => (
+        <div key={i} className="space-y-2">
+          <h3 className="text-lg font-bold text-primary flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm">{i + 1}</span>
+            {section.title}
+          </h3>
+          <div className="ml-10 space-y-2">
+            {section.points.map((point: any, j: number) => (
+              <div key={j} className="space-y-1">
+                <p className="font-medium text-sm flex items-center gap-2">
+                  <span className="text-secondary">{String.fromCharCode(65 + j)}.</span>
+                  {point.main}
+                </p>
+                {point.sub && (
+                  <ul className="ml-6 space-y-1">
+                    {point.sub.map((s: string, k: number) => (
+                      <li key={k} className="text-sm text-muted-foreground">• {s}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ChartingNote({ content }: { content: any }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr>
+            {content.headers.map((h: string, i: number) => (
+              <th key={i} className="p-4 text-left text-sm font-bold bg-primary text-primary-foreground first:rounded-tl-xl last:rounded-tr-xl">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {content.rows.map((row: string[], i: number) => (
+            <tr key={i} className={i % 2 === 0 ? "bg-muted/30" : "bg-muted/10"}>
+              {row.map((cell: string, j: number) => (
+                <td key={j} className="p-4 text-sm border-b border-border">{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const sampleNoteContent = {
+  cornell: {
+    cues: ["What is a variable?", "Data types?", "Control flow?", "Functions?"],
+    notes: [
+      "A variable is a named storage location in memory that holds a value. Variables can be declared using let, const, or var in JavaScript.",
+      "Common data types include: strings (text), numbers (integers and floats), booleans (true/false), arrays (ordered lists), and objects (key-value pairs).",
+      "Control flow determines the order in which code executes. Includes: if/else statements, switch cases, and loops (for, while, do-while).",
+      "Functions are reusable blocks of code that perform specific tasks. They can accept parameters and return values."
+    ],
+    summary: "Variables store data, which comes in different types. Control flow manages execution order, and functions enable code reuse. These are the fundamental building blocks of programming."
+  },
+  mindmap: {
+    center: "Data Structures",
+    branches: [
+      { title: "Linear", items: ["Arrays", "Linked Lists", "Stacks", "Queues"], color: "bg-blue-100 dark:bg-blue-900/30" },
+      { title: "Non-Linear", items: ["Trees", "Graphs", "Heaps"], color: "bg-green-100 dark:bg-green-900/30" },
+      { title: "Hash-Based", items: ["Hash Tables", "Hash Maps", "Sets"], color: "bg-purple-100 dark:bg-purple-900/30" },
+      { title: "Operations", items: ["Insert", "Delete", "Search", "Sort"], color: "bg-orange-100 dark:bg-orange-900/30" },
+    ]
+  },
+  outline: {
+    sections: [
+      { title: "Introduction to Algorithms", points: [
+        { main: "Definition", sub: ["Step-by-step procedure", "Solves computational problems"] },
+        { main: "Characteristics", sub: ["Finite", "Definite", "Effective"] }
+      ]},
+      { title: "Algorithm Analysis", points: [
+        { main: "Time Complexity", sub: ["Big O notation", "Best/Worst/Average case"] },
+        { main: "Space Complexity", sub: ["Memory usage", "In-place algorithms"] }
+      ]}
+    ]
+  },
+  charting: {
+    headers: ["Data Structure", "Access", "Search", "Insert", "Delete"],
+    rows: [
+      ["Array", "O(1)", "O(n)", "O(n)", "O(n)"],
+      ["Linked List", "O(n)", "O(n)", "O(1)", "O(1)"],
+      ["Hash Table", "N/A", "O(1)", "O(1)", "O(1)"],
+      ["Binary Tree", "O(log n)", "O(log n)", "O(log n)", "O(log n)"],
+    ]
+  }
+};
 
 export default function Notes() {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
   const [selectedMethod, setSelectedMethod] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedNote, setGeneratedNote] = useState<string | null>(null);
+  const [generatedNote, setGeneratedNote] = useState<any>(null);
   const [copied, setCopied] = useState(false);
 
   const course = courses.find((c) => c.id === selectedCourse);
 
   const handleGenerate = () => {
     setIsGenerating(true);
-    
-    // Simulate AI generation
     setTimeout(() => {
-      const method = noteMethods.find((m) => m.id === selectedMethod);
-      const sampleNote = generateSampleNote(method?.name || "Outline");
-      setGeneratedNote(sampleNote);
+      const content = selectedMethod === "cornell" ? sampleNoteContent.cornell
+        : selectedMethod === "mindmap" ? sampleNoteContent.mindmap
+        : selectedMethod === "outline" ? sampleNoteContent.outline
+        : selectedMethod === "charting" ? sampleNoteContent.charting
+        : sampleNoteContent.outline;
+      setGeneratedNote({ method: selectedMethod, content });
       setIsGenerating(false);
-    }, 3000);
+    }, 2000);
   };
 
-  const generateSampleNote = (methodName: string): string => {
-    if (methodName === "Cornell Method") {
-      return `# Data Structures - Cornell Notes
-
-## Cues | Notes
----
-
-**What is a data structure?** | A data structure is a specialized format for organizing, processing, retrieving and storing data. They make data access and algorithms more efficient.
-
-**Types of Data Structures** | 
-- **Linear**: Arrays, Linked Lists, Stacks, Queues
-- **Non-linear**: Trees, Graphs
-- **Hash-based**: Hash Tables, Hash Maps
-
-**Why are they important?** | 
-- Efficient data organization
-- Faster algorithms
-- Better memory management
-- Foundation for complex systems
-
-**Array vs Linked List** | 
-- Arrays: Contiguous memory, O(1) access, fixed size
-- Linked Lists: Non-contiguous, O(n) access, dynamic size
-
----
-
-## Summary
-Data structures are fundamental building blocks in computer science that determine how data is stored and accessed. Understanding the trade-offs between different structures (like arrays vs linked lists) is crucial for writing efficient code. Key considerations include time complexity for operations and memory usage.`;
+  const renderNote = () => {
+    if (!generatedNote) return null;
+    switch (generatedNote.method) {
+      case "cornell": return <CornellNote content={generatedNote.content} />;
+      case "mindmap": return <MindMapNote content={generatedNote.content} />;
+      case "outline": return <OutlineNote content={generatedNote.content} />;
+      case "charting": return <ChartingNote content={generatedNote.content} />;
+      default: return <OutlineNote content={sampleNoteContent.outline} />;
     }
-    
-    return `# Data Structures - Study Notes
-
-## 1. Introduction to Data Structures
-
-A **data structure** is a specialized format for organizing, processing, retrieving, and storing data. Efficient data structures are key to designing efficient algorithms.
-
-### 1.1 Why Data Structures Matter
-- Enable efficient data organization
-- Optimize algorithm performance
-- Reduce memory usage
-- Foundation for complex systems
-
-## 2. Types of Data Structures
-
-### 2.1 Linear Data Structures
-Data elements are arranged in a sequential manner.
-
-#### Arrays
-- Fixed-size collection of elements
-- Contiguous memory allocation
-- O(1) access time by index
-- O(n) insertion/deletion
-
-#### Linked Lists
-- Dynamic size
-- Non-contiguous memory
-- O(n) access time
-- O(1) insertion/deletion at known position
-
-#### Stacks (LIFO)
-- Last In, First Out principle
-- Operations: push, pop, peek
-- Use cases: function calls, undo operations
-
-#### Queues (FIFO)
-- First In, First Out principle
-- Operations: enqueue, dequeue
-- Use cases: task scheduling, BFS
-
-### 2.2 Non-Linear Data Structures
-
-#### Trees
-- Hierarchical structure
-- Root, nodes, leaves
-- Binary trees, BST, AVL, B-trees
-
-#### Graphs
-- Nodes connected by edges
-- Directed vs undirected
-- Weighted vs unweighted
-
-## 3. Key Takeaways
-
-1. Choose data structures based on operation requirements
-2. Consider time and space complexity trade-offs
-3. Arrays for random access, linked lists for dynamic data
-4. Trees for hierarchical data, graphs for relationships
-
-## 4. Practice Questions
-
-1. When would you use a stack over a queue?
-2. Compare the time complexity of search operations in arrays vs binary search trees.
-3. What data structure would you use to implement a web browser's back button?`;
-  };
-
-  const handleCopy = () => {
-    if (generatedNote) {
-      navigator.clipboard.writeText(generatedNote);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const handleReset = () => {
-    setGeneratedNote(null);
-    setSelectedCourse("");
-    setSelectedUnits([]);
-    setSelectedMethod("");
   };
 
   return (
-    <Layout>
-      <div className="min-h-screen p-6 lg:p-8 max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">AI Notes Generator</h1>
-          <p className="text-muted-foreground">
-            Transform your course materials into structured, effective notes
-          </p>
-        </div>
+    <DashboardLayout title="AI Notes Generator">
+      {!generatedNote ? (
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BookOpen className="w-5 h-5" />
+                  Select Course
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  {courses.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => { setSelectedCourse(c.id); setSelectedUnits([]); }}
+                      className={cn(
+                        "p-4 rounded-xl border-2 text-left transition-all hover:border-primary/50",
+                        selectedCourse === c.id ? "border-primary bg-primary/5" : "border-border"
+                      )}
+                    >
+                      <span className="text-2xl block mb-2">{c.icon}</span>
+                      <span className="font-medium text-sm block">{c.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-        {!generatedNote ? (
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Left: Configuration */}
-            <div className="space-y-6">
-              {/* Course Selection */}
-              <Card>
+            {course && (
+              <Card className="animate-fade-in">
                 <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <BookOpen className="w-5 h-5" />
-                    Select Course
-                  </CardTitle>
+                  <CardTitle className="text-lg">Select Units</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
-                    {courses.map((c) => (
-                      <button
-                        key={c.id}
-                        onClick={() => {
-                          setSelectedCourse(c.id);
-                          setSelectedUnits([]);
+                <CardContent className="space-y-3">
+                  {course.units.map((unit) => (
+                    <label key={unit.id} className={cn(
+                      "flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all hover:border-primary/50",
+                      selectedUnits.includes(unit.id) ? "border-primary bg-primary/5" : "border-border"
+                    )}>
+                      <Checkbox
+                        checked={selectedUnits.includes(unit.id)}
+                        onCheckedChange={(checked) => {
+                          setSelectedUnits((prev) => checked ? [...prev, unit.id] : prev.filter((id) => id !== unit.id));
                         }}
-                        className={cn(
-                          "p-4 rounded-xl border-2 text-left transition-all hover:border-primary/50",
-                          selectedCourse === c.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border"
-                        )}
-                      >
-                        <span className="text-2xl block mb-2">{c.icon}</span>
-                        <span className="font-medium text-sm block">{c.name}</span>
-                        <span className="text-xs text-muted-foreground">{c.units.length} units</span>
-                      </button>
-                    ))}
-                  </div>
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{unit.title}</p>
+                        <p className="text-xs text-muted-foreground">{unit.description}</p>
+                      </div>
+                    </label>
+                  ))}
                 </CardContent>
               </Card>
+            )}
+          </div>
 
-              {/* Unit Selection */}
-              {course && (
-                <Card className="animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Select Units</CardTitle>
-                    <CardDescription>Choose units to include in your notes</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {course.units.map((unit) => (
-                      <label
-                        key={unit.id}
-                        className={cn(
-                          "flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all hover:border-primary/50",
-                          selectedUnits.includes(unit.id)
-                            ? "border-primary bg-primary/5"
-                            : "border-border"
-                        )}
-                      >
-                        <Checkbox
-                          checked={selectedUnits.includes(unit.id)}
-                          onCheckedChange={(checked) => {
-                            setSelectedUnits((prev) =>
-                              checked
-                                ? [...prev, unit.id]
-                                : prev.filter((id) => id !== unit.id)
-                            );
-                          }}
-                        />
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{unit.title}</p>
-                          <p className="text-xs text-muted-foreground">{unit.description}</p>
-                        </div>
-                      </label>
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-
-            {/* Right: Method Selection */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <FileText className="w-5 h-5" />
-                    Note-Taking Method
-                  </CardTitle>
-                  <CardDescription>
-                    Choose the methodology that works best for you
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Note-Taking Method</CardTitle>
+                <CardDescription>Choose from 10 powerful methods</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
                   {noteMethods.map((method) => (
                     <button
                       key={method.id}
                       onClick={() => setSelectedMethod(method.id)}
                       className={cn(
-                        "w-full p-4 rounded-xl border-2 text-left transition-all hover:border-primary/50",
-                        selectedMethod === method.id
-                          ? "border-primary bg-primary/5"
-                          : "border-border"
+                        "p-4 rounded-xl border-2 text-left transition-all hover:border-primary/50",
+                        selectedMethod === method.id ? "border-primary bg-primary/5" : "border-border"
                       )}
                     >
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-semibold">{method.name}</h4>
-                        {selectedMethod === method.id && (
-                          <Badge className="bg-primary text-primary-foreground">Selected</Badge>
-                        )}
+                      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-2 bg-gradient-to-br", method.color)}>
+                        {method.icon}
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {method.description}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="font-medium">Best for:</span>
-                        <span>{method.bestFor}</span>
-                      </div>
+                      <h4 className="font-semibold text-sm">{method.name}</h4>
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{method.bestFor}</p>
                     </button>
                   ))}
-                </CardContent>
-              </Card>
-
-              {/* Generate Button */}
-              <Button
-                className="w-full gradient-primary"
-                size="lg"
-                disabled={!selectedCourse || !selectedMethod || isGenerating}
-                onClick={handleGenerate}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Generating Notes...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Generate Notes
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-6 animate-fade-in">
-            {/* Actions Bar */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">{course?.name}</Badge>
-                <Badge variant="outline">
-                  {noteMethods.find((m) => m.id === selectedMethod)?.name}
-                </Badge>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={handleCopy}>
-                  {copied ? (
-                    <>
-                      <Check className="w-4 h-4 mr-2" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4 mr-2" />
-                      Copy
-                    </>
-                  )}
-                </Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export PDF
-                </Button>
-                <Button variant="outline" onClick={handleReset}>
-                  Generate New
-                </Button>
-              </div>
-            </div>
-
-            {/* Generated Note */}
-            <Card>
-              <CardContent className="p-8">
-                <div className="prose prose-sm max-w-none dark:prose-invert">
-                  <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                    {generatedNote}
-                  </pre>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Actions */}
-            <div className="flex justify-center gap-4">
-              <Button variant="outline" asChild>
-                <a href="/flashcards">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Create Flashcards
-                </a>
+            <Button className="w-full gradient-primary" size="lg" disabled={!selectedCourse || !selectedMethod || isGenerating} onClick={handleGenerate}>
+              {isGenerating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Notes</>}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">{course?.name}</Badge>
+              <Badge variant="outline">{noteMethods.find((m) => m.id === selectedMethod)?.name}</Badge>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 2000); }}>
+                {copied ? <><Check className="w-4 h-4 mr-2" />Copied!</> : <><Copy className="w-4 h-4 mr-2" />Copy</>}
               </Button>
-              <Button className="gradient-primary" asChild>
-                <a href="/exam">
-                  Test Your Knowledge
-                  <ChevronRight className="w-4 h-4 ml-2" />
-                </a>
-              </Button>
+              <Button variant="outline"><Download className="w-4 h-4 mr-2" />Export PDF</Button>
+              <Button variant="outline" onClick={() => setGeneratedNote(null)}>Generate New</Button>
             </div>
           </div>
-        )}
-      </div>
-    </Layout>
+          <Card><CardContent className="p-6">{renderNote()}</CardContent></Card>
+        </div>
+      )}
+    </DashboardLayout>
   );
 }
