@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Bell,
   History,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -27,6 +28,7 @@ const navItems = [
   { icon: BookOpen, label: "Notes", path: "/notes" },
   { icon: Calendar, label: "Planner", path: "/planner" },
   { icon: GraduationCap, label: "Study Room", path: "/study-room" },
+  { icon: MessageSquare, label: "Questy AI", path: "/questy-chat" },
   { icon: User, label: "Profile", path: "/profile" },
   { icon: Bell, label: "Notifications", path: "/notifications" },
 ];
