@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Bell,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -22,6 +23,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: Upload, label: "Upload", path: "/upload" },
   { icon: Brain, label: "Smart Exam", path: "/exam" },
+  { icon: History, label: "Exam History", path: "/exam-history" },
   { icon: BookOpen, label: "Notes", path: "/notes" },
   { icon: Calendar, label: "Planner", path: "/planner" },
   { icon: GraduationCap, label: "Study Room", path: "/study-room" },
@@ -106,8 +108,8 @@ export function Sidebar() {
             <p className="text-xs text-muted-foreground mb-3">
               Unlock all features and unlimited exams
             </p>
-            <Button size="sm" className="w-full gradient-primary text-xs">
-              Upgrade Now
+            <Button size="sm" className="w-full gradient-primary text-xs" asChild>
+              <Link to="/billing">Upgrade Now</Link>
             </Button>
           </div>
         </div>

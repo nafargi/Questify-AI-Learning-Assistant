@@ -13,6 +13,8 @@ import Planner from "./pages/Planner";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
+import Billing from "./pages/Billing";
+import ExamHistory from "./pages/ExamHistory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/exam-history" element={<ExamHistory />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
