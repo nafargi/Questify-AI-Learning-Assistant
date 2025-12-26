@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   TrendingUp,
   TrendingDown,
@@ -128,6 +128,7 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [selectedTimeframe, setSelectedTimeframe] = useState<"week" | "month" | "all">("week");
 
   const totalStudyTime = studySessions.reduce((acc, s) => acc + s.duration, 0);
@@ -469,7 +470,11 @@ export default function Dashboard() {
                   {aiInsights[0].description}
                 </p>
                 {aiInsights[0].actionable && (
-                  <Button size="sm" className="w-full gradient-primary">
+                  <Button 
+                    size="sm" 
+                    className="w-full gradient-primary"
+                    onClick={() => navigate("/exam")}
+                  >
                     <Zap className="w-4 h-4 mr-2" />
                     {aiInsights[0].action}
                   </Button>
