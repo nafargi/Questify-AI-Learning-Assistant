@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  BookOpen,
-  Sparkles,
-  ChevronRight,
-  Download,
-  Copy,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { BookOpen, Sparkles, Download, Copy, Check, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,124 +8,19 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { cn } from "@/lib/utils";
 import { courses, noteMethods } from "@/data/mockData";
 
-// Visual Note Renderers
-function CornellNote({ content }: { content: any }) {
-  return (
-    <div className="border-2 border-primary/20 rounded-2xl overflow-hidden">
-      <div className="grid grid-cols-3 min-h-[400px]">
-        <div className="col-span-1 bg-primary/5 p-4 border-r-2 border-primary/20">
-          <h4 className="font-bold text-sm text-primary mb-4 uppercase tracking-wide">Cue Column</h4>
-          <div className="space-y-4">
-            {content.cues.map((cue: string, i: number) => (
-              <div key={i} className="p-3 bg-card rounded-xl border border-primary/10">
-                <p className="text-sm font-medium text-primary">{cue}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="col-span-2 p-4">
-          <h4 className="font-bold text-sm text-muted-foreground mb-4 uppercase tracking-wide">Notes</h4>
-          <div className="space-y-3">
-            {content.notes.map((note: string, i: number) => (
-              <p key={i} className="text-sm leading-relaxed">{note}</p>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="border-t-2 border-primary/20 bg-secondary/5 p-4">
-        <h4 className="font-bold text-sm text-secondary mb-2 uppercase tracking-wide">Summary</h4>
-        <p className="text-sm text-muted-foreground">{content.summary}</p>
-      </div>
-    </div>
-  );
-}
+// Import all note method components
+import { CornellNote } from "@/components/notes/CornellNote";
+import { MindMapNote } from "@/components/notes/MindMapNote";
+import { OutlineNote } from "@/components/notes/OutlineNote";
+import { BoxingNote } from "@/components/notes/BoxingNote";
+import { ChartingNote } from "@/components/notes/ChartingNote";
+import { ZettelkastenNote } from "@/components/notes/ZettelkastenNote";
+import { FeynmanNote } from "@/components/notes/FeynmanNote";
+import { FlowchartNote } from "@/components/notes/FlowchartNote";
+import { SentenceNote } from "@/components/notes/SentenceNote";
+import { SketchNote } from "@/components/notes/SketchNote";
 
-function MindMapNote({ content }: { content: any }) {
-  return (
-    <div className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-2xl min-h-[400px]">
-      <div className="flex flex-col items-center">
-        <div className="w-40 h-40 rounded-full gradient-primary flex items-center justify-center mb-8 shadow-lg shadow-primary/30">
-          <span className="text-white font-bold text-center text-lg px-4">{content.center}</span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
-          {content.branches.map((branch: any, i: number) => (
-            <div key={i} className="flex flex-col items-center">
-              <div className="w-2 h-12 bg-gradient-to-b from-primary to-secondary rounded-full mb-2" />
-              <div className={cn("p-4 rounded-2xl text-center w-full", branch.color)}>
-                <h4 className="font-bold text-sm mb-2">{branch.title}</h4>
-                <ul className="text-xs space-y-1 text-muted-foreground">
-                  {branch.items.map((item: string, j: number) => (
-                    <li key={j}>• {item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function OutlineNote({ content }: { content: any }) {
-  return (
-    <div className="p-6 bg-muted/30 rounded-2xl space-y-4">
-      {content.sections.map((section: any, i: number) => (
-        <div key={i} className="space-y-2">
-          <h3 className="text-lg font-bold text-primary flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm">{i + 1}</span>
-            {section.title}
-          </h3>
-          <div className="ml-10 space-y-2">
-            {section.points.map((point: any, j: number) => (
-              <div key={j} className="space-y-1">
-                <p className="font-medium text-sm flex items-center gap-2">
-                  <span className="text-secondary">{String.fromCharCode(65 + j)}.</span>
-                  {point.main}
-                </p>
-                {point.sub && (
-                  <ul className="ml-6 space-y-1">
-                    {point.sub.map((s: string, k: number) => (
-                      <li key={k} className="text-sm text-muted-foreground">• {s}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ChartingNote({ content }: { content: any }) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            {content.headers.map((h: string, i: number) => (
-              <th key={i} className="p-4 text-left text-sm font-bold bg-primary text-primary-foreground first:rounded-tl-xl last:rounded-tr-xl">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {content.rows.map((row: string[], i: number) => (
-            <tr key={i} className={i % 2 === 0 ? "bg-muted/30" : "bg-muted/10"}>
-              {row.map((cell: string, j: number) => (
-                <td key={j} className="p-4 text-sm border-b border-border">{cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
+// Sample content for each note type
 const sampleNoteContent = {
   cornell: {
     cues: ["What is a variable?", "Data types?", "Control flow?", "Functions?"],
@@ -148,10 +35,10 @@ const sampleNoteContent = {
   mindmap: {
     center: "Data Structures",
     branches: [
-      { title: "Linear", items: ["Arrays", "Linked Lists", "Stacks", "Queues"], color: "bg-blue-100 dark:bg-blue-900/30" },
-      { title: "Non-Linear", items: ["Trees", "Graphs", "Heaps"], color: "bg-green-100 dark:bg-green-900/30" },
-      { title: "Hash-Based", items: ["Hash Tables", "Hash Maps", "Sets"], color: "bg-purple-100 dark:bg-purple-900/30" },
-      { title: "Operations", items: ["Insert", "Delete", "Search", "Sort"], color: "bg-orange-100 dark:bg-orange-900/30" },
+      { title: "Linear", items: ["Arrays", "Linked Lists", "Stacks", "Queues"], color: "bg-blue-100" },
+      { title: "Non-Linear", items: ["Trees", "Graphs", "Heaps"], color: "bg-green-100" },
+      { title: "Hash-Based", items: ["Hash Tables", "Hash Maps", "Sets"], color: "bg-purple-100" },
+      { title: "Operations", items: ["Insert", "Delete", "Search", "Sort"], color: "bg-orange-100" },
     ]
   },
   outline: {
@@ -166,6 +53,14 @@ const sampleNoteContent = {
       ]}
     ]
   },
+  boxing: {
+    boxes: [
+      { title: "Variables", color: "blue", items: ["Store data values", "Can be reassigned", "Have scope rules"] },
+      { title: "Functions", color: "green", items: ["Reusable code blocks", "Accept parameters", "Return values"] },
+      { title: "Loops", color: "purple", items: ["Repeat code", "for, while, do-while", "Break and continue"] },
+      { title: "Conditionals", color: "orange", items: ["if/else statements", "Switch cases", "Ternary operator"] },
+    ]
+  },
   charting: {
     headers: ["Data Structure", "Access", "Search", "Insert", "Delete"],
     rows: [
@@ -173,6 +68,50 @@ const sampleNoteContent = {
       ["Linked List", "O(n)", "O(n)", "O(1)", "O(1)"],
       ["Hash Table", "N/A", "O(1)", "O(1)", "O(1)"],
       ["Binary Tree", "O(log n)", "O(log n)", "O(log n)", "O(log n)"],
+    ]
+  },
+  zettelkasten: {
+    notes: [
+      { id: "1a", title: "What is Recursion?", content: "A function that calls itself to solve smaller instances of the same problem.", links: ["1b", "2a"], tags: ["fundamentals", "algorithms"] },
+      { id: "1b", title: "Base Case", content: "The condition that stops recursion. Without it, infinite loop occurs.", links: ["1a"], tags: ["recursion"] },
+      { id: "2a", title: "Call Stack", content: "Memory structure that tracks function calls. Each recursive call adds a frame.", links: ["1a", "2b"], tags: ["memory", "execution"] },
+    ]
+  },
+  feynman: {
+    concept: "Recursion in Programming",
+    simpleExplanation: "Imagine you have a set of Russian nesting dolls. To find the smallest doll, you open one, find another inside, and keep opening until you find the tiny one that can't be opened. That's recursion - a problem that contains smaller versions of itself until you reach the simplest case.",
+    gaps: ["Not clear on how the call stack works", "Confused about when to use recursion vs loops"],
+    refinedExplanation: "Recursion is like standing between two mirrors - each reflection contains another reflection. In code, a function calls itself with a simpler input until it reaches a 'base case' (the smallest doll). The computer remembers each call in a 'stack' and works backward to get the final answer."
+  },
+  flowchart: {
+    title: "How to Solve a Recursion Problem",
+    nodes: [
+      { id: "1", type: "start" as const, text: "Start", connections: ["2"] },
+      { id: "2", type: "process" as const, text: "Identify base case", connections: ["3"] },
+      { id: "3", type: "decision" as const, text: "Is base case?", connections: ["4", "5"] },
+      { id: "4", type: "process" as const, text: "Return result", connections: ["6"] },
+      { id: "5", type: "process" as const, text: "Break into subproblem", connections: ["3"] },
+      { id: "6", type: "end" as const, text: "End", connections: [] },
+    ]
+  },
+  sentence: {
+    sentences: [
+      "A variable is a container that stores data values in memory.",
+      "JavaScript has three ways to declare variables: var, let, and const.",
+      "The 'const' keyword creates a variable that cannot be reassigned.",
+      "Data types include strings, numbers, booleans, arrays, and objects.",
+      "Functions are reusable blocks of code that perform specific tasks.",
+      "Parameters are variables listed in the function definition.",
+      "Arguments are the actual values passed to the function when called.",
+    ]
+  },
+  sketchnote: {
+    title: "JavaScript Basics",
+    sections: [
+      { heading: "Variables", notes: ["Named containers for data", "Use const for constants", "Use let for changing values"], icon: "📦" },
+      { heading: "Functions", notes: ["Reusable code blocks", "Can take inputs (parameters)", "Can return outputs"], icon: "⚡" },
+      { heading: "Data Types", notes: ["Strings for text", "Numbers for math", "Booleans for true/false"], icon: "🎨" },
+      { heading: "Control Flow", notes: ["if/else for decisions", "Loops for repetition", "Switch for multiple cases"], icon: "🔀" },
     ]
   }
 };
@@ -190,12 +129,19 @@ export default function Notes() {
   const handleGenerate = () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const content = selectedMethod === "cornell" ? sampleNoteContent.cornell
-        : selectedMethod === "mindmap" ? sampleNoteContent.mindmap
-        : selectedMethod === "outline" ? sampleNoteContent.outline
-        : selectedMethod === "charting" ? sampleNoteContent.charting
-        : sampleNoteContent.outline;
-      setGeneratedNote({ method: selectedMethod, content });
+      const contentMap: Record<string, any> = {
+        cornell: sampleNoteContent.cornell,
+        mindmap: sampleNoteContent.mindmap,
+        outline: sampleNoteContent.outline,
+        boxing: sampleNoteContent.boxing,
+        charting: sampleNoteContent.charting,
+        zettelkasten: sampleNoteContent.zettelkasten,
+        feynman: sampleNoteContent.feynman,
+        flowchart: sampleNoteContent.flowchart,
+        sentence: sampleNoteContent.sentence,
+        sketchnote: sampleNoteContent.sketchnote,
+      };
+      setGeneratedNote({ method: selectedMethod, content: contentMap[selectedMethod] || sampleNoteContent.outline });
       setIsGenerating(false);
     }, 2000);
   };
@@ -206,7 +152,13 @@ export default function Notes() {
       case "cornell": return <CornellNote content={generatedNote.content} />;
       case "mindmap": return <MindMapNote content={generatedNote.content} />;
       case "outline": return <OutlineNote content={generatedNote.content} />;
+      case "boxing": return <BoxingNote content={generatedNote.content} />;
       case "charting": return <ChartingNote content={generatedNote.content} />;
+      case "zettelkasten": return <ZettelkastenNote content={generatedNote.content} />;
+      case "feynman": return <FeynmanNote content={generatedNote.content} />;
+      case "flowchart": return <FlowchartNote content={generatedNote.content} />;
+      case "sentence": return <SentenceNote content={generatedNote.content} />;
+      case "sketchnote": return <SketchNote content={generatedNote.content} />;
       default: return <OutlineNote content={sampleNoteContent.outline} />;
     }
   };
@@ -274,7 +226,7 @@ export default function Notes() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Note-Taking Method</CardTitle>
-                <CardDescription>Choose from 10 powerful methods</CardDescription>
+                <CardDescription>Choose from 10 powerful methods - each with unique UI</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3">
