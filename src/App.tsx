@@ -16,6 +16,7 @@ import Notifications from "./pages/Notifications";
 import Billing from "./pages/Billing";
 import ExamHistory from "./pages/ExamHistory";
 import QuestyChat from "./pages/QuestyChat";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/billing" element={<Billing />} />
           <Route path="/exam-history" element={<ExamHistory />} />
           <Route path="/questy-chat" element={<QuestyChat />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
