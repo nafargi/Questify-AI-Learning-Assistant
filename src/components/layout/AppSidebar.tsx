@@ -18,13 +18,13 @@ import {
   MessageSquare,
   CreditCard,
   Menu,
-  X,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/contexts/AppContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
@@ -34,6 +34,7 @@ const navItems = [
   { icon: Brain, label: "Smart Exam", path: "/exam" },
   { icon: History, label: "Exam History", path: "/exam-history" },
   { icon: BookOpen, label: "AI Notes", path: "/notes" },
+  { icon: Layers, label: "Flashcards", path: "/flashcards" },
   { icon: Calendar, label: "Study Planner", path: "/planner" },
   { icon: GraduationCap, label: "Study Room", path: "/study-room" },
   { icon: MessageSquare, label: "Questy AI", path: "/questy-chat" },
@@ -72,13 +73,19 @@ function SidebarContent({
         className={cn(
           "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group",
           isActive
-            ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-lg shadow-primary/25"
-            : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+            ? "bg-primary text-primary-foreground shadow-lg"
+            : "text-slate-200 hover:text-white hover:bg-white/10"
         )}
       >
-        <item.icon className={cn("w-5 h-5 flex-shrink-0", isActive && "text-white")} />
+        <item.icon className={cn(
+          "w-5 h-5 flex-shrink-0",
+          isActive ? "text-primary-foreground" : "text-slate-300 group-hover:text-white"
+        )} />
         {!collapsed && (
-          <span className={cn("font-medium text-sm truncate", isActive && "text-white")}>
+          <span className={cn(
+            "font-medium text-sm truncate",
+            isActive ? "text-primary-foreground" : "text-slate-200 group-hover:text-white"
+          )}>
             {item.label}
           </span>
         )}
@@ -89,7 +96,7 @@ function SidebarContent({
       return (
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>{content}</TooltipTrigger>
-          <TooltipContent side="right" className="font-medium">
+          <TooltipContent side="right" className="font-medium bg-slate-800 text-white border-slate-700">
             {item.label}
           </TooltipContent>
         </Tooltip>
@@ -100,25 +107,25 @@ function SidebarContent({
   };
 
   return (
-    <div className="flex flex-col h-full bg-sidebar-background">
+    <div className="flex flex-col h-full bg-slate-900">
       {/* Logo Header */}
       <div className={cn(
-        "h-16 flex items-center border-b border-sidebar-border px-4",
+        "h-16 flex items-center border-b border-slate-700/50 px-4",
         collapsed ? "justify-center" : "justify-between"
       )}>
         <Link to="/" className="flex items-center gap-3" onClick={onNavigate}>
-          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0 shadow-lg">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           {!collapsed && (
-            <span className="font-bold text-lg text-sidebar-foreground">Questify</span>
+            <span className="font-bold text-lg text-white">Questify</span>
           )}
         </Link>
         {!collapsed && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent hidden lg:flex"
+            className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10 hidden lg:flex"
             onClick={onToggle}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -132,7 +139,7 @@ function SidebarContent({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+            className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10"
             onClick={onToggle}
           >
             <ChevronRight className="w-4 h-4" />
@@ -144,7 +151,7 @@ function SidebarContent({
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         <div className={cn("mb-4", collapsed ? "px-1" : "px-2")}>
           {!collapsed && (
-            <span className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/40">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Learning
             </span>
           )}
@@ -157,9 +164,9 @@ function SidebarContent({
           />
         ))}
 
-        <div className={cn("pt-4 mt-4 border-t border-sidebar-border", collapsed ? "px-1" : "px-2")}>
+        <div className={cn("pt-4 mt-4 border-t border-slate-700/50", collapsed ? "px-1" : "px-2")}>
           {!collapsed && (
-            <span className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/40">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Account
             </span>
           )}
@@ -178,17 +185,17 @@ function SidebarContent({
       {/* Pro Card */}
       {!collapsed && (
         <div className="p-3">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-sidebar-primary/20 via-secondary/10 to-accent/10 border border-sidebar-border">
-            <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center mb-3">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/20 via-secondary/15 to-accent/10 border border-slate-700/50">
+            <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center mb-3 shadow-lg">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <h4 className="font-semibold text-sm mb-1 text-sidebar-foreground">Questify Pro</h4>
-            <p className="text-xs text-sidebar-foreground/60 mb-3">
+            <h4 className="font-semibold text-sm mb-1 text-white">Questify Pro</h4>
+            <p className="text-xs text-slate-300 mb-3">
               Unlock unlimited exams & AI features
             </p>
             <Button 
               size="sm" 
-              className="w-full gradient-primary text-xs"
+              className="w-full gradient-primary text-xs text-white hover:opacity-90"
               onClick={() => {
                 navigate("/billing");
                 onNavigate?.();
@@ -201,28 +208,28 @@ function SidebarContent({
       )}
 
       {/* Sign Out */}
-      <div className="p-3 border-t border-sidebar-border">
+      <div className="p-3 border-t border-slate-700/50">
         {collapsed ? (
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
               <button
                 onClick={handleSignOut}
-                className="flex items-center justify-center w-full px-3 py-2.5 rounded-xl text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+                className="flex items-center justify-center w-full px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
               >
                 <LogOut className="w-5 h-5" />
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-medium">
+            <TooltipContent side="right" className="font-medium bg-slate-800 text-white border-slate-700">
               Sign Out
             </TooltipContent>
           </Tooltip>
         ) : (
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
           >
             <LogOut className="w-5 h-5" />
-            <span className="text-sm">Sign Out</span>
+            <span className="text-sm font-medium">Sign Out</span>
           </button>
         )}
       </div>
@@ -249,14 +256,14 @@ export function AppSidebar() {
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-4 left-4 z-50 h-10 w-10 bg-card shadow-md border lg:hidden"
+          className="fixed top-4 left-4 z-50 h-10 w-10 bg-slate-900 shadow-lg border-slate-700 text-white hover:bg-slate-800 lg:hidden"
           onClick={() => setMobileOpen(true)}
         >
           <Menu className="w-5 h-5" />
         </Button>
 
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent side="left" className="p-0 w-72 border-0">
+          <SheetContent side="left" className="p-0 w-72 border-0 bg-slate-900">
             <SidebarContent 
               collapsed={false} 
               onToggle={() => {}} 
@@ -272,7 +279,7 @@ export function AppSidebar() {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen z-40 transition-all duration-300 hidden lg:block",
+        "fixed left-0 top-0 h-screen z-40 transition-all duration-300 hidden lg:block shadow-xl",
         preferences.sidebarCollapsed ? "w-[72px]" : "w-64"
       )}
     >
