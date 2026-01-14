@@ -52,14 +52,14 @@
 
     --radius: 0.75rem;
 
-    /* Sidebar */
-    --sidebar-background: 230 25% 8%;
-    --sidebar-foreground: 225 20% 90%;
+    /* Sidebar - Light Mode: Clean White */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 230 25% 15%;
     --sidebar-primary: 228 91% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 230 25% 15%;
-    --sidebar-accent-foreground: 225 20% 90%;
-    --sidebar-border: 230 20% 20%;
+    --sidebar-accent: 225 30% 96%;
+    --sidebar-accent-foreground: 230 25% 15%;
+    --sidebar-border: 225 20% 92%;
     --sidebar-ring: 228 91% 59%;
 
     /* Questify Custom Tokens */
@@ -85,28 +85,29 @@
   }
 
   .dark {
-    --background: 230 25% 6%;
-    --foreground: 225 20% 95%;
+    /* Dark Mode: Charcoal backgrounds, off-white text for comfortable reading */
+    --background: 225 20% 10%;
+    --foreground: 220 15% 92%;
 
-    --card: 230 25% 10%;
-    --card-foreground: 225 20% 95%;
+    --card: 225 20% 13%;
+    --card-foreground: 220 15% 92%;
 
-    --popover: 230 25% 10%;
-    --popover-foreground: 225 20% 95%;
+    --popover: 225 20% 13%;
+    --popover-foreground: 220 15% 92%;
 
     --primary: 228 91% 65%;
-    --primary-foreground: 230 25% 6%;
+    --primary-foreground: 225 20% 10%;
 
     --secondary: 263 70% 65%;
-    --secondary-foreground: 230 25% 6%;
+    --secondary-foreground: 225 20% 10%;
 
-    --muted: 230 20% 15%;
-    --muted-foreground: 225 15% 60%;
+    --muted: 225 18% 18%;
+    --muted-foreground: 220 12% 65%;
 
     --accent: 174 62% 55%;
-    --accent-foreground: 230 25% 6%;
+    --accent-foreground: 225 20% 10%;
 
-    --destructive: 0 70% 50%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 142 60% 50%;
@@ -115,21 +116,22 @@
     --warning: 38 80% 55%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 230 20% 20%;
-    --input: 230 20% 20%;
+    --border: 225 18% 22%;
+    --input: 225 18% 22%;
     --ring: 228 91% 65%;
 
-    --sidebar-background: 230 25% 5%;
-    --sidebar-foreground: 225 20% 90%;
+    /* Sidebar - Dark Mode: Slightly darker charcoal */
+    --sidebar-background: 225 20% 8%;
+    --sidebar-foreground: 220 15% 88%;
     --sidebar-primary: 228 91% 65%;
-    --sidebar-primary-foreground: 230 25% 6%;
-    --sidebar-accent: 230 25% 12%;
-    --sidebar-accent-foreground: 225 20% 90%;
-    --sidebar-border: 230 20% 15%;
+    --sidebar-primary-foreground: 225 20% 10%;
+    --sidebar-accent: 225 18% 15%;
+    --sidebar-accent-foreground: 220 15% 88%;
+    --sidebar-border: 225 18% 18%;
     --sidebar-ring: 228 91% 65%;
 
-    --glass-background: hsl(230 25% 10% / 0.7);
-    --glass-border: hsl(230 25% 20% / 0.5);
+    --glass-background: hsl(225 20% 13% / 0.8);
+    --glass-border: hsl(225 18% 25% / 0.5);
 
     --shadow-sm: 0 2px 8px hsl(0 0% 0% / 0.3);
     --shadow-md: 0 4px 20px hsl(0 0% 0% / 0.4);
