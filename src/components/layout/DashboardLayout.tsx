@@ -33,17 +33,17 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
           isMobile ? "pl-0" : preferences.sidebarCollapsed ? "pl-[72px]" : "pl-64"
         )}
       >
-        {/* Top Header */}
+        {/* Top Header - simplified without navigation */}
         <header className={cn(
           "h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30",
           isMobile && "pl-16"
         )}>
           <div className="flex items-center gap-4">
-            {title && <h1 className="text-lg lg:text-xl font-bold truncate">{title}</h1>}
+            {title && <h1 className="text-lg lg:text-xl font-bold truncate text-foreground">{title}</h1>}
           </div>
           
           <div className="flex items-center gap-2 lg:gap-4">
-            {/* Search - hidden on mobile */}
+            {/* Search */}
             <div className="relative w-48 lg:w-80 hidden sm:block">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -76,7 +76,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium">{studentProfile.name}</p>
+                <p className="text-sm font-medium text-foreground">{studentProfile.name}</p>
                 <p className="text-xs text-muted-foreground">Student</p>
               </div>
             </button>

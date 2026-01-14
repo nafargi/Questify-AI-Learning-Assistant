@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Brain, Target, BarChart3, Sparkles, CheckCircle2, BookOpen, MessageSquare, Calendar, Zap, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Layout } from "@/components/layout/Layout";
+import { Navbar } from "@/components/layout/Navbar";
 
 const features = [
   {
@@ -94,7 +94,8 @@ const process = [
 
 export default function Landing() {
   return (
-    <Layout>
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center">
         {/* Subtle gradient background */}
@@ -343,6 +344,6 @@ export default function Landing() {
           </p>
         </div>
       </section>
-    </Layout>
+    </div>
   );
 }
