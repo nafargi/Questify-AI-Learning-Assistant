@@ -39,6 +39,8 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { courses } from "@/data/mockData";
+import { ChapterContent } from "@/components/study/ChapterContent";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface StudyMethod {
   id: string;
@@ -247,12 +249,13 @@ const studyMethods: StudyMethod[] = [
   },
 ];
 
-// Pomodoro Session Component
+// Pomodoro Session Component with Full Content
 function PomodoroSession({ method, course, onEnd }: { method: StudyMethod; course: any; onEnd: () => void }) {
   const [timer, setTimer] = useState(25 * 60);
   const [isPaused, setIsPaused] = useState(false);
   const [sessions, setSessions] = useState(1);
   const [isBreak, setIsBreak] = useState(false);
+  const [readingProgress, setReadingProgress] = useState(0);
 
   useEffect(() => {
     if (isPaused) return;
@@ -274,154 +277,219 @@ function PomodoroSession({ method, course, onEnd }: { method: StudyMethod; cours
     return () => clearInterval(interval);
   }, [isPaused, isBreak, sessions]);
 
+  // Update reading progress based on timer
+  useEffect(() => {
+    if (!isBreak && !isPaused) {
+      const totalTime = 25 * 60;
+      const elapsed = totalTime - timer;
+      const progress = Math.min((elapsed / totalTime) * 100, 100);
+      setReadingProgress(Math.round(progress));
+    }
+  }, [timer, isBreak, isPaused]);
+
   const minutes = Math.floor(timer / 60);
   const seconds = timer % 60;
   const progress = isBreak ? ((isBreak && sessions % 4 === 0 ? 15 * 60 : 5 * 60) - timer) / (sessions % 4 === 0 ? 15 * 60 : 5 * 60) * 100 : (25 * 60 - timer) / (25 * 60) * 100;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Timer Card */}
-      <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
-        <div className={cn("h-2", isBreak ? "bg-green-500" : "bg-red-500")} />
-        <CardContent className="p-8">
-          <div className="text-center mb-8">
-            <Badge variant={isBreak ? "default" : "destructive"} className="mb-4">
-              {isBreak ? (sessions % 4 === 0 ? "Long Break" : "Short Break") : `Session ${sessions}`}
-            </Badge>
-            <div className="text-8xl font-mono font-bold mb-4 gradient-text">
-              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+    <div className="space-y-6">
+      {/* Timer Bar - Sticky */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-4 border-b border-border">
+        <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
+          <div className={cn("h-1.5", isBreak ? "bg-green-500" : "bg-red-500")} />
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Badge variant={isBreak ? "default" : "destructive"}>
+                  {isBreak ? (sessions % 4 === 0 ? "Long Break" : "Short Break") : `Session ${sessions}`}
+                </Badge>
+                <div className="text-3xl font-mono font-bold gradient-text">
+                  {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-4 mr-4">
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-foreground">{sessions}</p>
+                    <p className="text-xs text-muted-foreground">Sessions</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-foreground">{sessions * 25}</p>
+                    <p className="text-xs text-muted-foreground">Minutes</p>
+                  </div>
+                </div>
+                
+                <Button variant="outline" size="sm" onClick={() => setIsPaused(!isPaused)}>
+                  {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setTimer(0)}>
+                  <SkipForward className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={onEnd}>
+                  End
+                </Button>
+              </div>
             </div>
-            <Progress value={progress} className="h-3 max-w-md mx-auto" />
-          </div>
-
-          <div className="flex justify-center gap-4 mb-8">
-            <Button variant="outline" size="lg" onClick={() => setIsPaused(!isPaused)}>
-              {isPaused ? <Play className="w-5 h-5 mr-2" /> : <Pause className="w-5 h-5 mr-2" />}
-              {isPaused ? "Resume" : "Pause"}
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => setTimer(0)}>
-              <SkipForward className="w-5 h-5 mr-2" />
-              Skip
-            </Button>
-          </div>
-
-          {/* Session stats */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-red-500/10 text-center">
-              <Timer className="w-6 h-6 text-red-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{sessions}</p>
-              <p className="text-xs text-muted-foreground">Sessions</p>
-            </div>
-            <div className="p-4 rounded-xl bg-green-500/10 text-center">
-              <Clock className="w-6 h-6 text-green-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{sessions * 25}</p>
-              <p className="text-xs text-muted-foreground">Minutes Focused</p>
-            </div>
-            <div className="p-4 rounded-xl bg-blue-500/10 text-center">
-              <Target className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold">4</p>
-              <p className="text-xs text-muted-foreground">Goal Sessions</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Current Material */}
-      {!isBreak && (
-        <Card>
-          <CardHeader>
-            <Badge variant="secondary">Currently Studying</Badge>
-            <CardTitle className="text-xl mt-2">Database Normalization</CardTitle>
-          </CardHeader>
-          <CardContent className="prose prose-sm max-w-none">
-            <p className="text-muted-foreground">
-              Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. 
-              It involves dividing large tables into smaller tables and defining relationships between them.
-            </p>
-            <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 mt-4">
-              <h4 className="font-semibold flex items-center gap-2 mb-2">
-                <Lightbulb className="w-4 h-4 text-warning" />
-                Key Point
-              </h4>
-              <p className="text-sm text-muted-foreground m-0">
-                The three normal forms (1NF, 2NF, 3NF) progressively eliminate data redundancy.
-              </p>
-            </div>
+            <Progress value={progress} className="h-2 mt-3" />
           </CardContent>
         </Card>
-      )}
+      </div>
 
-      <Button variant="outline" className="w-full" onClick={onEnd}>
-        End Session
-      </Button>
+      {/* Full Chapter Content */}
+      {!isBreak ? (
+        <ScrollArea className="h-[calc(100vh-280px)]">
+          <ChapterContent 
+            title="Database Normalization" 
+            courseName={course?.name}
+            readingProgress={readingProgress}
+          />
+        </ScrollArea>
+      ) : (
+        <Card className="p-8 text-center">
+          <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+            <Timer className="w-10 h-10 text-success" />
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Break Time!</h2>
+          <p className="text-muted-foreground mb-4">
+            Take a moment to stretch, hydrate, and rest your eyes.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {sessions % 4 === 0 ? "This is a long break - you've completed 4 sessions!" : "Short break - next session starts soon."}
+          </p>
+        </Card>
+      )}
     </div>
   );
 }
 
-// Feynman Session Component
+// Feynman Session Component with Full Content
 function FeynmanSession({ method, course, onEnd }: { method: StudyMethod; course: any; onEnd: () => void }) {
-  const [step, setStep] = useState<"explain" | "feedback" | "problem">("explain");
+  const [step, setStep] = useState<"read" | "explain" | "feedback">("read");
   const [explanation, setExplanation] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
+  const [currentConcept, setCurrentConcept] = useState(0);
+
+  const concepts = [
+    "First Normal Form (1NF)",
+    "Second Normal Form (2NF)", 
+    "Third Normal Form (3NF)",
+    "Functional Dependencies",
+    "Transitive Dependencies"
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
-        <div className="h-2 bg-gradient-to-r from-purple-500 to-pink-500" />
-        <CardContent className="p-8">
-          <div className="text-center mb-8">
-            <Badge variant="outline" className="mb-4">Step 1: Explain</Badge>
-            <h2 className="text-2xl font-bold mb-2">What is Database Normalization?</h2>
-            <p className="text-muted-foreground">Explain this concept as if you're teaching it to a 10-year-old</p>
-          </div>
-
-          <div className={cn("p-6 rounded-2xl mb-6", method.bgColor)}>
-            <div className="flex items-center gap-2 mb-4">
-              <Brain className={cn("w-5 h-5", method.color)} />
-              <span className="font-semibold">Your Explanation</span>
-            </div>
-            <textarea
-              className="w-full h-40 p-4 rounded-xl border bg-background resize-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              placeholder="Think of a database like a big filing cabinet. Normalization is like organizing those files so you don't have copies everywhere..."
-              value={explanation}
-              onChange={(e) => setExplanation(e.target.value)}
-            />
-          </div>
-
-          {showFeedback && (
-            <div className="p-6 rounded-2xl bg-success/10 border border-success/20 mb-6 animate-fade-in">
-              <div className="flex items-center gap-2 mb-3">
-                <CheckCircle2 className="w-5 h-5 text-success" />
-                <span className="font-semibold text-success">AI Feedback</span>
+    <div className="space-y-6">
+      {/* Progress Bar */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-4 border-b border-border">
+        <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
+          <div className="h-1.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-4">
+                <Badge variant="outline">Concept {currentConcept + 1} of {concepts.length}</Badge>
+                <span className="font-semibold text-foreground">{concepts[currentConcept]}</span>
               </div>
-              <p className="text-sm mb-3">Great analogy! You correctly identified the core purpose. However, you missed these key points:</p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="w-2 h-2 rounded-full bg-warning mt-2" />
-                  <span>Mention the 3 Normal Forms (1NF, 2NF, 3NF)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-2 h-2 rounded-full bg-warning mt-2" />
-                  <span>Explain how it prevents data anomalies</span>
-                </li>
-              </ul>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={step === "read" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStep("read")}
+                >
+                  <BookOpen className="w-4 h-4 mr-1" />
+                  Read
+                </Button>
+                <Button
+                  variant={step === "explain" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStep("explain")}
+                >
+                  <Brain className="w-4 h-4 mr-1" />
+                  Explain
+                </Button>
+                <Button variant="ghost" size="sm" onClick={onEnd}>
+                  End
+                </Button>
+              </div>
             </div>
-          )}
+            <Progress value={((currentConcept + 1) / concepts.length) * 100} className="h-2" />
+          </CardContent>
+        </Card>
+      </div>
 
-          <Button 
-            className="w-full gradient-primary" 
-            onClick={() => setShowFeedback(true)}
-            disabled={explanation.length < 20}
-          >
-            <Send className="w-4 h-4 mr-2" />
-            Submit Explanation
-          </Button>
-        </CardContent>
-      </Card>
+      {step === "read" ? (
+        <ScrollArea className="h-[calc(100vh-280px)]">
+          <ChapterContent 
+            title="Database Normalization" 
+            courseName={course?.name}
+          />
+        </ScrollArea>
+      ) : (
+        <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
+          <CardContent className="p-8">
+            <div className="text-center mb-8">
+              <Badge variant="outline" className="mb-4">Feynman Technique</Badge>
+              <h2 className="text-2xl font-bold mb-2 text-foreground">Explain: {concepts[currentConcept]}</h2>
+              <p className="text-muted-foreground">Explain this concept as if you're teaching it to a 10-year-old</p>
+            </div>
 
-      <Button variant="outline" className="w-full" onClick={onEnd}>
-        End Session
-      </Button>
+            <div className={cn("p-6 rounded-2xl mb-6", method.bgColor)}>
+              <div className="flex items-center gap-2 mb-4">
+                <Brain className={cn("w-5 h-5", method.color)} />
+                <span className="font-semibold text-foreground">Your Explanation</span>
+              </div>
+              <textarea
+                className="w-full h-40 p-4 rounded-xl border bg-background text-foreground resize-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                placeholder="Think of a database like a big filing cabinet. Normalization is like organizing those files so you don't have copies everywhere..."
+                value={explanation}
+                onChange={(e) => setExplanation(e.target.value)}
+              />
+            </div>
+
+            {showFeedback && (
+              <div className="p-6 rounded-2xl bg-success/10 border border-success/20 mb-6 animate-fade-in">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle2 className="w-5 h-5 text-success" />
+                  <span className="font-semibold text-success">AI Feedback</span>
+                </div>
+                <p className="text-sm mb-3 text-foreground">Great analogy! You correctly identified the core purpose. However, you missed these key points:</p>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span className="w-2 h-2 rounded-full bg-warning mt-2" />
+                    <span className="text-foreground">Mention the specific normal form characteristics</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="w-2 h-2 rounded-full bg-warning mt-2" />
+                    <span className="text-foreground">Explain how it prevents data anomalies</span>
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <div className="flex gap-4">
+              <Button 
+                className="flex-1 gradient-primary" 
+                onClick={() => setShowFeedback(true)}
+                disabled={explanation.length < 20}
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Submit Explanation
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setCurrentConcept((c) => (c + 1) % concepts.length);
+                  setExplanation("");
+                  setShowFeedback(false);
+                }}
+              >
+                Next Concept
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -433,10 +501,14 @@ function LeitnerSession({ method, course, onEnd }: { method: StudyMethod; course
   const [stats, setStats] = useState({ correct: 0, incorrect: 0 });
 
   const cards = [
-    { front: "What is 1NF (First Normal Form)?", back: "Each cell contains a single value (no lists or arrays). Each row is unique.", box: 1 },
-    { front: "What is 2NF (Second Normal Form)?", back: "Must be in 1NF + all non-key columns depend on the ENTIRE primary key.", box: 2 },
+    { front: "What is 1NF (First Normal Form)?", back: "Each cell contains a single value (no lists or arrays). Each row is unique. No repeating groups.", box: 1 },
+    { front: "What is 2NF (Second Normal Form)?", back: "Must be in 1NF + all non-key columns depend on the ENTIRE primary key. Eliminates partial dependencies.", box: 2 },
     { front: "What is 3NF (Third Normal Form)?", back: "Must be in 2NF + no transitive dependencies (non-key columns shouldn't depend on other non-key columns).", box: 1 },
-    { front: "What is denormalization?", back: "The process of adding redundancy to improve read performance, sacrificing some normalization.", box: 3 },
+    { front: "What is a functional dependency?", back: "A constraint where one attribute uniquely determines another. Written as X → Y, meaning if two rows have the same X value, they must have the same Y value.", box: 3 },
+    { front: "What is a transitive dependency?", back: "When a non-key attribute depends on another non-key attribute. Example: StudentID → Major → Department creates a transitive chain.", box: 2 },
+    { front: "What is denormalization?", back: "The process of adding redundancy to improve read performance, sacrificing some normalization benefits.", box: 3 },
+    { front: "What is BCNF?", back: "Boyce-Codd Normal Form: Every determinant must be a candidate key. Stricter than 3NF.", box: 1 },
+    { front: "What are the three types of anomalies?", back: "Update anomalies (data inconsistency), Insertion anomalies (can't add data without related data), Deletion anomalies (losing data when deleting other data).", box: 2 },
   ];
 
   const card = cards[currentCard];
@@ -461,6 +533,7 @@ function LeitnerSession({ method, course, onEnd }: { method: StudyMethod; course
             <ThumbsDown className="w-4 h-4" />
             <span className="font-semibold">{stats.incorrect}</span>
           </div>
+          <Button variant="ghost" size="sm" onClick={onEnd}>End Session</Button>
         </div>
       </div>
 
@@ -472,7 +545,7 @@ function LeitnerSession({ method, course, onEnd }: { method: StudyMethod; course
           
           {!showAnswer ? (
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-8">{card.front}</h2>
+              <h2 className="text-2xl font-bold mb-8 text-foreground">{card.front}</h2>
               <Button size="lg" onClick={() => setShowAnswer(true)}>
                 <Eye className="w-5 h-5 mr-2" />
                 Show Answer
@@ -508,7 +581,7 @@ function LeitnerSession({ method, course, onEnd }: { method: StudyMethod; course
       {/* Box Progress */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="font-semibold mb-4">Leitner Box Progress</h3>
+          <h3 className="font-semibold mb-4 text-foreground">Leitner Box Progress</h3>
           <div className="grid grid-cols-5 gap-3">
             {[1, 2, 3, 4, 5].map((box) => (
               <div key={box} className={cn(
@@ -517,17 +590,13 @@ function LeitnerSession({ method, course, onEnd }: { method: StudyMethod; course
                 box === 3 ? "border-warning/30 bg-warning/5" : 
                 "border-success/30 bg-success/5"
               )}>
-                <p className="text-2xl font-bold">{cards.filter(c => c.box === box).length}</p>
+                <p className="text-2xl font-bold text-foreground">{cards.filter(c => c.box === box).length}</p>
                 <p className="text-xs text-muted-foreground">Box {box}</p>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
-
-      <Button variant="outline" className="w-full" onClick={onEnd}>
-        End Session
-      </Button>
     </div>
   );
 }
@@ -538,53 +607,50 @@ function MultiSensorySession({ method, course, onEnd }: { method: StudyMethod; c
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Mode Selector */}
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { id: "read", icon: BookOpen, label: "Read", color: "from-blue-500 to-cyan-500" },
-          { id: "listen", icon: Headphones, label: "Listen", color: "from-purple-500 to-pink-500" },
-          { id: "quiz", icon: HelpCircle, label: "Quiz", color: "from-green-500 to-emerald-500" },
-        ].map((m) => (
-          <Button
-            key={m.id}
-            variant={mode === m.id ? "default" : "outline"}
-            className={cn("h-24 flex-col", mode === m.id && `bg-gradient-to-br ${m.color}`)}
-            onClick={() => setMode(m.id as any)}
-          >
-            <m.icon className="w-8 h-8 mb-2" />
-            {m.label}
-          </Button>
-        ))}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-4 border-b border-border">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex gap-3">
+            {[
+              { id: "read", icon: BookOpen, label: "Read", color: "from-blue-500 to-cyan-500" },
+              { id: "listen", icon: Headphones, label: "Listen", color: "from-purple-500 to-pink-500" },
+              { id: "quiz", icon: HelpCircle, label: "Quiz", color: "from-green-500 to-emerald-500" },
+            ].map((m) => (
+              <Button
+                key={m.id}
+                variant={mode === m.id ? "default" : "outline"}
+                className={cn(mode === m.id && `bg-gradient-to-br ${m.color}`)}
+                onClick={() => setMode(m.id as any)}
+              >
+                <m.icon className="w-4 h-4 mr-2" />
+                {m.label}
+              </Button>
+            ))}
+          </div>
+          <Button variant="ghost" size="sm" onClick={onEnd}>End Session</Button>
+        </div>
       </div>
 
-      <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
-        <div className="h-2 bg-gradient-to-r from-cyan-500 to-blue-500" />
-        <CardContent className="p-8">
-          {mode === "read" && (
-            <div className="prose prose-sm max-w-none">
-              <h2>Database Normalization</h2>
-              <p className="text-muted-foreground">
-                <span className="bg-yellow-200/50 dark:bg-yellow-500/20 px-1">Database normalization</span> is the process of structuring a relational database to reduce data redundancy and improve data integrity.
-              </p>
-              <h3>First Normal Form (1NF)</h3>
-              <p className="text-muted-foreground">
-                A table is in 1NF if it contains no repeating groups. Each cell should contain <span className="bg-yellow-200/50 dark:bg-yellow-500/20 px-1">only a single value</span>.
-              </p>
-              <h3>Second Normal Form (2NF)</h3>
-              <p className="text-muted-foreground">
-                A table is in 2NF if it is in 1NF and every non-key column is <span className="bg-yellow-200/50 dark:bg-yellow-500/20 px-1">fully dependent on the primary key</span>.
-              </p>
-            </div>
-          )}
+      {mode === "read" && (
+        <ScrollArea className="h-[calc(100vh-220px)]">
+          <ChapterContent 
+            title="Database Normalization" 
+            courseName={course?.name}
+          />
+        </ScrollArea>
+      )}
 
-          {mode === "listen" && (
+      {mode === "listen" && (
+        <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
+          <div className="h-2 bg-gradient-to-r from-purple-500 to-pink-500" />
+          <CardContent className="p-8">
             <div className="text-center py-8">
               <div className={cn("w-32 h-32 rounded-full mx-auto mb-8 flex items-center justify-center", method.bgColor)}>
                 <Headphones className={cn("w-16 h-16", method.color)} />
               </div>
-              <h3 className="text-xl font-semibold mb-4">Audio Mode</h3>
-              <p className="text-muted-foreground mb-8">Listen to AI-generated audio of the material</p>
+              <h3 className="text-xl font-semibold mb-4 text-foreground">Audio Mode</h3>
+              <p className="text-muted-foreground mb-8">Listen to AI-generated audio of the full chapter content</p>
               <div className="flex justify-center gap-4">
                 <Button size="lg" onClick={() => setIsPlaying(!isPlaying)}>
                   {isPlaying ? <Pause className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
@@ -595,123 +661,155 @@ function MultiSensorySession({ method, course, onEnd }: { method: StudyMethod; c
                   Speed: 1x
                 </Button>
               </div>
+              {isPlaying && (
+                <div className="mt-8">
+                  <Progress value={35} className="h-2 max-w-md mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">15:42 / 45:00</p>
+                </div>
+              )}
             </div>
-          )}
+          </CardContent>
+        </Card>
+      )}
 
-          {mode === "quiz" && (
+      {mode === "quiz" && (
+        <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
+          <div className="h-2 bg-gradient-to-r from-green-500 to-emerald-500" />
+          <CardContent className="p-8">
             <div className="space-y-6">
-              <h3 className="text-xl font-semibold">Quick Quiz</h3>
+              <h3 className="text-xl font-semibold text-foreground">Comprehension Quiz</h3>
               <div className="p-6 rounded-xl bg-muted/50">
-                <p className="font-medium mb-4">What is the main purpose of database normalization?</p>
+                <p className="font-medium mb-4 text-foreground">Based on the chapter content, which of the following correctly describes Second Normal Form (2NF)?</p>
                 <div className="space-y-3">
                   {[
-                    "To make the database faster",
-                    "To reduce data redundancy and improve integrity",
-                    "To add more tables",
-                    "To increase storage usage"
+                    "A table where each cell contains only atomic values",
+                    "A table in 1NF where all non-key attributes fully depend on the entire primary key",
+                    "A table where no non-key attribute depends on another non-key attribute",
+                    "A table where every determinant is a candidate key"
                   ].map((option, i) => (
                     <Button key={i} variant="outline" className="w-full justify-start text-left h-auto py-3">
-                      <span className="w-6 h-6 rounded-full border mr-3 flex items-center justify-center text-sm">
+                      <span className="w-6 h-6 rounded-full border mr-3 flex items-center justify-center text-sm flex-shrink-0">
                         {String.fromCharCode(65 + i)}
                       </span>
-                      {option}
+                      <span className="text-foreground">{option}</span>
                     </Button>
                   ))}
                 </div>
               </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Button variant="outline" className="w-full" onClick={onEnd}>
-        End Session
-      </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
 
-// Generic Session Component for other methods
+// Generic Session Component for other methods - with full content
 function GenericSession({ method, course, onEnd }: { method: StudyMethod; course: any; onEnd: () => void }) {
   const [progress, setProgress] = useState(0);
+  const [showContent, setShowContent] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress((p) => Math.min(p + 1, 100));
-    }, 500);
+      setProgress((p) => Math.min(p + 0.5, 100));
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
-        <div className={cn("h-2 bg-gradient-to-r", method.id === "interleaved" ? "from-blue-500 to-cyan-500" : 
-          method.id === "progressive" ? "from-green-500 to-emerald-500" :
-          method.id === "problem-cycling" ? "from-yellow-500 to-amber-500" :
-          method.id === "chunking" ? "from-teal-500 to-cyan-500" :
-          method.id === "reverse" ? "from-pink-500 to-rose-500" :
-          "from-indigo-500 to-purple-500")} />
-        <CardContent className="p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center", method.bgColor)}>
-                <method.icon className={cn("w-7 h-7", method.color)} />
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-4 border-b border-border">
+        <Card className={cn("border-2 overflow-hidden", method.borderColor)}>
+          <div className={cn("h-1.5 bg-gradient-to-r", 
+            method.id === "interleaved" ? "from-blue-500 to-cyan-500" : 
+            method.id === "progressive" ? "from-green-500 to-emerald-500" :
+            method.id === "problem-cycling" ? "from-yellow-500 to-amber-500" :
+            method.id === "chunking" ? "from-teal-500 to-cyan-500" :
+            method.id === "reverse" ? "from-pink-500 to-rose-500" :
+            "from-indigo-500 to-purple-500")} />
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", method.bgColor)}>
+                  <method.icon className={cn("w-5 h-5", method.color)} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-foreground">{method.name}</h2>
+                  <p className="text-sm text-muted-foreground">{course?.name}</p>
+                </div>
               </div>
-              <div>
-                <h2 className="font-bold text-xl">{method.name}</h2>
-                <p className="text-sm text-muted-foreground">{course?.name}</p>
+              <div className="flex items-center gap-3">
+                <Badge>{Math.round(progress)}% Complete</Badge>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowContent(!showContent)}
+                >
+                  {showContent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+                <Button variant="ghost" size="sm" onClick={onEnd}>End</Button>
               </div>
             </div>
-            <Badge>{progress}% Complete</Badge>
-          </div>
-
-          <Progress value={progress} className="h-3 mb-8" />
-
-          <Card className="bg-muted/30">
-            <CardContent className="p-6">
-              <Badge variant="secondary" className="mb-4">Current Concept</Badge>
-              <h3 className="text-xl font-bold mb-4">Database Normalization</h3>
-              <p className="text-muted-foreground mb-6">
-                Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity.
-              </p>
-
-              {method.id === "reverse" && (
-                <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
-                  <p className="font-semibold mb-2">Answer: "3NF"</p>
-                  <p className="text-sm text-muted-foreground">What question would lead to this answer?</p>
-                  <textarea className="w-full mt-3 p-3 rounded-lg border bg-background" placeholder="Type your question..." />
-                </div>
-              )}
-
-              {method.id === "question-first" && (
-                <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
-                  <p className="font-semibold mb-2">Question: What are the three normal forms?</p>
-                  <p className="text-sm text-muted-foreground mb-3">Find the answer in the material above</p>
-                  <textarea className="w-full p-3 rounded-lg border bg-background" placeholder="Type your answer..." />
-                </div>
-              )}
-
-              {method.id === "problem-cycling" && (
-                <div className="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
-                  <p className="font-semibold mb-2">Problem:</p>
-                  <p className="text-sm text-muted-foreground mb-3">Given a table with columns (OrderID, ProductName, ProductPrice, CustomerName, CustomerAddress), normalize it to 3NF.</p>
-                  <textarea className="w-full p-3 rounded-lg border bg-background h-32" placeholder="Describe your normalized tables..." />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </CardContent>
-      </Card>
-
-      <div className="flex gap-4">
-        <Button variant="outline" className="flex-1" onClick={onEnd}>
-          End Session
-        </Button>
-        <Button className="flex-1 gradient-primary">
-          <Sparkles className="w-4 h-4 mr-2" />
-          Get AI Help
-        </Button>
+            <Progress value={progress} className="h-2 mt-3" />
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Full Content */}
+      {showContent && (
+        <ScrollArea className="h-[calc(100vh-280px)]">
+          <ChapterContent 
+            title="Database Normalization" 
+            courseName={course?.name}
+            readingProgress={Math.round(progress)}
+          />
+        </ScrollArea>
+      )}
+
+      {/* Method-specific interaction panel */}
+      {!showContent && (
+        <Card className="bg-muted/30">
+          <CardContent className="p-6">
+            <Badge variant="secondary" className="mb-4">Active Exercise</Badge>
+            
+            {method.id === "reverse" && (
+              <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+                <p className="font-semibold mb-2 text-foreground">Answer: "Third Normal Form eliminates transitive dependencies"</p>
+                <p className="text-sm text-muted-foreground mb-3">What question would lead to this answer?</p>
+                <textarea className="w-full p-3 rounded-lg border bg-background text-foreground" placeholder="Type your question..." />
+              </div>
+            )}
+
+            {method.id === "question-first" && (
+              <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+                <p className="font-semibold mb-2 text-foreground">Question: What are the key differences between 2NF and 3NF?</p>
+                <p className="text-sm text-muted-foreground mb-3">Find the answer in the chapter material</p>
+                <textarea className="w-full p-3 rounded-lg border bg-background text-foreground" placeholder="Type your answer..." />
+              </div>
+            )}
+
+            {method.id === "problem-cycling" && (
+              <div className="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
+                <p className="font-semibold mb-2 text-foreground">Problem:</p>
+                <p className="text-sm text-muted-foreground mb-3">Given a table with columns (OrderID, ProductName, ProductPrice, CustomerName, CustomerAddress), normalize it to 3NF. Show your decomposed tables.</p>
+                <textarea className="w-full p-3 rounded-lg border bg-background text-foreground h-32" placeholder="Describe your normalized tables..." />
+              </div>
+            )}
+
+            <div className="flex gap-4 mt-4">
+              <Button variant="outline" className="flex-1" onClick={() => setShowContent(true)}>
+                <BookOpen className="w-4 h-4 mr-2" />
+                View Material
+              </Button>
+              <Button className="flex-1 gradient-primary">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Get AI Help
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -780,7 +878,7 @@ export default function StudyRoom() {
                   <selectedMethod.icon className={cn("w-10 h-10", selectedMethod.color)} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold mb-2">{selectedMethod.name}</h1>
+                  <h1 className="text-2xl font-bold mb-2 text-foreground">{selectedMethod.name}</h1>
                   <p className="text-muted-foreground mb-4">{selectedMethod.description}</p>
                   <div className="flex gap-2 flex-wrap">
                     <Badge variant="secondary">{selectedMethod.duration}</Badge>
@@ -793,30 +891,28 @@ export default function StudyRoom() {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold text-lg mb-4">How It Works</h3>
+                  <h3 className="font-semibold text-lg mb-4 text-foreground">How It Works</h3>
                   <div className="space-y-3">
                     {selectedMethod.howItWorks.map((step, i) => (
                       <div key={i} className="flex gap-4 p-3 rounded-xl bg-muted/50">
-                        <div className={cn("w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white", 
-                          selectedMethod.bgColor.replace("/20", "").replace("from-", "bg-").split(" ")[0].replace("bg-gradient-to-br", "bg-gradient-to-r")
-                        )} style={{ background: `linear-gradient(135deg, ${selectedMethod.color.replace("text-", "").replace("-500", "")} 0%, ${selectedMethod.color.replace("text-", "").replace("-500", "")} 100%)` }}>
-                          <span className="gradient-primary bg-clip-text">{i + 1}</span>
+                        <div className="w-7 h-7 rounded-full gradient-primary flex items-center justify-center flex-shrink-0 text-sm font-bold text-white">
+                          {i + 1}
                         </div>
-                        <p className="text-sm pt-0.5">{step}</p>
+                        <p className="text-sm pt-0.5 text-foreground">{step}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-foreground">
                     <Sparkles className="w-5 h-5 text-primary" />
                     AI Features
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
                     {selectedMethod.aiFeatures.map((feature) => (
                       <div key={feature} className={cn("p-3 rounded-xl border text-center", selectedMethod.borderColor, selectedMethod.bgColor)}>
-                        <p className="text-sm font-medium">{feature}</p>
+                        <p className="text-sm font-medium text-foreground">{feature}</p>
                       </div>
                     ))}
                   </div>
@@ -828,7 +924,7 @@ export default function StudyRoom() {
           {/* Select Material */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Select Your Material</CardTitle>
+              <CardTitle className="text-foreground">Select Your Material</CardTitle>
               <CardDescription>Choose which course and units to study</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -843,14 +939,14 @@ export default function StudyRoom() {
                     )}
                   >
                     <span className="text-2xl block mb-2">{c.icon}</span>
-                    <span className="font-medium text-sm">{c.name}</span>
+                    <span className="font-medium text-sm text-foreground">{c.name}</span>
                   </button>
                 ))}
               </div>
 
               {course && (
                 <div className="space-y-3 animate-fade-in">
-                  <h4 className="font-medium">Select Units</h4>
+                  <h4 className="font-medium text-foreground">Select Units</h4>
                   {course.units.map((unit) => (
                     <label
                       key={unit.id}
@@ -868,7 +964,7 @@ export default function StudyRoom() {
                         }}
                       />
                       <div className="flex-1">
-                        <p className="font-medium text-sm">{unit.title}</p>
+                        <p className="font-medium text-sm text-foreground">{unit.title}</p>
                         <p className="text-xs text-muted-foreground">{unit.description}</p>
                       </div>
                       <Badge variant="secondary">{unit.mastery}% mastery</Badge>
@@ -898,9 +994,9 @@ export default function StudyRoom() {
     <DashboardLayout title="Study Room">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-3">Choose Your Study Method</h1>
+          <h1 className="text-3xl font-bold mb-3 text-foreground">Choose Your Study Method</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Each method has a unique AI-powered interface designed for its specific learning mechanism.
+            Each method includes full chapter content (10+ pages). AI-powered interfaces adapt to your learning style.
           </p>
         </div>
 
@@ -933,7 +1029,7 @@ export default function StudyRoom() {
                     <method.icon className={cn("w-6 h-6", method.color)} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm mb-1 truncate">{method.name}</h3>
+                    <h3 className="font-semibold text-sm mb-1 truncate text-foreground">{method.name}</h3>
                     <Badge variant="outline" className="text-xs">{method.duration}</Badge>
                   </div>
                 </div>
