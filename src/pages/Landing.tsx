@@ -100,10 +100,10 @@ export default function Landing() {
       <section className="relative min-h-[90vh] flex items-center">
         {/* Subtle gradient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30" />
-        
+
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.4)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.4)_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
-        
+
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 text-center">
           {/* Small badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/60 bg-card/50 text-sm text-muted-foreground mb-8 animate-fade-in">
@@ -120,7 +120,7 @@ export default function Landing() {
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Upload your material. Set your confidence. Take an adaptive exam. 
+            Upload your material. Set your confidence. Take an adaptive exam.
             <span className="text-foreground"> Questify detects your weak points </span>
             using accuracy and time — then adapts everything around you.
           </p>
@@ -165,9 +165,9 @@ export default function Landing() {
                 {index < process.length - 1 && (
                   <div className="hidden md:block absolute top-6 left-[calc(50%+40px)] w-[calc(100%-80px)] h-px bg-border" />
                 )}
-                
+
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border-2 border-border bg-card text-sm font-semibold text-foreground mb-4 group-hover:border-primary group-hover:text-primary transition-colors">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-border bg-card text-sm font-semibold text-foreground mb-4 group-hover:border-primary group-hover:text-primary transition-colors">
                     {item.step}
                   </div>
                   <h3 className="text-lg font-medium mb-2">{item.title}</h3>
@@ -189,11 +189,11 @@ export default function Landing() {
                 An AI-orchestrated learning system, not a chatbot
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-8">
-                Most study tools give you flashcards and hope for the best. Questify is different. 
-                It builds a complete understanding of what you know, what you don't, and exactly 
+                Most study tools give you flashcards and hope for the best. Questify is different.
+                It builds a complete understanding of what you know, what you don't, and exactly
                 what you need to do next.
               </p>
-              
+
               <div className="space-y-4">
                 {[
                   "Detects weak points using accuracy + response time",

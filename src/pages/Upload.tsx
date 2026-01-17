@@ -123,7 +123,7 @@ export default function Upload() {
 
   const handleAnalyze = () => {
     setIsProcessing(true);
-    
+
     // Simulate AI analysis
     setTimeout(() => {
       setExtractedUnits([
@@ -181,8 +181,8 @@ export default function Upload() {
                       isComplete
                         ? "gradient-primary text-primary-foreground"
                         : isActive
-                        ? "bg-primary/10 text-primary border-2 border-primary"
-                        : "bg-muted text-muted-foreground"
+                          ? "bg-primary/10 text-primary border border-primary"
+                          : "bg-muted text-muted-foreground"
                     )}
                   >
                     {isComplete ? <Check className="w-4 h-4" /> : index + 1}
@@ -396,8 +396,8 @@ export default function Upload() {
                       confidence[0] < 40
                         ? "bg-destructive"
                         : confidence[0] < 70
-                        ? "bg-warning"
-                        : "bg-success"
+                          ? "bg-warning"
+                          : "bg-success"
                     )}
                     style={{ width: `${confidence[0]}%` }}
                   />

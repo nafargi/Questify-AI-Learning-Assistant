@@ -2,638 +2,355 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Brain,
-  Clock,
   ChevronRight,
-  ChevronLeft,
-  Flag,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Sparkles,
-  Play,
-  RotateCcw,
-  BookOpen,
   TrendingUp,
   Target,
+  Rocket,
+  Settings2,
+  ListFilter,
+  BarChart4,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Zap,
+  GraduationCap
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Layout } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
-import { courses, sampleQuestions } from "@/data/mockData";
-
-type ExamStep = "configure" | "exam" | "results";
-
-interface ExamConfig {
-  courseId: string;
-  unitIds: string[];
-  questionTypes: string[];
-  difficulty: number;
-  questionCount: number;
-}
-
-interface ExamQuestion {
-  id: string;
-  question: string;
-  type: string;
-  options?: string[];
-  userAnswer?: string;
-  correctAnswer: string;
-  isCorrect?: boolean;
-  timeSpent: number;
-  flagged: boolean;
-}
-
-const questionTypes = [
-  { id: "mcq", label: "Multiple Choice", icon: "🔘" },
-  { id: "true-false", label: "True/False", icon: "✓✗" },
-  { id: "fill-blank", label: "Fill in the Blank", icon: "___" },
-  { id: "matching", label: "Matching", icon: "🔗" },
-  { id: "short-answer", label: "Short Answer", icon: "📝" },
-  { id: "coding", label: "Coding", icon: "💻" },
-];
+import { courses, questionTypes } from "@/data/mockData";
+import { useExam } from "@/hooks/useExam";
+import ExamRoom from "./ExamRoom";
 
 export default function Exam() {
-  const [step, setStep] = useState<ExamStep>("configure");
-  const [config, setConfig] = useState<ExamConfig>({
-    courseId: "",
-    unitIds: [],
-    questionTypes: ["mcq"],
-    difficulty: 50,
-    questionCount: 10,
+  const [step, setStep] = useState<"configure" | "exam">("configure");
+  const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
+  const [config, setConfig] = useState({
+    unitIds: [] as string[],
+    questionTypes: ['mcq', 'true-false', 'fill-blank', 'matching', 'coding'],
+    questionCount: 20,
+    difficulty: 'mixed' as any,
+    timeLimit: 30, // Default 30 minutes
   });
-  const [questions, setQuestions] = useState<ExamQuestion[]>([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(0);
-  const [examStartTime] = useState<number>(0);
 
-  const selectedCourse = courses.find((c) => c.id === config.courseId);
+  const { questions, answers, setAnswer, timeLeft, isFinished, finishExam, results } = useExam({
+    courseId: activeCourseId || '',
+    unitIds: config.unitIds,
+    questionTypes: config.questionTypes,
+    difficulty: config.difficulty,
+    count: config.questionCount,
+    timeLimit: config.timeLimit,
+  });
 
-  const handleStartExam = () => {
-    // Generate questions based on config
-    const generatedQuestions: ExamQuestion[] = sampleQuestions
-      .filter((q) => config.questionTypes.includes(q.type))
-      .slice(0, config.questionCount)
-      .map((q) => ({
-        id: q.id,
-        question: q.question,
-        type: q.type,
-        options: q.options,
-        correctAnswer: Array.isArray(q.correctAnswer) ? q.correctAnswer[0] : q.correctAnswer,
-        timeSpent: 0,
-        flagged: false,
-      }));
+  const selectedCourse = courses.find((c) => c.id === activeCourseId);
 
-    setQuestions(generatedQuestions);
-    setTimeRemaining(config.questionCount * 60); // 1 minute per question
+  const handleStart = () => {
+    if (!activeCourseId) return;
     setStep("exam");
   };
 
-  const handleAnswer = (answer: string) => {
-    setQuestions((prev) =>
-      prev.map((q, i) =>
-        i === currentQuestion
-          ? { ...q, userAnswer: answer, isCorrect: answer === q.correctAnswer }
-          : q
-      )
+  if (step === "exam" && questions.length > 0) {
+    return (
+      <ExamRoom
+        questions={questions}
+        answers={answers}
+        onAnswer={setAnswer}
+        timeLeft={timeLeft}
+        isFinished={isFinished}
+        onFinish={finishExam}
+        results={results}
+        onReset={() => setStep("configure")}
+      />
     );
-  };
-
-  const handleFlag = () => {
-    setQuestions((prev) =>
-      prev.map((q, i) =>
-        i === currentQuestion ? { ...q, flagged: !q.flagged } : q
-      )
-    );
-  };
-
-  const handleFinish = () => {
-    setStep("results");
-  };
-
-  const score = questions.filter((q) => q.isCorrect).length;
-  const percentage = Math.round((score / questions.length) * 100);
+  }
 
   return (
     <Layout>
-      <div className="min-h-screen p-6 lg:p-8">
-        {/* Configure Step */}
-        {step === "configure" && (
-          <div className="max-w-4xl mx-auto animate-fade-in">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2">Configure Your Exam</h1>
-              <p className="text-muted-foreground">
-                Customize your exam settings for the best learning experience
+      <div className="min-h-screen p-6 lg:p-12 bg-background/50 selection:bg-primary/20">
+        <div className="max-w-7xl mx-auto animate-fade-in space-y-12">
+          {/* Header Section */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-border/50">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1  bg-primary/10 text-primary border border-primary/20">
+                <Zap className="w-3 h-3 fill-current" />
+                <span className="text-xs font-bold uppercase tracking-wider">Examination Protocol v2.4</span>
+              </div>
+              <h1 className="text-5xl lg:text-7xl font-black tracking-tight text-foreground">
+                Command <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">Center</span>
+              </h1>
+              <p className="text-xl text-muted-foreground font-medium max-w-2xl leading-relaxed">
+                Configure your assessment parameters. The AI engine will generate a tailored examination sequence based on your selections.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-6">
-              {/* Left: Configuration */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Course Selection */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Select Course</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {courses.map((course) => (
-                        <button
-                          key={course.id}
-                          onClick={() => setConfig((prev) => ({ ...prev, courseId: course.id, unitIds: [] }))}
-                          className={cn(
-                            "p-4 rounded-xl border-2 text-left transition-all hover:border-primary/50",
-                            config.courseId === course.id
-                              ? "border-primary bg-primary/5"
-                              : "border-border"
-                          )}
-                        >
-                          <span className="text-2xl block mb-2">{course.icon}</span>
-                          <span className="font-medium text-sm">{course.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+            <div className="flex gap-4">
+              <Card className="bg-card/50 backdrop-blur-sm border border-white/5 w-40 hover:bg-card/80 transition-colors">
+                <div className="p-4 text-center">
+                  <div className="w-10 h-10 mx-auto mb-2  bg-primary/10 flex items-center justify-center">
+                    <Target className="w-5 h-5 text-primary" />
+                  </div>
+                  <p className="text-3xl font-black">98<span className="text-sm">%</span></p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">Accuracy</p>
+                </div>
+              </Card>
+              <Card className="bg-card/50 backdrop-blur-sm border border-white/5 w-40 hover:bg-card/80 transition-colors">
+                <div className="p-4 text-center">
+                  <div className="w-10 h-10 mx-auto mb-2  bg-purple-500/10 flex items-center justify-center">
+                    <GraduationCap className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <p className="text-3xl font-black">12</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">Sessions</p>
+                </div>
+              </Card>
+            </div>
+          </div>
 
-                {/* Unit Selection */}
-                {selectedCourse && (
-                  <Card className="animate-fade-in">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Select Units</CardTitle>
-                      <CardDescription>Choose specific units to focus on</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {selectedCourse.units.map((unit) => (
-                          <label
-                            key={unit.id}
-                            className={cn(
-                              "flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all hover:border-primary/50",
-                              config.unitIds.includes(unit.id)
-                                ? "border-primary bg-primary/5"
-                                : "border-border"
-                            )}
-                          >
-                            <Checkbox
-                              checked={config.unitIds.includes(unit.id)}
-                              onCheckedChange={(checked) => {
-                                setConfig((prev) => ({
-                                  ...prev,
-                                  unitIds: checked
-                                    ? [...prev.unitIds, unit.id]
-                                    : prev.unitIds.filter((id) => id !== unit.id),
-                                }));
-                              }}
-                            />
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">{unit.title}</p>
-                              <p className="text-xs text-muted-foreground">{unit.description}</p>
-                            </div>
-                            <Badge variant="secondary">{unit.mastery}% mastery</Badge>
-                          </label>
-                        ))}
+          <div className="grid lg:grid-cols-12 gap-10">
+            {/* Left: Configuration Steps */}
+            <div className="lg:col-span-8 space-y-10">
+
+              {/* Step 1: Course Selection */}
+              <section>
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-primary/20">1</div>
+                  <h2 className="text-3xl font-bold text-foreground tracking-tight">Select Discipline</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {courses.map((course) => (
+                    <button
+                      key={course.id}
+                      onClick={() => setActiveCourseId(course.id)}
+                      className={cn(
+                        "group relative p-6  border transition-all duration-300 overflow-hidden text-left",
+                        activeCourseId === course.id
+                          ? "border-primary bg-primary/5 shadow-2xl shadow-primary/10 ring-1 ring-primary/20 scale-[1.02]"
+                          : "border-border bg-card/50 hover:border-primary/30 hover:bg-card hover:scale-[1.01]"
+                      )}
+                    >
+                      <div className={cn(
+                        "absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity",
+                        activeCourseId === course.id ? "opacity-100" : "group-hover:opacity-100"
+                      )} />
+
+                      <div className="relative z-10 flex items-start gap-4">
+                        <div className={cn(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center text-2xl transition-transform duration-500",
+                          activeCourseId === course.id ? "bg-primary text-white scale-110 rotate-3" : "bg-muted group-hover:scale-110"
+                        )}>
+                          {course.icon}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">{course.name}</h3>
+                          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{course.description}</p>
+                        </div>
+                        {activeCourseId === course.id && (
+                          <div className="absolute top-4 right-4 text-primary">
+                            <CheckCircle2 className="w-6 h-6 fill-primary/20" />
+                          </div>
+                        )}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
+                    </button>
+                  ))}
+                </div>
+              </section>
 
-                {/* Question Types */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Question Types</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {questionTypes.map((type) => (
+              {/* Step 2: Customization (only if course selected) */}
+              <section className={cn("transition-all duration-700", !activeCourseId ? "opacity-30 pointer-events-none blur-sm" : "opacity-100")}>
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-10 h-10 rounded-xl bg-secondary text-secondary-foreground flex items-center justify-center font-bold text-lg border border-border">2</div>
+                  <h2 className="text-3xl font-bold text-foreground tracking-tight">Calibration</h2>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Units */}
+                  <Card className="border shadow-none bg-card/30 hover:bg-card/50 transition-colors">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ListFilter className="w-5 h-5 text-primary" />
+                          <CardTitle className="text-base uppercase tracking-wider font-bold">Targeted Units</CardTitle>
+                        </div>
+                        <Badge variant="outline" className="text-[10px]">{config.unitIds.length || 'All'} Selected</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {selectedCourse?.units.map((unit) => (
                         <label
-                          key={type.id}
+                          key={unit.id}
                           className={cn(
-                            "flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:border-primary/50",
-                            config.questionTypes.includes(type.id)
-                              ? "border-primary bg-primary/5"
-                              : "border-border"
+                            "flex items-center gap-4 p-3 rounded-xl border cursor-pointer transition-all",
+                            config.unitIds.includes(unit.id)
+                              ? "border-primary/50 bg-primary/5 shadow-inner"
+                              : "border-border/50 hover:bg-muted/50"
                           )}
                         >
                           <Checkbox
-                            checked={config.questionTypes.includes(type.id)}
+                            checked={config.unitIds.includes(unit.id)}
                             onCheckedChange={(checked) => {
-                              setConfig((prev) => ({
+                              setConfig(prev => ({
                                 ...prev,
-                                questionTypes: checked
-                                  ? [...prev.questionTypes, type.id]
-                                  : prev.questionTypes.filter((t) => t !== type.id),
+                                unitIds: checked
+                                  ? [...prev.unitIds, unit.id]
+                                  : prev.unitIds.filter(id => id !== unit.id)
                               }));
                             }}
+                            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                           />
-                          <span className="text-lg">{type.icon}</span>
-                          <span className="font-medium text-sm">{type.label}</span>
+                          <span className="text-sm font-medium flex-1">{unit.title}</span>
+                          <span className={cn(
+                            "w-1.5 h-1.5 ",
+                            unit.mastery > 80 ? "bg-green-500" : unit.mastery > 50 ? "bg-yellow-500" : "bg-red-500"
+                          )} />
                         </label>
                       ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                {/* Difficulty & Count */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Exam Settings</CardTitle>
+                  {/* Settings */}
+                  <div className="space-y-6">
+                    <Card className="border shadow-none bg-card/30 overflow-hidden">
+                      <CardHeader className="pb-4 bg-gradient-to-r from-primary/5 to-transparent">
+                        <div className="flex items-center gap-2">
+                          <Settings2 className="w-5 h-5 text-primary" />
+                          <CardTitle className="text-base uppercase tracking-wider font-bold">Intensity</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-6 space-y-8">
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-end">
+                            <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest">Load</p>
+                            <span className="text-xl font-black text-foreground">{config.questionCount} <span className="text-xs text-muted-foreground font-medium">Questions</span></span>
+                          </div>
+                          <Slider
+                            value={[config.questionCount]}
+                            onValueChange={([val]) => setConfig(p => ({ ...p, questionCount: val }))}
+                            max={30} min={5} step={5}
+                            className="[&>.absolute]:bg-primary"
+                          />
+                        </div>
+
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-end">
+                            <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest">Complexity</p>
+                            <span className="text-xl font-black text-foreground">
+                              {config.difficulty === 'mixed' ? 'Adaptive' : config.difficulty}
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            {['easy', 'medium', 'hard', 'mixed'].map(level => (
+                              <button
+                                key={level}
+                                onClick={() => setConfig(p => ({ ...p, difficulty: level as any }))}
+                                className={cn(
+                                  "flex-1 py-2 text-[10px] uppercase font-bold rounded-lg border transition-all",
+                                  config.difficulty === level
+                                    ? "bg-primary text-white border-primary"
+                                    : "bg-background hover:bg-muted"
+                                )}
+                              >
+                                {level}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="p-4 rounded-xl border border-dashed border-primary/30 bg-primary/5">
+                      <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest mb-3">Methods</p>
+                      <div className="flex flex-wrap gap-2">
+                        {questionTypes.map(t => (
+                          <button
+                            key={t.id}
+                            onClick={() => setConfig(p => ({
+                              ...p,
+                              questionTypes: p.questionTypes.includes(t.id)
+                                ? p.questionTypes.filter(id => id !== t.id)
+                                : [...p.questionTypes, t.id]
+                            }))}
+                            className={cn(
+                              "px-3 py-1.5  text-[10px] font-bold border transition-all",
+                              config.questionTypes.includes(t.id)
+                                ? "bg-foreground text-background border-foreground"
+                                : "border-border text-muted-foreground hover:border-foreground/50"
+                            )}
+                          >
+                            {t.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            {/* Right: Summary & Action */}
+            <div className="lg:col-span-4 ">
+              <div className="sticky top-12 space-y-6 ">
+                <Card className="relative overflow-hidden rounded-[0px] bg-gradient-to-b from-card to-background ring-1 ring-white/10   border-border">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10  blur-3xl -mr-32 -mt-32 pointer-events-none" />
+
+                  <CardHeader className="border-b border-border/50 pb-6">
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="p-2 rounded-lg bg-primary text-white">
+                        <Rocket className="w-5 h-5" />
+                      </div>
+                      Ready to Launch
+                    </CardTitle>
+                    <CardDescription>
+                      Review your configuration before initializing the sequence.
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <Label>Difficulty Level</Label>
-                        <Badge variant="outline">
-                          {config.difficulty < 40 ? "Easy" : config.difficulty < 70 ? "Medium" : "Hard"}
-                        </Badge>
+
+                  <CardContent className="pt-6 space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center p-3 
+                       bg-muted/30">
+                        <span className="text-sm text-muted-foreground">Discipline</span>
+                        <span className="text-sm font-bold text-foreground text-right">{selectedCourse?.name || "Pending Selection"}</span>
                       </div>
-                      <Slider
-                        value={[config.difficulty]}
-                        onValueChange={([value]) => setConfig((prev) => ({ ...prev, difficulty: value }))}
-                        max={100}
-                        step={1}
-                      />
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-3 
+                         bg-muted/30">
+                          <span className="text-xs text-muted-foreground block mb-1">Items</span>
+                          <span className="text-lg font-black text-foreground">{config.questionCount}</span>
+                        </div>
+                        <div className="p-3 
+                         bg-muted/30">
+                          <span className="text-xs text-muted-foreground block mb-1">Est. Time</span>
+                          <span className="text-lg font-black text-foreground">{Math.round(config.questionCount * 1.5)}m</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <Label>Number of Questions</Label>
-                        <Badge variant="outline">{config.questionCount} questions</Badge>
-                      </div>
-                      <Slider
-                        value={[config.questionCount]}
-                        onValueChange={([value]) => setConfig((prev) => ({ ...prev, questionCount: value }))}
-                        min={5}
-                        max={50}
-                        step={5}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Right: Preview */}
-              <div className="space-y-6">
-                <Card className="sticky top-24">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Exam Preview</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="p-4 rounded-xl bg-muted/50 space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Course</span>
-                        <span className="font-medium">
-                          {selectedCourse?.name || "Not selected"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Units</span>
-                        <span className="font-medium">
-                          {config.unitIds.length || "All"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Questions</span>
-                        <span className="font-medium">{config.questionCount}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Est. Time</span>
-                        <span className="font-medium">{config.questionCount} mins</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Difficulty</span>
-                        <span className="font-medium">
-                          {config.difficulty < 40 ? "Easy" : config.difficulty < 70 ? "Medium" : "Hard"}
-                        </span>
-                      </div>
+                    <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-start gap-3">
+                      <Sparkles className="w-5 h-5 text-orange-500 shrink-0" />
+                      <p className="text-xs text-orange-200/80 leading-relaxed font-medium">
+                        The AI will adapt question difficulty in real-time based on your performance.
+                      </p>
                     </div>
 
                     <Button
-                      className="w-full gradient-primary"
-                      size="lg"
-                      disabled={!config.courseId || config.questionTypes.length === 0}
-                      onClick={handleStartExam}
+                      className="w-full h-16 text-lg font-bold bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/25 rounded-xl group transition-all"
+                      disabled={!activeCourseId || config.questionTypes.length === 0}
+                      onClick={handleStart}
                     >
-                      <Play className="w-4 h-4 mr-2" />
-                      Start Exam
+                      <span className="mr-2">Initiate Sequence</span>
+                      <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </CardContent>
                 </Card>
               </div>
             </div>
           </div>
-        )}
-
-        {/* Exam Step */}
-        {step === "exam" && questions.length > 0 && (
-          <div className="max-w-4xl mx-auto animate-fade-in">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <Badge variant="outline" className="text-sm">
-                  Question {currentQuestion + 1} of {questions.length}
-                </Badge>
-                {questions[currentQuestion].flagged && (
-                  <Badge variant="secondary" className="gap-1">
-                    <Flag className="w-3 h-3" />
-                    Flagged
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <span className="font-mono text-lg">
-                  {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, "0")}
-                </span>
-              </div>
-            </div>
-
-            {/* Progress */}
-            <Progress
-              value={((currentQuestion + 1) / questions.length) * 100}
-              className="h-2 mb-8"
-            />
-
-            {/* Question Card */}
-            <Card className="mb-6">
-              <CardContent className="p-8">
-                <Badge variant="secondary" className="mb-4">
-                  {questions[currentQuestion].type.toUpperCase()}
-                </Badge>
-                <h2 className="text-xl font-semibold mb-6">
-                  {questions[currentQuestion].question}
-                </h2>
-
-                {/* MCQ Options */}
-                {questions[currentQuestion].options && (
-                  <RadioGroup
-                    value={questions[currentQuestion].userAnswer}
-                    onValueChange={handleAnswer}
-                    className="space-y-3"
-                  >
-                    {questions[currentQuestion].options.map((option, index) => (
-                      <label
-                        key={index}
-                        className={cn(
-                          "flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all hover:border-primary/50",
-                          questions[currentQuestion].userAnswer === option
-                            ? "border-primary bg-primary/5"
-                            : "border-border"
-                        )}
-                      >
-                        <RadioGroupItem value={option} />
-                        <span>{option}</span>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Question Navigation */}
-            <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
-                  disabled={currentQuestion === 0}
-                >
-                  <ChevronLeft className="w-4 h-4 mr-2" />
-                  Previous
-                </Button>
-                <Button variant="outline" onClick={handleFlag}>
-                  <Flag className={cn("w-4 h-4 mr-2", questions[currentQuestion].flagged && "fill-current")} />
-                  {questions[currentQuestion].flagged ? "Unflag" : "Flag"}
-                </Button>
-              </div>
-
-              <div className="flex gap-2">
-                {currentQuestion < questions.length - 1 ? (
-                  <Button
-                    onClick={() => setCurrentQuestion((prev) => prev + 1)}
-                    className="gradient-primary"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4 ml-2" />
-                  </Button>
-                ) : (
-                  <Button onClick={handleFinish} className="gradient-primary">
-                    Finish Exam
-                    <CheckCircle2 className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            {/* Question Navigator */}
-            <Card className="mt-8">
-              <CardHeader>
-                <CardTitle className="text-sm">Question Navigator</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {questions.map((q, index) => (
-                    <button
-                      key={q.id}
-                      onClick={() => setCurrentQuestion(index)}
-                      className={cn(
-                        "w-10 h-10 rounded-lg text-sm font-medium transition-all",
-                        currentQuestion === index
-                          ? "gradient-primary text-primary-foreground"
-                          : q.userAnswer
-                          ? "bg-success/10 text-success border border-success/20"
-                          : q.flagged
-                          ? "bg-warning/10 text-warning border border-warning/20"
-                          : "bg-muted hover:bg-muted/80"
-                      )}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Results Step */}
-        {step === "results" && (
-          <div className="max-w-4xl mx-auto animate-fade-in">
-            <div className="text-center mb-8">
-              <div
-                className={cn(
-                  "w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center",
-                  percentage >= 80
-                    ? "bg-success/10"
-                    : percentage >= 60
-                    ? "bg-warning/10"
-                    : "bg-destructive/10"
-                )}
-              >
-                {percentage >= 80 ? (
-                  <CheckCircle2 className="w-12 h-12 text-success" />
-                ) : percentage >= 60 ? (
-                  <AlertTriangle className="w-12 h-12 text-warning" />
-                ) : (
-                  <XCircle className="w-12 h-12 text-destructive" />
-                )}
-              </div>
-              <h1 className="text-3xl font-bold mb-2">Exam Complete!</h1>
-              <p className="text-muted-foreground">
-                Here's how you performed
-              </p>
-            </div>
-
-            {/* Score Card */}
-            <Card className="mb-6">
-              <CardContent className="p-8">
-                <div className="grid md:grid-cols-4 gap-6 text-center">
-                  <div>
-                    <div
-                      className={cn(
-                        "text-5xl font-bold mb-2",
-                        percentage >= 80
-                          ? "text-success"
-                          : percentage >= 60
-                          ? "text-warning"
-                          : "text-destructive"
-                      )}
-                    >
-                      {percentage}%
-                    </div>
-                    <p className="text-sm text-muted-foreground">Score</p>
-                  </div>
-                  <div>
-                    <div className="text-5xl font-bold mb-2 text-success">{score}</div>
-                    <p className="text-sm text-muted-foreground">Correct</p>
-                  </div>
-                  <div>
-                    <div className="text-5xl font-bold mb-2 text-destructive">
-                      {questions.length - score}
-                    </div>
-                    <p className="text-sm text-muted-foreground">Incorrect</p>
-                  </div>
-                  <div>
-                    <div className="text-5xl font-bold mb-2">{questions.length}</div>
-                    <p className="text-sm text-muted-foreground">Total</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Question Review */}
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="text-lg">Question Review</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {questions.map((q, index) => (
-                  <div
-                    key={q.id}
-                    className={cn(
-                      "p-4 rounded-xl border",
-                      q.isCorrect ? "border-success/20 bg-success/5" : "border-destructive/20 bg-destructive/5"
-                    )}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                          q.isCorrect ? "bg-success/10" : "bg-destructive/10"
-                        )}
-                      >
-                        {q.isCorrect ? (
-                          <CheckCircle2 className="w-4 h-4 text-success" />
-                        ) : (
-                          <XCircle className="w-4 h-4 text-destructive" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm mb-2">
-                          {index + 1}. {q.question}
-                        </p>
-                        <div className="text-sm space-y-1">
-                          <p>
-                            <span className="text-muted-foreground">Your answer: </span>
-                            <span className={q.isCorrect ? "text-success" : "text-destructive"}>
-                              {q.userAnswer || "Not answered"}
-                            </span>
-                          </p>
-                          {!q.isCorrect && (
-                            <p>
-                              <span className="text-muted-foreground">Correct answer: </span>
-                              <span className="text-success">{q.correctAnswer}</span>
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* AI Recommendations */}
-            <Card className="mb-6 border-primary/20">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  AI Recommendations
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-                  <div className="flex items-start gap-3">
-                    <Target className="w-5 h-5 text-primary mt-0.5" />
-                    <div>
-                      <h4 className="font-medium text-sm mb-1">Focus Area Detected</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Based on your answers, you should review Data Structures and Algorithms concepts.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4 rounded-xl bg-muted/50">
-                  <div className="flex items-start gap-3">
-                    <TrendingUp className="w-5 h-5 text-success mt-0.5" />
-                    <div>
-                      <h4 className="font-medium text-sm mb-1">Improvement Tip</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Your time management was good. Try to spend more time on flagged questions in future exams.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="outline" onClick={() => setStep("configure")}>
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Take Another Exam
-              </Button>
-              <Button asChild variant="outline">
-                <Link to="/notes">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  Generate Study Notes
-                </Link>
-              </Button>
-              <Button asChild className="gradient-primary">
-                <Link to="/dashboard">
-                  <Brain className="w-4 h-4 mr-2" />
-                  View Dashboard
-                </Link>
-              </Button>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </Layout>
   );

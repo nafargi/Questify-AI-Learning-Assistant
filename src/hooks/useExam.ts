@@ -1,117 +1,121 @@
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Question, sampleQuestions } from '../data/mockData';
 
-interface GenerateExamParams {
-  courseId?: string;
-  courseName: string;
-  units?: string[];
+interface ExamConfig {
+  courseId: string;
+  unitIds: string[];
   questionTypes: string[];
-  difficulty: number;
-  questionCount: number;
+  difficulty: string;
+  count: number;
+  timeLimit: number; // in minutes
 }
 
-interface ExamQuestion {
-  id: string;
-  question: string;
-  type: string;
-  options?: string[];
-  userAnswer?: string;
-  correctAnswer: string;
-  explanation?: string;
-  isCorrect?: boolean;
-  timeSpent: number;
-  flagged: boolean;
-}
+export const useExam = (config: ExamConfig) => {
+  // Select and shuffle questions based on config
+  const selectedQuestions = useMemo(() => {
+    let filtered = sampleQuestions.filter(q => {
+      const courseMatch = q.courseId === config.courseId;
+      const unitMatch = config.unitIds.length === 0 || config.unitIds.includes('all') || config.unitIds.includes(q.unitId);
+      const typeMatch = config.questionTypes.length === 0 || config.questionTypes.includes('all') || config.questionTypes.includes(q.type);
+      const diffMatch = config.difficulty === 'mixed' || q.difficulty === config.difficulty;
 
-export function useExam() {
-  const [isGenerating, setIsGenerating] = useState(false);
+      return courseMatch && unitMatch && typeMatch && diffMatch;
+    });
 
-  const generateExam = async (params: GenerateExamParams) => {
-    setIsGenerating(true);
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-exam', {
-        body: params,
+    // Shuffle and slice
+    return filtered.sort(() => Math.random() - 0.5).slice(0, config.count);
+  }, [
+    config.courseId,
+    config.difficulty,
+    config.count,
+    config.unitIds,
+    config.questionTypes
+  ]);
+
+  // State
+  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [timeLeft, setTimeLeft] = useState(config.timeLimit * 60);
+  const [isFinished, setIsFinished] = useState(false);
+  const [startTime] = useState(Date.now());
+
+  // Timer logic
+  useEffect(() => {
+    if (isFinished || timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          finishExam();
+          return 0;
+        }
+        return prev - 1;
       });
+    }, 1000);
 
-      if (error) {
-        throw error;
-      }
+    return () => clearInterval(timer);
+  }, [isFinished, timeLeft]);
 
-      if (data.error) {
-        throw new Error(data.error);
-      }
+  // Handlers
+  const setAnswer = useCallback((questionId: string, answer: any) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: answer
+    }));
+  }, []);
 
-      return { examId: data.examId, questions: data.questions as ExamQuestion[] };
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Failed to generate exam';
-      toast.error(message);
-      throw error;
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const finishExam = useCallback(() => {
+    setIsFinished(true);
+  }, []);
 
-  const submitExam = async (examId: string, answers: Record<string, string>, timeTaken: number) => {
-    // Calculate score
-    const { data: questions, error: fetchError } = await supabase
-      .from('exam_questions')
-      .select('*')
-      .eq('exam_id', examId);
+  // Scoring logic
+  const results = useMemo(() => {
+    if (!isFinished) return null;
 
-    if (fetchError) throw fetchError;
-
-    let correctAnswers = 0;
-    for (const q of questions || []) {
+    let correctCount = 0;
+    const details = selectedQuestions.map(q => {
       const userAnswer = answers[q.id];
-      const isCorrect = userAnswer === q.correct_answer;
-      
-      await supabase
-        .from('exam_questions')
-        .update({ user_answer: userAnswer, is_correct: isCorrect })
-        .eq('id', q.id);
+      let isCorrect = false;
 
-      if (isCorrect) correctAnswers++;
-    }
+      if (q.type === 'mcq' || q.type === 'true-false') {
+        isCorrect = userAnswer === q.correctAnswer;
+      } else if (q.type === 'fill-blank') {
+        // Simple array comparison
+        const expected = q.correctAnswer as string[];
+        isCorrect = Array.isArray(userAnswer) &&
+          userAnswer.length === expected.length &&
+          userAnswer.every((val, i) => val.trim().toLowerCase() === expected[i].trim().toLowerCase());
+      } else if (q.type === 'matching') {
+        // For matching, userAnswer would be array of IDs in order
+        const expected = q.correctAnswer as string[];
+        isCorrect = Array.isArray(userAnswer) &&
+          userAnswer.length === expected.length &&
+          userAnswer.every((val, i) => val === expected[i]);
+      } else if (q.type === 'coding') {
+        // Mock coding check: just check for non-empty for now or string match
+        isCorrect = userAnswer?.trim() === (q.solution as string)?.trim();
+      }
 
-    const score = Math.round((correctAnswers / (questions?.length || 1)) * 100);
+      if (isCorrect) correctCount++;
+      return { id: q.id, isCorrect, userAnswer };
+    });
 
-    // Update exam record
-    const { error: updateError } = await supabase
-      .from('exams')
-      .update({
-        completed_at: new Date().toISOString(),
-        score,
-        correct_answers: correctAnswers,
-        time_taken: timeTaken,
-      })
-      .eq('id', examId);
-
-    if (updateError) throw updateError;
-
-    return { score, correctAnswers, totalQuestions: questions?.length || 0 };
-  };
-
-  const fetchExamHistory = async () => {
-    const { data, error } = await supabase
-      .from('exams')
-      .select('*')
-      .not('completed_at', 'is', null)
-      .order('completed_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching exam history:', error);
-      return [];
-    }
-
-    return data;
-  };
+    return {
+      score: Math.round((correctCount / selectedQuestions.length) * 100),
+      correctCount,
+      totalCount: selectedQuestions.length,
+      details,
+      timeTaken: Math.round((Date.now() - startTime) / 1000)
+    };
+  }, [isFinished, selectedQuestions, answers, startTime]);
 
   return {
-    isGenerating,
-    generateExam,
-    submitExam,
-    fetchExamHistory,
+    questions: selectedQuestions,
+    answers,
+    setAnswer,
+    timeLeft,
+    isFinished,
+    finishExam,
+    results
   };
-}
+};

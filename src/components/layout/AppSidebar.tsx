@@ -50,12 +50,12 @@ const accountItems = [
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
-function SidebarContent({ 
-  collapsed, 
-  onToggle, 
-  onNavigate 
-}: { 
-  collapsed: boolean; 
+function SidebarContent({
+  collapsed,
+  onToggle,
+  onNavigate
+}: {
+  collapsed: boolean;
   onToggle: () => void;
   onNavigate?: () => void;
 }) {
@@ -220,30 +220,7 @@ function SidebarContent({
         )}
       </div>
 
-      {/* Pro Card */}
-      {!collapsed && (
-        <div className="p-3">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/5 border border-sidebar-border">
-            <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center mb-3 shadow-lg">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <h4 className="font-semibold text-sm mb-1 text-sidebar-foreground">Questify Pro</h4>
-            <p className="text-xs text-muted-foreground mb-3">
-              Unlock unlimited exams & AI features
-            </p>
-            <Button 
-              size="sm" 
-              className="w-full gradient-primary text-xs text-white hover:opacity-90"
-              onClick={() => {
-                navigate("/billing");
-                onNavigate?.();
-              }}
-            >
-              Upgrade Now
-            </Button>
-          </div>
-        </div>
-      )}
+
 
       {/* Sign Out */}
       <div className="p-3 border-t border-sidebar-border">
@@ -302,9 +279,9 @@ export function AppSidebar() {
 
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="left" className="p-0 w-72 border-0">
-            <SidebarContent 
-              collapsed={false} 
-              onToggle={() => {}} 
+            <SidebarContent
+              collapsed={false}
+              onToggle={() => { }}
               onNavigate={() => setMobileOpen(false)}
             />
           </SheetContent>
@@ -321,9 +298,9 @@ export function AppSidebar() {
         preferences.sidebarCollapsed ? "w-[72px]" : "w-64"
       )}
     >
-      <SidebarContent 
-        collapsed={preferences.sidebarCollapsed} 
-        onToggle={() => setSidebarCollapsed(!preferences.sidebarCollapsed)} 
+      <SidebarContent
+        collapsed={preferences.sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!preferences.sidebarCollapsed)}
       />
     </aside>
   );

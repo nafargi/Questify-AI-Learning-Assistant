@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Brain, 
-  Eye, 
-  EyeOff, 
-  ArrowRight, 
-  Shield, 
+import {
+  Brain,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Shield,
   Sparkles,
   CheckCircle2,
   AlertCircle,
@@ -45,7 +45,7 @@ const Auth = () => {
 
   const validateField = (field: string) => {
     const newErrors = { ...errors };
-    
+
     switch (field) {
       case "email":
         if (!email) {
@@ -80,7 +80,7 @@ const Auth = () => {
         }
         break;
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -88,36 +88,36 @@ const Auth = () => {
   const validateForm = () => {
     const fields = isSignUp ? ["name", "email", "password", "confirmPassword"] : ["email", "password"];
     let isValid = true;
-    
+
     fields.forEach(field => {
       setTouched(prev => ({ ...prev, [field]: true }));
       if (!validateField(field)) {
         isValid = false;
       }
     });
-    
+
     return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     setIsLoading(false);
-    
+
     toast({
       title: isSignUp ? "Account created" : "Welcome back",
-      description: isSignUp 
-        ? "Your learning journey begins now." 
+      description: isSignUp
+        ? "Your learning journey begins now."
         : "Let's continue where you left off.",
     });
-    
+
     navigate("/dashboard");
   };
 
@@ -156,9 +156,9 @@ const Auth = () => {
         <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse-slow" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: "1s" }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent/5 rounded-full blur-2xl animate-float" />
-        
+
         {/* Grid Pattern */}
-        <div 
+        <div
           className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: `linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
@@ -188,7 +188,7 @@ const Auth = () => {
                 you
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Questify analyzes how you learn, identifies your weak points, 
+                Questify analyzes how you learn, identifies your weak points,
                 and adapts every exam, note, and study session to your unique needs.
               </p>
             </div>
@@ -266,7 +266,7 @@ const Auth = () => {
                 {isSignUp ? "Begin your journey" : "Welcome back"}
               </h2>
               <p className="text-muted-foreground">
-                {isSignUp 
+                {isSignUp
                   ? "Create your account to start learning with clarity"
                   : "Sign in to continue your personalized learning path"
                 }
@@ -454,7 +454,7 @@ const Auth = () => {
               type="button"
               variant="outline"
               onClick={toggleMode}
-              className="w-full h-12 font-medium text-base border-2 hover:bg-muted/50 transition-all duration-300"
+              className="w-full h-12 font-medium text-base border hover:bg-muted/50 transition-all duration-300"
             >
               {isSignUp ? "Sign in instead" : "Create an account"}
             </Button>

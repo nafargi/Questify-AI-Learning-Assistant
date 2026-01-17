@@ -196,10 +196,10 @@ export default function Billing() {
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           {plans.map((plan) => {
-            const price = billingPeriod === "yearly" 
+            const price = billingPeriod === "yearly"
               ? (plan.price * 12 * (1 - yearlyDiscount))
               : plan.price;
-            
+
             return (
               <Card
                 key={plan.id}
@@ -215,7 +215,7 @@ export default function Billing() {
                     </div>
                   </div>
                 )}
-                
+
                 <CardHeader className="text-center pb-4">
                   <div
                     className={cn(
@@ -228,7 +228,7 @@ export default function Billing() {
                   <CardTitle className="text-2xl">{plan.name}</CardTitle>
                   <CardDescription>{plan.description}</CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-6">
                   <div className="text-center">
                     <div className="flex items-baseline justify-center gap-1">
@@ -301,7 +301,7 @@ export default function Billing() {
                     </p>
                   </div>
                   <p className="text-2xl font-bold">
-                    ${billingPeriod === "yearly" 
+                    ${billingPeriod === "yearly"
                       ? (9.99 * 12 * (1 - yearlyDiscount)).toFixed(0)
                       : "9.99"}
                   </p>
@@ -348,7 +348,7 @@ export default function Billing() {
                   >
                     {isProcessing ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                        <div className="w-4 h-4 border border-white/30 border-t-white rounded-full animate-spin mr-2" />
                         Processing...
                       </>
                     ) : (

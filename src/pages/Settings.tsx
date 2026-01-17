@@ -105,7 +105,7 @@ export default function Settings() {
                       <p className="text-xs text-muted-foreground mt-1">JPG, PNG up to 5MB</p>
                     </div>
                   </div>
-                  
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Full Name</Label>
@@ -124,7 +124,7 @@ export default function Settings() {
                       <Input placeholder="Enter university name" />
                     </div>
                   </div>
-                  
+
                   <Button className="gradient-primary">Save Changes</Button>
                 </CardContent>
               </Card>
@@ -171,9 +171,9 @@ export default function Settings() {
                       <p className="font-medium text-sm">Study Reminders</p>
                       <p className="text-xs text-muted-foreground">Get reminded about scheduled study sessions</p>
                     </div>
-                    <Switch 
-                      checked={settings.studyReminders} 
-                      onCheckedChange={(v) => updateSetting("studyReminders", v)} 
+                    <Switch
+                      checked={settings.studyReminders}
+                      onCheckedChange={(v) => updateSetting("studyReminders", v)}
                     />
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
@@ -181,9 +181,9 @@ export default function Settings() {
                       <p className="font-medium text-sm">Exam Alerts</p>
                       <p className="text-xs text-muted-foreground">Notifications about upcoming exams</p>
                     </div>
-                    <Switch 
-                      checked={settings.examAlerts} 
-                      onCheckedChange={(v) => updateSetting("examAlerts", v)} 
+                    <Switch
+                      checked={settings.examAlerts}
+                      onCheckedChange={(v) => updateSetting("examAlerts", v)}
                     />
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
@@ -191,9 +191,9 @@ export default function Settings() {
                       <p className="font-medium text-sm">Weekly Progress Reports</p>
                       <p className="text-xs text-muted-foreground">Summary of your weekly performance</p>
                     </div>
-                    <Switch 
-                      checked={settings.weeklyReports} 
-                      onCheckedChange={(v) => updateSetting("weeklyReports", v)} 
+                    <Switch
+                      checked={settings.weeklyReports}
+                      onCheckedChange={(v) => updateSetting("weeklyReports", v)}
                     />
                   </div>
                 </CardContent>
@@ -212,9 +212,9 @@ export default function Settings() {
                       <p className="font-medium text-sm">Enable Push Notifications</p>
                       <p className="text-xs text-muted-foreground">Receive instant alerts on your device</p>
                     </div>
-                    <Switch 
-                      checked={settings.pushNotifications} 
-                      onCheckedChange={(v) => updateSetting("pushNotifications", v)} 
+                    <Switch
+                      checked={settings.pushNotifications}
+                      onCheckedChange={(v) => updateSetting("pushNotifications", v)}
                     />
                   </div>
                 </CardContent>
@@ -233,9 +233,9 @@ export default function Settings() {
                       <p className="font-medium text-sm">Sound Effects</p>
                       <p className="text-xs text-muted-foreground">Play sounds for actions and alerts</p>
                     </div>
-                    <Switch 
-                      checked={settings.soundEffects} 
-                      onCheckedChange={(v) => updateSetting("soundEffects", v)} 
+                    <Switch
+                      checked={settings.soundEffects}
+                      onCheckedChange={(v) => updateSetting("soundEffects", v)}
                     />
                   </div>
                 </CardContent>
@@ -256,7 +256,7 @@ export default function Settings() {
                     <button
                       onClick={() => updateSetting("darkMode", false)}
                       className={cn(
-                        "p-6 rounded-2xl border-2 text-left transition-all",
+                        "p-6 rounded-2xl border text-left transition-all",
                         !settings.darkMode ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
                       )}
                     >
@@ -267,7 +267,7 @@ export default function Settings() {
                     <button
                       onClick={() => updateSetting("darkMode", true)}
                       className={cn(
-                        "p-6 rounded-2xl border-2 text-left transition-all",
+                        "p-6 rounded-2xl border text-left transition-all",
                         settings.darkMode ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
                       )}
                     >
@@ -293,7 +293,7 @@ export default function Settings() {
                         key={lang}
                         onClick={() => setSettings((prev) => ({ ...prev, language: lang }))}
                         className={cn(
-                          "p-4 rounded-xl border-2 text-center transition-all",
+                          "p-4 rounded-xl border text-center transition-all",
                           settings.language === lang ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
                         )}
                       >
