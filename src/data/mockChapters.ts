@@ -90,7 +90,7 @@ export const MOCK_CHAPTERS: Record<string, ChapterStructure> = {
     "Network Protocols": {
         introduction: "In the modern interconnected world, network protocols serve as the universal language that allows disparate computing systems to communicate. From the moment you type a URL into a browser to the instant a video begins streaming, thousands of protocol-governed packets are exchanged across global infrastructures. This chapter provides a deep, technical dive into the standard models of networking—OSI and TCP/IP—and examines the specific protocols that power the web, including HTTP/3, DNS, and TLS. We will explore the request-response cycle, the mechanics of packet switching, and the critical role of error-correction algorithms in maintaining reliable communication over unreliable physical links. This is not just a study of technology, but a study of the consensus-driven standards that have made the global internet possible.",
         learningObjectives: [
-            "Deconstruct the 7 layers of the OSI model and their respective responsibilities",
+            "Deconstruct the 7 Stack of the OSI model and their respective responsibilities",
             "Explain the three-way handshake and 'reliable delivery' in TCP",
             "Analyze the DNS resolution process from recursive resolver up to authoritative servers",
             "Differentiate between stateful and stateless protocols",
@@ -99,7 +99,7 @@ export const MOCK_CHAPTERS: Record<string, ChapterStructure> = {
         sections: [
             {
                 title: "The OSI Reference Model vs. TCP/IP",
-                content: "To manage the immense complexity of networking, systems are organized into 'layers'. The Open Systems Interconnection (OSI) model provides a seven-layer theoretical framework, while the TCP/IP model provides a four-layer practical implementation used by the actual internet. Each layer provides a service to the layer above it and expects a service from the layer below. As data moves down the stack, it is wrapped in 'headers'—a process known as encapsulation. This section breaks down each layer, from the Physical layer (bits on a wire) to the Application layer (the data you see in your browser).",
+                content: "To manage the immense complexity of networking, systems are organized into 'Stack'. The Open Systems Interconnection (OSI) model provides a seven-layer theoretical framework, while the TCP/IP model provides a four-layer practical implementation used by the actual internet. Each layer provides a service to the layer above it and expects a service from the layer below. As data moves down the stack, it is wrapped in 'headers'—a process known as encapsulation. This section breaks down each layer, from the Physical layer (bits on a wire) to the Application layer (the data you see in your browser).",
                 subsections: [
                     {
                         title: "Encapsulation and Decapsulation",
@@ -110,7 +110,7 @@ export const MOCK_CHAPTERS: Record<string, ChapterStructure> = {
                         content: "Each layer has its own name for the data it handles. At the Transport layer, it's a 'Segment' or 'Datagram'. At the Network layer, it's a 'Packet'. At the Data Link layer, it's a 'Frame'. Understanding these terms is essential for troubleshooting and communicating in professional network engineering environments."
                     }
                 ],
-                keyConcepts: ["Abstraction Layers", "Encapsulation", "Logical Addressing", "Interoperability"],
+                keyConcepts: ["Abstraction Stack", "Encapsulation", "Logical Addressing", "Interoperability"],
                 exampleBox: {
                     title: "The Layer 8 Problem",
                     content: "In networking slang, 'Layer 8' refers to the 'User' layer. Most network issues that aren't technical are often traced back to human error or misconfiguration."
@@ -126,7 +126,7 @@ export const MOCK_CHAPTERS: Record<string, ChapterStructure> = {
                     },
                     {
                         title: "Flow Control and Congestion Avoidance",
-                        content: "TCP doesn't just send data blindly; it monitors the state of the network. Through 'sliding windows' and algorithms like 'Slow Start', TCP adjusts its rate to avoid overwhelming the receiver or the intermediate routers. If a packet is lost, TCP assumes congestion and immediately reduces its throughput, ensuring the network remains stable under heavy load."
+                        content: "TCP doesn't just PaperPlaneTilt data blindly; it monitors the state of the network. Through 'sliding windows' and algorithms like 'Slow Start', TCP adjusts its rate to avoid overwhelming the receiver or the intermediate routers. If a packet is lost, TCP assumes congestion and immediately reduces its throughput, ensuring the network remains stable under heavy load."
                     }
                 ],
                 keyConcepts: ["Sequence Numbers", "Checksums", "Sliding Windows", "Jitter"],
@@ -157,7 +157,7 @@ export const MOCK_CHAPTERS: Record<string, ChapterStructure> = {
         ],
         caseStudy: {
             title: "Content Delivery Networks (CDNs)",
-            content: "CDNs like Akamai and Cloudflare use protocols and clever DNS routing to bring content closer to the user. By caching assets in 'edge' locations around the world, they reduce latency and protect origins from traffic spikes. We analyze how CDNs handle SSL/TLS termination and the 'anycast' routing technique used to send users to the geographically nearest server.",
+            content: "CDNs like Akamai and Cloudflare use protocols and clever DNS routing to bring content closer to the user. By caching assets in 'edge' locations around the world, they reduce latency and protect origins from traffic spikes. We analyze how CDNs handle SSL/TLS termination and the 'anycast' routing technique used to PaperPlaneTilt users to the geographically nearest server.",
             discussionQuestions: [
                 "How does a CDN improve the load time of a website for a user in Australia accessing a server in London?",
                 "What are the security implications of terminating TLS at a CDN edge rather than the original server?",

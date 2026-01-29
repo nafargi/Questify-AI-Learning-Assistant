@@ -1,7 +1,7 @@
-import { 
-  Shield, Users, Key, Lock, AlertTriangle, Eye,
-  Clock, CheckCircle, XCircle, Activity, Search, Filter
-} from "lucide-react";
+import {
+  Shield, Users, Key, Lock, Warning, Eye,
+  Clock, CheckCircle, XCircle, Pulse, MagnifyingGlass, Funnel
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +49,7 @@ const AdminSecurity = () => {
             <div className="flex items-center gap-3 mt-2">
               <p className="text-2xl font-bold text-white">{metric.value}%</p>
               <Badge className={
-                metric.status === "excellent" 
+                metric.status === "excellent"
                   ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                   : "bg-blue-500/20 text-blue-400 border-blue-500/30"
               }>
@@ -75,7 +75,7 @@ const AdminSecurity = () => {
           </div>
           <div className="space-y-3">
             {roles.map((role) => (
-              <div 
+              <div
                 key={role.name}
                 className="flex items-center justify-between p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-all"
               >
@@ -122,7 +122,7 @@ const AdminSecurity = () => {
                   { permission: "Manage Exams", admin: true, mod: false, user: false },
                   { permission: "AI Config", admin: true, mod: false, user: false },
                   { permission: "View Analytics", admin: true, mod: true, user: false },
-                  { permission: "Send Notifications", admin: true, mod: false, user: false },
+                  { permission: "PaperPlaneTilt Notifications", admin: true, mod: false, user: false },
                 ].map((perm) => (
                   <tr key={perm.permission} className="border-b border-slate-800/50">
                     <td className="py-3 text-slate-300 text-sm">{perm.permission}</td>
@@ -147,38 +147,37 @@ const AdminSecurity = () => {
       <Card className="bg-slate-900/50 border-slate-800 p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-violet-400" />
+            <Pulse className="w-5 h-5 text-violet-400" />
             Security Activity Log
           </h3>
           <div className="flex items-center gap-3">
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Search logs..."
                 className="pl-10 bg-slate-800 border-slate-700 text-slate-200 text-sm"
               />
             </div>
             <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-200">
-              <Filter className="w-4 h-4 mr-1" /> Filter
+              <Funnel className="w-4 h-4 mr-1" /> Filter
             </Button>
           </div>
         </div>
         <div className="space-y-2">
           {recentActivity.map((activity, i) => (
-            <div 
+            <div
               key={i}
               className="flex items-center gap-4 p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-all"
             >
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                activity.status === "success" ? "bg-emerald-500/20" :
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${activity.status === "success" ? "bg-emerald-500/20" :
                 activity.status === "failed" ? "bg-red-500/20" : "bg-amber-500/20"
-              }`}>
+                }`}>
                 {activity.status === "success" ? (
                   <CheckCircle className="w-5 h-5 text-emerald-400" />
                 ) : activity.status === "failed" ? (
                   <XCircle className="w-5 h-5 text-red-400" />
                 ) : (
-                  <AlertTriangle className="w-5 h-5 text-amber-400" />
+                  <Warning className="w-5 h-5 text-amber-400" />
                 )}
               </div>
               <div className="flex-1">
@@ -191,8 +190,8 @@ const AdminSecurity = () => {
               </div>
               <Badge className={
                 activity.status === "success" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" :
-                activity.status === "failed" ? "bg-red-500/20 text-red-400 border-red-500/30" :
-                "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                  activity.status === "failed" ? "bg-red-500/20 text-red-400 border-red-500/30" :
+                    "bg-amber-500/20 text-amber-400 border-amber-500/30"
               }>
                 {activity.status}
               </Badge>
@@ -205,12 +204,12 @@ const AdminSecurity = () => {
       <Card className="bg-gradient-to-br from-amber-500/10 to-red-500/10 border-amber-500/20 p-6">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-6 h-6 text-amber-400" />
+            <Warning className="w-6 h-6 text-amber-400" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white mb-2">3 Security Alerts</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Detected 3 suspicious login attempts from unusual locations in the last 24 hours. 
+              Detected 3 suspicious login attempts from unusual locations in the last 24 hours.
               1 IP address has been automatically blocked due to repeated failures.
             </p>
             <Button className="mt-4 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30">

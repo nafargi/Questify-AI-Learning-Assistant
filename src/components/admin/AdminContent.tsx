@@ -1,7 +1,7 @@
-import { 
-  FileText, FileImage, FileVideo, File, AlertTriangle,
-  Search, Filter, Download, Trash2, Eye, BarChart2
-} from "lucide-react";
+import {
+  FileText, FileImage, FileVideo, File, Warning,
+  MagnifyingGlass, Funnel, Download, Trash, Eye, ChartBar
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,32 +12,32 @@ const contentStats = [
   { label: "Total Materials", value: "89,234", icon: FileText, color: "from-violet-500 to-purple-600" },
   { label: "PDFs", value: "45,678", icon: File, color: "from-blue-500 to-cyan-600" },
   { label: "Images", value: "23,456", icon: FileImage, color: "from-emerald-500 to-teal-600" },
-  { label: "Flagged Content", value: "127", icon: AlertTriangle, color: "from-red-500 to-orange-600" },
+  { label: "Flagged Content", value: "127", icon: Warning, color: "from-red-500 to-orange-600" },
 ];
 
 const recentMaterials = [
-  { 
-    name: "Advanced Calculus Chapter 5.pdf", user: "Sarah Chen", 
+  {
+    name: "Advanced Calculus Chapter 5.pdf", user: "Sarah Chen",
     type: "PDF", size: "2.4 MB", usage: 234, uploaded: "2 hours ago",
     status: "approved"
   },
-  { 
-    name: "Organic Chemistry Notes.pdf", user: "Marcus Johnson", 
+  {
+    name: "Organic Chemistry Notes.pdf", user: "Marcus Johnson",
     type: "PDF", size: "1.8 MB", usage: 156, uploaded: "5 hours ago",
     status: "approved"
   },
-  { 
-    name: "Physics Diagrams.png", user: "Emily Rodriguez", 
+  {
+    name: "Physics Diagrams.png", user: "Emily Rodriguez",
     type: "Image", size: "856 KB", usage: 89, uploaded: "1 day ago",
     status: "pending"
   },
-  { 
-    name: "Biology Lab Report.pdf", user: "David Kim", 
+  {
+    name: "Biology Lab Report.pdf", user: "David Kim",
     type: "PDF", size: "3.2 MB", usage: 12, uploaded: "2 days ago",
     status: "flagged"
   },
-  { 
-    name: "History Timeline.pdf", user: "Lisa Wang", 
+  {
+    name: "History Timeline.pdf", user: "Lisa Wang",
     type: "PDF", size: "1.1 MB", usage: 78, uploaded: "3 days ago",
     status: "approved"
   },
@@ -89,13 +89,13 @@ const AdminContent = () => {
         {/* Storage Breakdown */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-violet-400" />
+            <ChartBar className="w-5 h-5 text-violet-400" />
             Storage Breakdown
           </h3>
           <div className="mb-6">
             <div className="flex h-4 rounded-full overflow-hidden">
               {storageBreakdown.map((item, i) => (
-                <div 
+                <div
                   key={i}
                   className={`${item.color}`}
                   style={{ width: `${item.percentage}%` }}
@@ -134,7 +134,7 @@ const AdminContent = () => {
               Recent Uploads
             </h3>
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Search materials..."
                 className="pl-10 bg-slate-800 border-slate-700 text-slate-200 text-sm"
@@ -143,7 +143,7 @@ const AdminContent = () => {
           </div>
           <div className="space-y-3">
             {recentMaterials.map((material, i) => (
-              <div 
+              <div
                 key={i}
                 className="flex items-center gap-4 p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-all"
               >
@@ -161,8 +161,8 @@ const AdminContent = () => {
                   </div>
                   <Badge className={
                     material.status === "approved" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" :
-                    material.status === "pending" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" :
-                    "bg-red-500/20 text-red-400 border-red-500/30"
+                      material.status === "pending" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" :
+                        "bg-red-500/20 text-red-400 border-red-500/30"
                   }>
                     {material.status}
                   </Badge>
@@ -174,7 +174,7 @@ const AdminContent = () => {
                       <Download className="w-4 h-4 text-slate-400" />
                     </button>
                     <button className="p-2 hover:bg-red-500/20 rounded-lg transition-all">
-                      <Trash2 className="w-4 h-4 text-red-400" />
+                      <Trash className="w-4 h-4 text-red-400" />
                     </button>
                   </div>
                 </div>
@@ -188,12 +188,12 @@ const AdminContent = () => {
       <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border-red-500/20 p-6">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-6 h-6 text-red-400" />
+            <Warning className="w-6 h-6 text-red-400" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-white mb-2">127 Items Flagged for Review</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Content has been flagged for potential policy violations including copyrighted material, 
+              Content has been flagged for potential policy violations including copyrighted material,
               inappropriate content, or suspicious file patterns. Review and take action to maintain platform integrity.
             </p>
             <div className="flex gap-3 mt-4">

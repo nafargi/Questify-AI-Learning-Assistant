@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  History,
+  ClockCounterClockwise,
   Calendar,
   Clock,
   Target,
-  TrendingUp,
-  TrendingDown,
-  ChevronRight,
-  RotateCcw,
+  TrendUp,
+  TrendDown,
+  CaretRight,
+  ArrowCounterClockwise,
   Brain,
-  AlertTriangle,
-  CheckCircle2,
+  Warning,
+  CheckCircle,
   XCircle,
   BookOpen,
   Lightbulb,
   ArrowLeft,
   FileText,
-  BarChart3,
-  Sparkles,
-} from "lucide-react";
+  ChartBar,
+  Sparkle,
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -147,7 +147,7 @@ const detailedExamHistory: DetailedExam[] = [
         correctAnswer: "Root, Left, Right",
         isCorrect: false,
         topic: "Trees",
-        explanation: "Pre-order visits the root first, then left subtree, then right subtree.",
+        explanation: "Pre-order the visits the root first, then left subtree, then right subtree.",
         whyWrong: "You described post-order traversal (Left, Right, Root) instead of pre-order. This is a common confusion because the naming convention isn't intuitive at first. The 'pre', 'in', and 'post' refer to WHEN the root is processed: PRE-order processes root BEFORE children, IN-order processes root IN BETWEEN left and right, POST-order processes root AFTER children.",
         conceptTested: "Understanding of tree traversal algorithms and their applications",
         intelligenceType: "Spatial Intelligence - This tests your ability to mentally navigate hierarchical structures and track position within them",
@@ -230,7 +230,7 @@ export default function ExamHistory() {
               <CardContent className="p-5">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center">
-                    <History className="w-6 h-6 text-white" />
+                    <ClockCounterClockwise className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{totalExams}</p>
@@ -269,7 +269,7 @@ export default function ExamHistory() {
               <CardContent className="p-5">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-purple-600" />
+                    <TrendUp className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">+5%</p>
@@ -280,32 +280,59 @@ export default function ExamHistory() {
             </Card>
           </div>
 
-          {/* Performance Trend Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Performance Trend</CardTitle>
-              <CardDescription>Your exam scores over time</CardDescription>
+          {/* Performance Trend Chart (D3 Linear Style) */}
+          <Card className="border shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/5 border-b py-4">
+              <div className="flex justify-between items-end">
+                <div>
+                  <CardTitle className="text-sm font-black tracking-[0.2em] uppercase italic">D3 Linear: Performance Index</CardTitle>
+                  <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Long-term conceptual mastery tracking</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-none bg-primary" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Score %</span>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="h-64">
+            <CardContent className="pt-10">
+              <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={performanceTrend}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis dataKey="date" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                    <YAxis domain={[0, 100]} tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted/20" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 700 }}
+                      axisLine={false}
+                      tickLine={false}
+                      dy={10}
+                    />
+                    <YAxis
+                      domain={[0, 100]}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 700 }}
+                      axisLine={false}
+                      tickLine={false}
+                      dx={-10}
+                    />
                     <Tooltip
                       contentStyle={{
-                        background: 'hsl(var(--card))',
+                        background: 'hsl(var(--card)/0.95)',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
+                        borderRadius: '0px',
+                        fontSize: '10px',
+                        fontWeight: '900',
+                        boxShadow: 'none',
+                        backdropFilter: 'blur(4px)'
                       }}
+                      cursor={{ stroke: 'hsl(var(--primary))', strokeWidth: 1 }}
                     />
                     <Line
-                      type="monotone"
+                      type="linear"
                       dataKey="score"
                       stroke="hsl(var(--primary))"
-                      strokeWidth={3}
-                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2 }}
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: 'hsl(var(--background))', stroke: 'hsl(var(--primary))', strokeWidth: 1.5 }}
+                      activeDot={{ r: 5, strokeWidth: 0, fill: 'hsl(var(--primary))' }}
+                      animationDuration={2000}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -317,7 +344,7 @@ export default function ExamHistory() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <History className="w-5 h-5" />
+                <ClockCounterClockwise className="w-5 h-5" />
                 Past Exams
               </CardTitle>
               <CardDescription>Click on any exam to view detailed analysis</CardDescription>
@@ -337,8 +364,8 @@ export default function ExamHistory() {
                           exam.score >= 80
                             ? "bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-600"
                             : exam.score >= 60
-                            ? "bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30 text-yellow-600"
-                            : "bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-600"
+                              ? "bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30 text-yellow-600"
+                              : "bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-600"
                         )}
                       >
                         {exam.score}%
@@ -364,12 +391,12 @@ export default function ExamHistory() {
                     <div className="flex items-center gap-3">
                       {exam.improvement > 0 ? (
                         <Badge className="bg-success/10 text-success border-success/20">
-                          <TrendingUp className="w-3 h-3 mr-1" />
+                          <TrendUp className="w-3 h-3 mr-1" />
                           +{exam.improvement}%
                         </Badge>
                       ) : exam.improvement < 0 ? (
                         <Badge className="bg-destructive/10 text-destructive border-destructive/20">
-                          <TrendingDown className="w-3 h-3 mr-1" />
+                          <TrendDown className="w-3 h-3 mr-1" />
                           {exam.improvement}%
                         </Badge>
                       ) : null}
@@ -379,13 +406,13 @@ export default function ExamHistory() {
                           exam.difficulty === "hard"
                             ? "border-destructive/50 text-destructive"
                             : exam.difficulty === "medium"
-                            ? "border-warning/50 text-warning"
-                            : "border-success/50 text-success"
+                              ? "border-warning/50 text-warning"
+                              : "border-success/50 text-success"
                         )}
                       >
                         {exam.difficulty}
                       </Badge>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                      <CaretRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </div>
                   </div>
 
@@ -460,8 +487,8 @@ export default function ExamHistory() {
                       selectedExam.score >= 80
                         ? "text-success"
                         : selectedExam.score >= 60
-                        ? "text-warning"
-                        : "text-destructive"
+                          ? "text-warning"
+                          : "text-destructive"
                     )}
                   >
                     {selectedExam.score}%
@@ -477,7 +504,7 @@ export default function ExamHistory() {
           {/* Quick Actions */}
           <div className="flex gap-4">
             <Button onClick={() => handleReExam(selectedExam.id)} className="gradient-primary">
-              <RotateCcw className="w-4 h-4 mr-2" />
+              <ArrowCounterClockwise className="w-4 h-4 mr-2" />
               Re-take This Exam
             </Button>
             <Button variant="outline" asChild>
@@ -492,7 +519,7 @@ export default function ExamHistory() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-warning" />
+                <Warning className="w-5 h-5 text-warning" />
                 Deep Weak Point Analysis
               </CardTitle>
               <CardDescription>
@@ -539,7 +566,7 @@ export default function ExamHistory() {
                         <div className="p-4 rounded-xl bg-muted/50">
                           <div className="flex items-start gap-3">
                             <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
-                              <AlertTriangle className="w-4 h-4 text-destructive" />
+                              <Warning className="w-4 h-4 text-destructive" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-sm mb-2 text-destructive">
@@ -577,7 +604,7 @@ export default function ExamHistory() {
                         <div className="p-4 rounded-xl bg-secondary/5 border border-secondary/10">
                           <div className="flex items-start gap-3">
                             <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                              <Sparkles className="w-4 h-4 text-secondary" />
+                              <Sparkle className="w-4 h-4 text-secondary" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-sm mb-2 text-secondary">
@@ -658,7 +685,7 @@ export default function ExamHistory() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-success" />
+                <CheckCircle className="w-5 h-5 text-success" />
                 Questions You Got Right
               </CardTitle>
             </CardHeader>
@@ -672,7 +699,7 @@ export default function ExamHistory() {
                       className="p-4 rounded-xl bg-success/5 border border-success/10"
                     >
                       <div className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
                         <div>
                           <Badge variant="secondary" className="mb-1 text-xs">
                             {question.topic}
@@ -690,7 +717,7 @@ export default function ExamHistory() {
           <Card className="border-primary/20">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
+                <ChartBar className="w-5 h-5 text-primary" />
                 AI Performance Summary
               </CardTitle>
             </CardHeader>

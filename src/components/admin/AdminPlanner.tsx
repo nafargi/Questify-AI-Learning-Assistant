@@ -1,7 +1,7 @@
-import { 
-  Calendar, Settings, TrendingUp, Target, Clock,
-  CheckCircle, AlertCircle, Users, BarChart2
-} from "lucide-react";
+import {
+  Calendar, Gear, TrendUp, Target, Clock,
+  CheckCircle, Warning, Users, ChartBar
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -17,27 +17,27 @@ const plannerStats = [
 ];
 
 const adaptiveRules = [
-  { 
+  {
     id: 1, name: "Performance-Based Adjustment", enabled: true,
     description: "Adjust study load based on exam performance trends"
   },
-  { 
+  {
     id: 2, name: "Weak Point Priority", enabled: true,
     description: "Automatically prioritize topics with lower confidence scores"
   },
-  { 
+  {
     id: 3, name: "Spaced Review Scheduling", enabled: true,
     description: "Schedule reviews at optimal intervals for retention"
   },
-  { 
+  {
     id: 4, name: "Deadline Awareness", enabled: true,
     description: "Increase intensity as exam dates approach"
   },
-  { 
+  {
     id: 5, name: "Burnout Prevention", enabled: true,
     description: "Reduce load when patterns indicate fatigue"
   },
-  { 
+  {
     id: 6, name: "Recovery Mode", enabled: false,
     description: "Lighter schedule after intensive study periods"
   },
@@ -77,18 +77,18 @@ const AdminPlanner = () => {
         {/* Adaptive Rules */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <Settings className="w-5 h-5 text-violet-400" />
+            <Gear className="w-5 h-5 text-violet-400" />
             Adaptive Planning Rules
           </h3>
           <div className="space-y-4">
             {adaptiveRules.map((rule) => (
-              <div 
+              <div
                 key={rule.id}
                 className={`p-4 rounded-xl bg-slate-800/50 ${!rule.enabled && "opacity-60"}`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-slate-200 font-medium">{rule.name}</h4>
-                  <Switch 
+                  <Switch
                     checked={rule.enabled}
                     className="data-[state=checked]:bg-violet-600"
                   />
@@ -102,7 +102,7 @@ const AdminPlanner = () => {
         {/* Plan Outcomes */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-violet-400" />
+            <ChartBar className="w-5 h-5 text-violet-400" />
             Plan Outcomes
           </h3>
           <div className="space-y-4">
@@ -139,8 +139,8 @@ const AdminPlanner = () => {
                     {weight.value}%
                   </Badge>
                 </div>
-                <Slider 
-                  defaultValue={[weight.value]} 
+                <Slider
+                  defaultValue={[weight.value]}
                   max={100}
                   className="[&_[role=slider]]:bg-violet-500"
                 />
@@ -163,8 +163,8 @@ const AdminPlanner = () => {
                   25 min
                 </Badge>
               </div>
-              <Slider 
-                defaultValue={[25]} 
+              <Slider
+                defaultValue={[25]}
                 max={120}
                 min={10}
                 step={5}
@@ -178,8 +178,8 @@ const AdminPlanner = () => {
                   4 hours
                 </Badge>
               </div>
-              <Slider 
-                defaultValue={[4]} 
+              <Slider
+                defaultValue={[4]}
                 max={8}
                 min={1}
                 className="[&_[role=slider]]:bg-violet-500"
@@ -192,8 +192,8 @@ const AdminPlanner = () => {
                   Every 50 min
                 </Badge>
               </div>
-              <Slider 
-                defaultValue={[50]} 
+              <Slider
+                defaultValue={[50]}
                 max={90}
                 min={20}
                 step={10}
@@ -213,8 +213,8 @@ const AdminPlanner = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-2">Algorithm Fairness Check</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Last audit completed 2 days ago. The adaptive planning system is performing within 
-              expected fairness parameters. No significant bias detected across user segments. 
+              Last audit completed 2 days ago. The adaptive planning system is performing within
+              expected fairness parameters. No significant bias detected across user segments.
               Next scheduled audit in 5 days.
             </p>
             <Button variant="outline" className="mt-4 bg-transparent border-blue-500/30 text-blue-300 hover:bg-blue-500/10">

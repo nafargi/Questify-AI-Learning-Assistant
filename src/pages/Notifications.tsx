@@ -1,15 +1,15 @@
 import { useState } from "react";
 import {
   Bell,
-  CheckCircle2,
-  AlertTriangle,
+  CheckCircle,
+  Warning,
   Info,
-  Sparkles,
+  Sparkle,
   Clock,
-  Trash2,
-  CheckCheck,
-  Filter,
-} from "lucide-react";
+  Trash,
+  Checks,
+  Funnel,
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -120,11 +120,11 @@ export default function Notifications() {
   const getIcon = (type: Notification["type"]) => {
     switch (type) {
       case "success":
-        return <CheckCircle2 className="w-5 h-5 text-success" />;
+        return <CheckCircle className="w-5 h-5 text-success" />;
       case "warning":
-        return <AlertTriangle className="w-5 h-5 text-warning" />;
+        return <Warning className="w-5 h-5 text-warning" />;
       case "ai":
-        return <Sparkles className="w-5 h-5 text-primary" />;
+        return <Sparkle className="w-5 h-5 text-primary" />;
       default:
         return <Info className="w-5 h-5 text-blue-500" />;
     }
@@ -173,11 +173,11 @@ export default function Notifications() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={markAllAsRead}>
-              <CheckCheck className="w-4 h-4 mr-2" />
+              <Checks className="w-4 h-4 mr-2" />
               Mark all read
             </Button>
             <Button variant="outline" size="sm" onClick={clearAll}>
-              <Trash2 className="w-4 h-4 mr-2" />
+              <Trash className="w-4 h-4 mr-2" />
               Clear all
             </Button>
           </div>
@@ -240,7 +240,7 @@ export default function Notifications() {
                             }}
                             className="p-1 hover:bg-muted rounded-lg transition-colors"
                           >
-                            <Trash2 className="w-4 h-4 text-muted-foreground" />
+                            <Trash className="w-4 h-4 text-muted-foreground" />
                           </button>
                         </div>
                       </div>

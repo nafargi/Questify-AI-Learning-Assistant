@@ -1,7 +1,7 @@
-import { 
-  MessageCircle, Star, ThumbsUp, ThumbsDown, Filter,
-  CheckCircle, Clock, AlertCircle, TrendingUp, Search
-} from "lucide-react";
+import {
+  ChatCircle, Star, ThumbsUp, ThumbsDown, Funnel,
+  CheckCircle, Clock, Warning, TrendUp, MagnifyingGlass
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,38 +9,38 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 
 const feedbackStats = [
-  { label: "Total Feedback", value: "8,234", change: "+12%", icon: MessageCircle },
+  { label: "Total Feedback", value: "8,234", change: "+12%", icon: ChatCircle },
   { label: "Avg. Rating", value: "4.6/5", change: "+0.2", icon: Star },
-  { label: "Open Issues", value: "127", change: "-8%", icon: AlertCircle },
+  { label: "Open Issues", value: "127", change: "-8%", icon: Warning },
   { label: "Response Rate", value: "94%", change: "+3%", icon: CheckCircle },
 ];
 
 const feedbackItems = [
-  { 
+  {
     id: 1, type: "feature", title: "Add dark mode for notes",
     description: "Would love to have a dark mode option when studying at night.",
     user: "Sarah Chen", rating: 4, votes: 234, status: "planned",
     time: "2 hours ago"
   },
-  { 
+  {
     id: 2, type: "bug", title: "Exam timer not saving progress",
     description: "When I refresh the page during an exam, my timer resets to zero.",
     user: "Marcus Johnson", rating: null, votes: 89, status: "in-progress",
     time: "5 hours ago"
   },
-  { 
+  {
     id: 3, type: "improvement", title: "Better mobile experience",
     description: "The mobile app needs better touch controls for the study room.",
     user: "Emily Rodriguez", rating: 3, votes: 156, status: "under-review",
     time: "1 day ago"
   },
-  { 
+  {
     id: 4, type: "feature", title: "Group study sessions",
     description: "Allow multiple users to join the same study room and collaborate.",
     user: "David Kim", rating: 5, votes: 567, status: "planned",
     time: "2 days ago"
   },
-  { 
+  {
     id: 5, type: "praise", title: "Amazing AI explanations!",
     description: "Questy helped me finally understand calculus derivatives. Thank you!",
     user: "Lisa Wang", rating: 5, votes: 45, status: "acknowledged",
@@ -106,7 +106,7 @@ const AdminFeedback = () => {
         {/* Category Breakdown */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-violet-400" />
+            <TrendUp className="w-5 h-5 text-violet-400" />
             Feedback Categories
           </h3>
           <div className="space-y-4">
@@ -126,25 +126,25 @@ const AdminFeedback = () => {
         <Card className="bg-slate-900/50 border-slate-800 p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-violet-400" />
+              <ChatCircle className="w-5 h-5 text-violet-400" />
               Recent Feedback
             </h3>
             <div className="flex items-center gap-3">
               <div className="relative w-48">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   placeholder="Search..."
                   className="pl-10 bg-slate-800 border-slate-700 text-slate-200 text-sm"
                 />
               </div>
               <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-200">
-                <Filter className="w-4 h-4 mr-1" /> Filter
+                <Funnel className="w-4 h-4 mr-1" /> Filter
               </Button>
             </div>
           </div>
           <div className="space-y-4">
             {feedbackItems.map((item) => (
-              <div 
+              <div
                 key={item.id}
                 className="p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-all cursor-pointer"
               >
@@ -194,7 +194,7 @@ const AdminFeedback = () => {
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-white mb-2">Top Feature Request</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
-              "Group study sessions" has received <span className="text-violet-300 font-medium">567 votes</span> and 
+              "Group study sessions" has received <span className="text-violet-300 font-medium">567 votes</span> and
               is the most requested feature this month. Consider prioritizing this for the next sprint.
             </p>
             <div className="flex gap-3 mt-4">

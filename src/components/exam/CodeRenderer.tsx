@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { cn } from '../../lib/utils';
-import { Code, Terminal } from 'lucide-react';
+import { Code, Terminal } from '@phosphor-icons/react';
 
 interface CodeRendererProps {
     question: {

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { 
-  BookOpen, Plus, Edit, Trash2, Eye, EyeOff,
-  TrendingUp, Users, Clock, Star
-} from "lucide-react";
+import {
+  BookOpen, Plus, PencilSimple, Trash, Eye, EyeSlash,
+  TrendUp, Users, Clock, Star
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -10,44 +10,44 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
 const techniques = [
-  { 
-    id: 1, name: "Cornell Method", enabled: true, 
+  {
+    id: 1, name: "Cornell Method", enabled: true,
     description: "Divide notes into cues, notes, and summary sections",
     usage: 34567, effectiveness: 87, avgTime: "25 min",
     category: "Note-taking"
   },
-  { 
-    id: 2, name: "Feynman Technique", enabled: true, 
+  {
+    id: 2, name: "Feynman Technique", enabled: true,
     description: "Explain concepts in simple terms to identify gaps",
     usage: 28934, effectiveness: 92, avgTime: "30 min",
     category: "Understanding"
   },
-  { 
-    id: 3, name: "Pomodoro", enabled: true, 
+  {
+    id: 3, name: "Pomodoro", enabled: true,
     description: "Work in focused 25-minute intervals with breaks",
     usage: 45678, effectiveness: 85, avgTime: "120 min",
     category: "Time Management"
   },
-  { 
-    id: 4, name: "Mind Mapping", enabled: true, 
+  {
+    id: 4, name: "Mind Mapping", enabled: true,
     description: "Visual representation of connected ideas",
     usage: 21345, effectiveness: 78, avgTime: "20 min",
     category: "Note-taking"
   },
-  { 
-    id: 5, name: "Spaced Repetition", enabled: true, 
+  {
+    id: 5, name: "Spaced Repetition", enabled: true,
     description: "Review material at increasing intervals",
     usage: 38912, effectiveness: 94, avgTime: "15 min",
     category: "Retention"
   },
-  { 
-    id: 6, name: "Active Recall", enabled: true, 
+  {
+    id: 6, name: "Active Recall", enabled: true,
     description: "Test yourself without looking at notes",
     usage: 32456, effectiveness: 91, avgTime: "20 min",
     category: "Retention"
   },
-  { 
-    id: 7, name: "Zettelkasten", enabled: false, 
+  {
+    id: 7, name: "Zettelkasten", enabled: false,
     description: "Interconnected note cards for knowledge building",
     usage: 5678, effectiveness: 89, avgTime: "35 min",
     category: "Note-taking"
@@ -58,7 +58,7 @@ const AdminTechniques = () => {
   const [techniqueList, setTechniqueList] = useState(techniques);
 
   const toggleTechnique = (id: number) => {
-    setTechniqueList(techniqueList.map(t => 
+    setTechniqueList(techniqueList.map(t =>
       t.id === id ? { ...t, enabled: !t.enabled } : t
     ));
   };
@@ -122,7 +122,7 @@ const AdminTechniques = () => {
         </div>
         <div className="divide-y divide-slate-800">
           {techniqueList.map((technique) => (
-            <div 
+            <div
               key={technique.id}
               className={`p-6 hover:bg-slate-800/30 transition-all ${!technique.enabled && "opacity-60"}`}
             >
@@ -157,16 +157,16 @@ const AdminTechniques = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Switch 
+                  <Switch
                     checked={technique.enabled}
                     onCheckedChange={() => toggleTechnique(technique.id)}
                     className="data-[state=checked]:bg-violet-600"
                   />
                   <button className="p-2 hover:bg-slate-700 rounded-lg transition-all">
-                    <Edit className="w-4 h-4 text-slate-400" />
+                    <PencilSimple className="w-4 h-4 text-slate-400" />
                   </button>
                   <button className="p-2 hover:bg-red-500/20 rounded-lg transition-all">
-                    <Trash2 className="w-4 h-4 text-red-400" />
+                    <Trash className="w-4 h-4 text-red-400" />
                   </button>
                 </div>
               </div>

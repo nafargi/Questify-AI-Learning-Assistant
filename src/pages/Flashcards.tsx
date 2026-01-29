@@ -1,15 +1,15 @@
 import { useState } from "react";
 import {
-  RotateCcw,
+  ArrowCounterClockwise,
   Check,
   X,
-  ChevronLeft,
-  ChevronRight,
+  CaretLeft,
+  CaretRight,
   Shuffle,
-  BarChart3,
-  Sparkles,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  ChartBar,
+  Sparkle,
+} from "@phosphor-icons/react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -84,52 +84,47 @@ export default function Flashcards() {
   if (showStats) {
     return (
       <Layout>
-        <div className="min-h-screen p-6 lg:p-8 max-w-2xl mx-auto flex items-center">
-          <Card className="w-full animate-fade-in">
-            <CardHeader className="text-center">
-              <div className="w-20 h-20 rounded-full gradient-primary mx-auto mb-4 flex items-center justify-center">
-                <Sparkles className="w-10 h-10 text-primary-foreground" />
+        <div className="min-h-screen p-6 lg:p-12 max-w-2xl mx-auto flex items-center">
+          <Card className="w-full rounded-3xl border-none shadow-2xl overflow-hidden animate-fade-in glass-card">
+            <CardHeader className="text-center p-12 bg-primary/5 border-b">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 mx-auto mb-6 flex items-center justify-center">
+                <ChartBar className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl">Session Complete!</CardTitle>
+              <CardTitle className="text-3xl font-bold mb-2">Study Session Complete!</CardTitle>
+              <CardDescription>You've reviewed all the flashcards in this deck</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="p-4 rounded-xl bg-muted">
-                  <div className="text-3xl font-bold">{flashcards.length}</div>
-                  <p className="text-sm text-muted-foreground">Total Cards</p>
+            <CardContent className="p-8 md:p-12 space-y-10">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-muted/50 text-center">
+                  <p className="text-2xl font-bold">{flashcards.length}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Total</p>
                 </div>
-                <div className="p-4 rounded-xl bg-success/10">
-                  <div className="text-3xl font-bold text-success">{knownCards.length}</div>
-                  <p className="text-sm text-muted-foreground">Knew It</p>
+                <div className="p-4 rounded-2xl bg-success/10 text-success text-center">
+                  <p className="text-2xl font-bold">{knownCards.length}</p>
+                  <p className="text-xs mt-1">Mastered</p>
                 </div>
-                <div className="p-4 rounded-xl bg-destructive/10">
-                  <div className="text-3xl font-bold text-destructive">{unknownCards.length}</div>
-                  <p className="text-sm text-muted-foreground">Need Review</p>
+                <div className="p-4 rounded-2xl bg-destructive/10 text-destructive text-center">
+                  <p className="text-2xl font-bold">{unknownCards.length}</p>
+                  <p className="text-xs mt-1">Need Review</p>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Mastery Rate</span>
-                  <span className="font-medium">{Math.round(masteryRate)}%</span>
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <span className="text-sm font-bold">Mastery Rate</span>
+                  <span className="text-2xl font-bold text-primary">{Math.round(masteryRate)}%</span>
                 </div>
-                <Progress value={masteryRate} className="h-3" />
+                <Progress value={masteryRate} className="h-3 rounded-full" />
               </div>
 
-              <div className="flex flex-col gap-3">
-                <Button onClick={restartSession} className="gradient-primary">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Study Again
+              <div className="flex gap-4">
+                <Button onClick={restartSession} className="flex-1 rounded-full h-12 font-bold shadow-lg shadow-primary/20">
+                  <ArrowCounterClockwise className="mr-2 w-4 h-4" />
+                  Restart Session
                 </Button>
-                <Button onClick={shuffleCards} variant="outline">
-                  <Shuffle className="w-4 h-4 mr-2" />
-                  Shuffle & Restart
-                </Button>
-                <Button variant="outline" asChild>
-                  <a href="/dashboard">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    View Dashboard
-                  </a>
+                <Button onClick={shuffleCards} variant="outline" className="flex-1 rounded-full h-12 font-bold">
+                  <Shuffle className="mr-2 w-4 h-4" />
+                  Shuffle & Retry
                 </Button>
               </div>
             </CardContent>
@@ -141,172 +136,154 @@ export default function Flashcards() {
 
   return (
     <Layout>
-      <div className="min-h-screen p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="container py-8 max-w-4xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Flashcards</h1>
-            <p className="text-muted-foreground">
-              Card {currentIndex + 1} of {flashcards.length}
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight">Flashcards</h1>
+            <p className="text-muted-foreground mt-1">Reviewing {currentIndex + 1} of {flashcards.length} cards</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={shuffleCards}>
-              <Shuffle className="w-4 h-4" />
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={shuffleCards} className="rounded-full px-4">
+              <Shuffle className="mr-2 w-4 h-4" />
+              Shuffle
             </Button>
-            <Button variant="outline" size="icon" onClick={restartSession}>
-              <RotateCcw className="w-4 h-4" />
+            <Button variant="outline" size="sm" onClick={restartSession} className="rounded-full px-4 text-muted-foreground">
+              <ArrowCounterClockwise className="mr-2 w-4 h-4" />
+              Reset
             </Button>
           </div>
         </div>
 
-        {/* Progress */}
-        <div className="mb-8">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-muted-foreground">Progress</span>
-            <span>
-              <span className="text-success">{knownCards.length} known</span>
-              {" • "}
-              <span className="text-destructive">{unknownCards.length} review</span>
-            </span>
+        {/* ProgressBar */}
+        <div className="space-y-3">
+          <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <span>Overall Progress</span>
+            <div className="flex gap-4">
+              <span className="text-success">{knownCards.length} Mastered</span>
+              <span className="text-destructive">{unknownCards.length} Review</span>
+            </div>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-2 rounded-full" />
         </div>
 
-        {/* Flashcard */}
-        <div className="mb-8 perspective-1000">
-          <div
-            onClick={handleFlip}
-            className={cn(
-              "relative w-full aspect-[3/2] cursor-pointer transition-transform duration-500 transform-style-preserve-3d",
-              isFlipped && "rotate-y-180"
-            )}
-            style={{
-              transformStyle: "preserve-3d",
-              transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-            }}
-          >
-            {/* Front */}
-            <Card
+        {/* Card and Controls */}
+        <div className="space-y-12">
+          {/* Card Wrapper with Perspective */}
+          <div className="relative aspect-[16/10] md:aspect-[21/9] perspective-1000 group">
+            <div
+              onClick={handleFlip}
               className={cn(
-                "absolute inset-0 backface-hidden flex flex-col",
-                isFlipped && "invisible"
+                "relative w-full h-full transition-all duration-500 cursor-pointer preserve-3d",
+                isFlipped && "rotate-y-180"
               )}
+              style={{
+                transformStyle: "preserve-3d",
+                transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
             >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <Badge variant="secondary">
-                    {getCourseInfo(currentCard.courseId)?.icon}{" "}
+              {/* Front Side */}
+              <Card className="absolute inset-0 backface-hidden rounded-3xl border shadow-xl flex flex-col overflow-hidden bg-card">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <Badge variant="secondary" className="rounded-full border-none">
                     {getCourseInfo(currentCard.courseId)?.name}
                   </Badge>
                   <Badge
                     variant="outline"
                     className={cn(
-                      currentCard.difficulty === "easy"
-                        ? "border-success text-success"
-                        : currentCard.difficulty === "medium"
-                        ? "border-warning text-warning"
-                        : "border-destructive text-destructive"
+                      "rounded-full border-none",
+                      currentCard.difficulty === 'easy' ? "bg-success/10 text-success" :
+                        currentCard.difficulty === 'medium' ? "bg-warning/10 text-warning" : "bg-destructive/10 text-destructive"
                     )}
                   >
                     {currentCard.difficulty}
                   </Badge>
+                </CardHeader>
+                <CardContent className="flex-1 flex items-center justify-center p-8 md:p-16 text-center">
+                  <h2 className="text-2xl md:text-4xl font-bold leading-tight">{currentCard.front}</h2>
+                </CardContent>
+                <div className="p-4 text-center text-xs font-bold text-muted-foreground bg-muted/30 border-t">
+                  Click card to reveal answer
                 </div>
-              </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center p-8">
-                <p className="text-xl text-center font-medium">{currentCard.front}</p>
-              </CardContent>
-              <div className="p-4 text-center text-sm text-muted-foreground border-t">
-                Click to reveal answer
-              </div>
-            </Card>
+              </Card>
 
-            {/* Back */}
-            <Card
-              className={cn(
-                "absolute inset-0 flex flex-col gradient-primary text-primary-foreground",
-                !isFlipped && "invisible"
-              )}
-              style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
-            >
-              <CardHeader className="pb-2">
-                <Badge variant="secondary" className="w-fit bg-primary-foreground/20 text-primary-foreground">
-                  Answer
-                </Badge>
-              </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center p-8">
-                <p className="text-lg text-center">{currentCard.back}</p>
-              </CardContent>
-              <div className="p-4 text-center text-sm text-primary-foreground/70 border-t border-primary-foreground/20">
-                Click to flip back
-              </div>
-            </Card>
+              {/* Back Side */}
+              <Card
+                className="absolute inset-0 rounded-3xl border-2 border-primary shadow-2xl flex flex-col overflow-hidden bg-primary/5 backface-hidden"
+                style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+              >
+                <CardHeader className="pb-2">
+                  <Badge className="w-fit rounded-full">ANSWER</Badge>
+                </CardHeader>
+                <CardContent className="flex-1 flex items-center justify-center p-8 md:p-16 text-center">
+                  <h2 className="text-xl md:text-3xl font-medium leading-relaxed">{currentCard.back}</h2>
+                </CardContent>
+                <div className="p-4 text-center text-xs font-bold text-primary bg-primary/10 border-t">
+                  Click to see question
+                </div>
+              </Card>
+            </div>
           </div>
-        </div>
 
-        {/* Controls */}
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={previousCard}
-            disabled={currentIndex === 0}
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Previous
-          </Button>
-
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <Button
-              variant="outline"
-              size="lg"
-              className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-              onClick={handleDontKnow}
+              variant="ghost"
+              onClick={previousCard}
+              disabled={currentIndex === 0}
+              className="rounded-full px-6 text-muted-foreground order-2 md:order-1"
             >
-              <X className="w-5 h-5 mr-2" />
-              Don't Know
+              <CaretLeft className="mr-2 w-4 h-4" />
+              Previous
             </Button>
+
+            <div className="flex gap-4 order-1 md:order-2 w-full md:w-auto">
+              <Button
+                variant="outline"
+                onClick={handleDontKnow}
+                className="flex-1 md:flex-none h-14 rounded-2xl border-destructive/20 text-destructive hover:bg-destructive hover:text-white font-bold px-10 transition-colors"
+                disabled={!isFlipped}
+              >
+                <X className="mr-2 w-5 h-5" />
+                Doubtful
+              </Button>
+              <Button
+                onClick={handleKnow}
+                className="flex-1 md:flex-none h-14 rounded-2xl bg-success text-success-foreground hover:bg-success/90 font-bold px-10 shadow-lg shadow-success/20 transition-all active:scale-95"
+                disabled={!isFlipped}
+              >
+                <Check className="mr-2 w-5 h-5" />
+                Know it!
+              </Button>
+            </div>
+
             <Button
-              size="lg"
-              className="bg-success hover:bg-success/90 text-success-foreground"
-              onClick={handleKnow}
+              variant="ghost"
+              onClick={nextCard}
+              className="rounded-full px-6 text-muted-foreground order-3"
             >
-              <Check className="w-5 h-5 mr-2" />
-              Know It
+              Skip
+              <CaretRight className="ml-2 w-4 h-4" />
             </Button>
           </div>
 
-          <Button
-            variant="outline"
-            onClick={nextCard}
-            disabled={currentIndex === flashcards.length - 1}
-          >
-            Skip
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
-
-        {/* Card Navigator */}
-        <div className="mt-8">
-          <div className="flex flex-wrap gap-2 justify-center">
-            {flashcards.map((card, index) => (
+          {/* Quick Navigator */}
+          <div className="pt-8 border-t flex flex-wrap justify-center gap-2">
+            {flashcards.map((card, idx) => (
               <button
                 key={card.id}
                 onClick={() => {
-                  setCurrentIndex(index);
+                  setCurrentIndex(idx);
                   setIsFlipped(false);
                 }}
                 className={cn(
-                  "w-8 h-8 rounded-lg text-xs font-medium transition-all",
-                  currentIndex === index
-                    ? "gradient-primary text-primary-foreground"
-                    : knownCards.includes(card.id)
-                    ? "bg-success/10 text-success border border-success/20"
-                    : unknownCards.includes(card.id)
-                    ? "bg-destructive/10 text-destructive border border-destructive/20"
-                    : "bg-muted hover:bg-muted/80"
+                  "w-8 h-8 rounded-lg text-[10px] font-bold transition-all border",
+                  currentIndex === idx ? "bg-primary text-primary-foreground border-primary scale-110 shadow-md" :
+                    knownCards.includes(card.id) ? "bg-success/10 text-success border-success/20" :
+                      unknownCards.includes(card.id) ? "bg-destructive/10 text-destructive border-destructive/20" :
+                        "bg-muted/50 text-muted-foreground border-transparent hover:bg-muted"
                 )}
               >
-                {index + 1}
+                {idx + 1}
               </button>
             ))}
           </div>

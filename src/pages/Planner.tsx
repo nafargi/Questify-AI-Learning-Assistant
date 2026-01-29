@@ -2,13 +2,15 @@ import { useState } from "react";
 import {
   Calendar,
   Clock,
-  CheckCircle2,
+  CheckCircle,
   Circle,
   Plus,
   Flame,
   Target,
-  TrendingUp,
-} from "lucide-react";
+  TrendUp,
+  DotsThree,
+  ArrowRight
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,14 +19,13 @@ import { cn } from "@/lib/utils";
 import { weeklyPlan, studentProfile, courses } from "@/data/mockData";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const timeSlots = ["06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"];
 
 export default function Planner() {
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [plan, setPlan] = useState(weeklyPlan);
 
   const todayBlocks = plan.filter((block) => block.day === selectedDay);
-  
+
   const toggleComplete = (blockId: string) => {
     setPlan((prev) =>
       prev.map((block) =>
@@ -33,282 +34,145 @@ export default function Planner() {
     );
   };
 
-  const completedToday = todayBlocks.filter((b) => b.completed).length;
-  const totalToday = todayBlocks.length;
-
-  const getPriorityColor = (priority: string) => {
+  const getPriorityStyles = (priority: string) => {
     switch (priority) {
-      case "high":
-        return "border-destructive bg-destructive/5";
-      case "medium":
-        return "border-warning bg-warning/5";
-      default:
-        return "border-muted bg-muted/5";
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "exam":
-        return "📝";
-      case "review":
-        return "🔄";
-      case "notes":
-        return "📒";
-      case "flashcards":
-        return "⚡";
-      default:
-        return "📚";
+      case "high": return { color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20" };
+      case "medium": return { color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20" };
+      default: return { color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" };
     }
   };
 
   return (
     <Layout>
-      <div className="min-h-screen p-6 lg:p-8 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Study Planner</h1>
-            <p className="text-muted-foreground">
-              Your personalized weekly study schedule
+      <div className="min-h-screen p-6 lg:p-12 max-w-7xl mx-auto space-y-12">
+
+        {/* Modern Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b pb-8">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
+              <Calendar weight="fill" /> Active Syllabus
+            </div>
+            <h1 className="text-4xl font-black tracking-tight">Structured Timeline</h1>
+            <p className="text-muted-foreground max-w-xl">
+              Your generated path to mastery. Adjusted daily based on your learning velocity.
             </p>
           </div>
-          <Button className="gradient-primary">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Study Block
+
+          <Button className="h-12 px-6 rounded-full font-bold shadow-lg">
+            <Plus className="mr-2" weight="bold" />
+            Add Manual Block
           </Button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card className="hover-lift">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Flame className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{studentProfile.currentStreak}</p>
-                  <p className="text-xs text-muted-foreground">Day Streak</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover-lift">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{completedToday}/{totalToday}</p>
-                  <p className="text-xs text-muted-foreground">Today's Progress</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover-lift">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-secondary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">7:00 PM</p>
-                  <p className="text-xs text-muted-foreground">Peak Time</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover-lift">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">23h</p>
-                  <p className="text-xs text-muted-foreground">This Week</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Dynamic Day Selector */}
+        <div className="flex flex-wrap gap-2">
+          {days.map(day => (
+            <button
+              key={day}
+              onClick={() => setSelectedDay(day)}
+              className={cn(
+                "px-6 py-3 rounded-xl font-bold transition-all border text-sm",
+                selectedDay === day
+                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105"
+                  : "bg-card hover:bg-muted text-muted-foreground"
+              )}
+            >
+              {day}
+              {plan.filter(b => b.day === day && b.completed).length > 2 && (
+                <span className="ml-2 inline-block w-1.5 h-1.5 bg-green-400 rounded-full" />
+              )}
+            </button>
+          ))}
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6">
-          {/* Day Selector */}
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Week View
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {days.map((day) => {
-                const dayBlocks = plan.filter((b) => b.day === day);
-                const completed = dayBlocks.filter((b) => b.completed).length;
-                const isToday = day === "Monday"; // Simulated
+        <div className="grid lg:grid-cols-3 gap-12">
+          {/* Timeline Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {todayBlocks.length > 0 ? (
+              <div className="relative border-l-2 border-muted/30 ml-4 space-y-8 py-2">
+                {todayBlocks.map((block, index) => {
+                  const course = courses.find(c => c.id === block.courseId);
+                  const style = getPriorityStyles(block.priority);
 
-                return (
-                  <button
-                    key={day}
-                    onClick={() => setSelectedDay(day)}
-                    className={cn(
-                      "w-full p-3 rounded-xl text-left transition-all flex items-center justify-between",
-                      selectedDay === day
-                        ? "gradient-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
+                  return (
+                    <div key={block.id} className="relative pl-8 group">
+                      {/* Timeline Node */}
+                      <div className={cn(
+                        "absolute -left-2.5 top-0 w-5 h-5 rounded-full border-4 border-background transition-colors",
+                        block.completed ? "bg-green-500" : "bg-muted-foreground/30 group-hover:bg-primary"
+                      )} />
+
+                      {/* Card */}
                       <div
+                        onClick={() => toggleComplete(block.id)}
                         className={cn(
-                          "w-2 h-2 rounded-full",
-                          isToday ? "bg-success" : "bg-muted-foreground/30"
+                          "p-6 rounded-2xl border bg-card transition-all cursor-pointer hover:shadow-md hover:border-primary/20",
+                          block.completed && "opacity-50 grayscale"
                         )}
-                      />
-                      <span className="font-medium text-sm">{day}</span>
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        selectedDay === day && "bg-primary-foreground/20 text-primary-foreground"
-                      )}
-                    >
-                      {completed}/{dayBlocks.length}
-                    </Badge>
-                  </button>
-                );
-              })}
-            </CardContent>
-          </Card>
-
-          {/* Day Schedule */}
-          <div className="lg:col-span-3 space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{selectedDay}'s Schedule</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {todayBlocks.length > 0 ? (
-                  <div className="space-y-3">
-                    {todayBlocks.map((block) => {
-                      const course = courses.find((c) => c.id === block.courseId);
-                      
-                      return (
-                        <div
-                          key={block.id}
-                          className={cn(
-                            "p-4 rounded-xl border-l-4 transition-all",
-                            getPriorityColor(block.priority),
-                            block.completed && "opacity-60"
-                          )}
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex items-start gap-4">
-                              <button
-                                onClick={() => toggleComplete(block.id)}
-                                className="mt-1"
-                              >
-                                {block.completed ? (
-                                  <CheckCircle2 className="w-5 h-5 text-success" />
-                                ) : (
-                                  <Circle className="w-5 h-5 text-muted-foreground" />
-                                )}
-                              </button>
-                              <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="text-lg">{getTypeIcon(block.type)}</span>
-                                  <h4
-                                    className={cn(
-                                      "font-medium",
-                                      block.completed && "line-through"
-                                    )}
-                                  >
-                                    {block.topic}
-                                  </h4>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                  <span>{course?.icon} {block.courseName}</span>
-                                  <span>•</span>
-                                  <span className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    {block.startTime} - {block.endTime}
-                                  </span>
-                                </div>
-                              </div>
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className={cn("p-2 rounded-lg", style.bg, style.color)}>
+                              {block.type === 'exam' ? <Target size={18} weight="fill" /> : <Clock size={18} weight="fill" />}
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Badge
-                                variant="outline"
-                                className={cn(
-                                  block.priority === "high"
-                                    ? "border-destructive text-destructive"
-                                    : block.priority === "medium"
-                                    ? "border-warning text-warning"
-                                    : "border-muted-foreground text-muted-foreground"
-                                )}
-                              >
-                                {block.priority}
-                              </Badge>
-                              <Button variant="ghost" size="sm">
-                                Start
-                              </Button>
-                            </div>
+                            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                              {block.startTime} - {block.endTime}
+                            </span>
                           </div>
+                          <button className="text-muted-foreground hover:text-primary">
+                            {block.completed ? <CheckCircle size={24} weight="fill" className="text-green-500" /> : <Circle size={24} />}
+                          </button>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-                      <Calendar className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="font-medium mb-2">No study blocks scheduled</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Add a study block to start planning your day
-                    </p>
-                    <Button className="gradient-primary">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Study Block
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
 
-            {/* AI Suggestions */}
-            <Card className="border-primary/20">
+                        <h3 className="text-xl font-bold mb-2">{block.topic}</h3>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span className="font-medium text-foreground">{course?.name}</span>
+                          <span>•</span>
+                          <span className="capitalize">{block.type}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-20 border-2 border-dashed rounded-3xl bg-muted/10">
+                <p className="text-muted-foreground font-medium">No schedule for {selectedDay}</p>
+              </div>
+            )}
+          </div>
+
+          {/* AI Insight Column */}
+          <div className="space-y-6">
+            <Card className="bg-primary/5 border-primary/20 overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary" />
-                  AI Suggestions
+                <CardTitle className="flex items-center gap-2 text-primary">
+                  <Target weight="fill" /> Daily Target
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-                    <p className="text-sm">
-                      <span className="font-medium">Optimal timing:</span> Based on your performance data, 
-                      schedule your challenging topics (Algorithms, Linear Algebra) during your peak hours: 7-9 PM.
-                    </p>
-                  </div>
-                  <div className="p-4 rounded-xl bg-muted/50">
-                    <p className="text-sm">
-                      <span className="font-medium">Focus recommendation:</span> You haven't reviewed 
-                      Database Normalization in 5 days. Consider adding a 30-min review session.
-                    </p>
-                  </div>
+                <div className="text-4xl font-black mb-2">4.5h</div>
+                <p className="text-sm text-muted-foreground mb-4">Focused work scheduled for today.</p>
+                <div className="h-2 bg-background rounded-full overflow-hidden">
+                  <div className="h-full w-[65%] bg-primary rounded-full" />
                 </div>
               </CardContent>
             </Card>
+
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground ml-1">Suggestions</h3>
+              {["Review 'Linear Algebra' notes (High Decay)", "Take a 5m break", "Prepare for tomorrow's Mock Exam"].map((item, i) => (
+                <div key={i} className="p-4 rounded-xl border bg-card text-sm font-medium flex gap-3 items-center group cursor-pointer hover:border-primary/50 transition-colors">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  {item}
+                  <ArrowRight className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-primary" size={14} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+
       </div>
     </Layout>
   );

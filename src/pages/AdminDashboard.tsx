@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { 
-  LayoutDashboard, Users, FileText, ClipboardList, BookOpen, 
-  Brain, MessageSquare, BarChart3, Bell, Calendar, Shield, 
-  Activity, MessageCircle, Settings, LogOut, ChevronRight,
-  TrendingUp, TrendingDown, Minus
-} from "lucide-react";
+import {
+  Layout, Users, FileText, ClipboardText, BookOpen,
+  Brain, ChatCircle, ChartBar, Bell, Calendar, Shield,
+  Pulse, Gear, SignOut, CaretRight,
+  TrendUp, TrendDown, Minus
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminUsers from "@/components/admin/AdminUsers";
@@ -21,19 +21,19 @@ import AdminHealth from "@/components/admin/AdminHealth";
 import AdminFeedback from "@/components/admin/AdminFeedback";
 
 const menuItems = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "overview", label: "Overview", icon: Layout },
   { id: "users", label: "User Management", icon: Users },
   { id: "content", label: "Content Oversight", icon: FileText },
-  { id: "exams", label: "Exam System", icon: ClipboardList },
+  { id: "exams", label: "Exam System", icon: ClipboardText },
   { id: "techniques", label: "Teaching Techniques", icon: BookOpen },
   { id: "ai-config", label: "AI Configuration", icon: Brain },
-  { id: "questy", label: "Questy AI Monitor", icon: MessageSquare },
-  { id: "analytics", label: "Analytics & Insights", icon: BarChart3 },
+  { id: "questy", label: "Questy AI Monitor", icon: ChatCircle },
+  { id: "analytics", label: "Analytics & Insights", icon: ChartBar },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "planner", label: "Planner Logic", icon: Calendar },
   { id: "security", label: "Security & Access", icon: Shield },
-  { id: "health", label: "System Health", icon: Activity },
-  { id: "feedback", label: "Feedback", icon: MessageCircle },
+  { id: "health", label: "System Health", icon: Pulse },
+  { id: "feedback", label: "Feedback", icon: ChatCircle },
 ];
 
 const AdminDashboard = () => {
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-950 flex">
       {/* Sidebar */}
-      <aside 
+      <aside
         className={cn(
           "bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300",
           sidebarCollapsed ? "w-20" : "w-72"
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
                 <>
                   <span className="flex-1 text-left">{item.label}</span>
                   {activeSection === item.id && (
-                    <ChevronRight className="w-4 h-4" />
+                    <CaretRight className="w-4 h-4" />
                   )}
                 </>
               )}
@@ -112,11 +112,11 @@ const AdminDashboard = () => {
         {/* Footer */}
         <div className="p-4 border-t border-slate-800 space-y-2">
           <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
-            <Settings className="w-5 h-5" />
+            <Gear className="w-5 h-5" />
             {!sidebarCollapsed && <span>Settings</span>}
           </button>
           <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all">
-            <LogOut className="w-5 h-5" />
+            <SignOut className="w-5 h-5" />
             {!sidebarCollapsed && <span>Logout</span>}
           </button>
         </div>

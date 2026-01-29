@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-    ChevronLeft,
+    CaretLeft,
     Highlighter,
-    Type,
-    Share2,
+    TextT,
+    ShareNetwork,
     Download,
-    LayoutDashboard,
+    Layout,
     List,
-    Grid2X2
-} from "lucide-react";
+    SquaresFour
+} from "@phosphor-icons/react";
 import { TopicMaster } from '@/data/mockTopics';
 import { noteMethods } from '@/data/mockData';
 import {
@@ -77,13 +77,13 @@ export default function NoteRoom({ topic, initialMethod, onClose }: NoteRoomProp
                         onClick={onClose}
                         className="rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground"
                     >
-                        <ChevronLeft className="w-5 h-5" />
+                        <CaretLeft className="w-5 h-5" />
                     </Button>
 
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
                             <span className="flex items-center gap-1 hover:text-primary cursor-pointer transition-colors" onClick={onClose}>
-                                <LayoutDashboard className="w-3 h-3" /> Hub
+                                <Layout className="w-3 h-3" /> Hub
                             </span>
                             <span className="opacity-50">/</span>
                             <span className="text-foreground font-bold">{topic.courseId.toUpperCase()}</span>
@@ -101,7 +101,7 @@ export default function NoteRoom({ topic, initialMethod, onClose }: NoteRoomProp
                             <Button variant="outline" size="sm" className="hidden sm:flex gap-2 h-8 px-3">
                                 <span className="text-lg">{currentMethodInfo?.icon}</span>
                                 <span>{currentMethodInfo?.name}</span>
-                                <ChevronLeft className="w-3 h-3 rotate-270 opacity-50" />
+                                <CaretLeft className="w-3 h-3 rotate-270 opacity-50" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56">
@@ -133,7 +133,7 @@ export default function NoteRoom({ topic, initialMethod, onClose }: NoteRoomProp
                         <Download className="w-4 h-4" />
                     </Button>
                     <Button variant="ghost" size="icon" className="rounded-full">
-                        <Share2 className="w-4 h-4" />
+                        <ShareNetwork className="w-4 h-4" />
                     </Button>
                 </div>
             </header>

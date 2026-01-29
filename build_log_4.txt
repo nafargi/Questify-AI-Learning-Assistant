@@ -1,0 +1,34 @@
+
+> vite_react_shadcn_ts@0.0.0 build
+> vite build
+
+[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[32mΓ£ô[39m 71 modules transformed.
+x Build failed in 5.04s
+error during build:
+[vite:esbuild] Transform failed with 1 error:
+C:/QUESTY/questifynafi/src/components/admin/AdminUsers.tsx:5:0: ERROR: Unexpected "}"
+file: C:/QUESTY/questifynafi/src/components/admin/AdminUsers.tsx:5:0
+
+Unexpected "}"
+3  |    Shield, Mail, Download, CaretLeft, CaretRight,
+4  |    Eye, Ban, RefreshCw
+5  |  } from "@phosphor-icons/react";
+   |  ^
+6  |  import { Card } from "@/components/ui/card";
+7  |  import { Input } from "@/components/ui/input";
+
+    at failureErrorWithLog (C:\QUESTY\questifynafi\node_modules\esbuild\lib\main.js:1472:15)
+    at C:\QUESTY\questifynafi\node_modules\esbuild\lib\main.js:755:50
+    at responseCallbacks.<computed> (C:\QUESTY\questifynafi\node_modules\esbuild\lib\main.js:622:9)
+    at handleIncomingPacket (C:\QUESTY\questifynafi\node_modules\esbuild\lib\main.js:677:12)
+    at Socket.readFromStdout (C:\QUESTY\questifynafi\node_modules\esbuild\lib\main.js:600:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:191:23)

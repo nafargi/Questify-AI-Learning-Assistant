@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { ChatCircle, X, PaperPlaneTilt, Sparkle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -74,7 +74,7 @@ export function AIAssistantButton() {
           isOpen && "opacity-0 pointer-events-none"
         )}
       >
-        <Sparkles className="w-6 h-6 text-primary-foreground" />
+        <Sparkle className="w-6 h-6 text-primary-foreground" />
       </button>
 
       {/* Chat Panel */}
@@ -92,7 +92,7 @@ export function AIAssistantButton() {
         <div className="p-4 gradient-primary flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
+              <Sparkle className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
               <h3 className="font-semibold text-primary-foreground">Questify AI</h3>
@@ -146,7 +146,7 @@ export function AIAssistantButton() {
               className="flex-1"
             />
             <Button onClick={handleSend} size="icon" className="gradient-primary">
-              <Send className="w-4 h-4" />
+              <PaperPlaneTilt className="w-4 h-4" />
             </Button>
           </div>
         </div>

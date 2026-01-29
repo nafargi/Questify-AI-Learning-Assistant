@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { cn } from '../../lib/utils';
-import { Link2 } from 'lucide-react';
+import { Link } from '@phosphor-icons/react';
 
 interface MatchingRendererProps {
     question: {
@@ -66,7 +66,7 @@ export const MatchingRenderer: React.FC<MatchingRendererProps> = ({
                                 )}
                             >
                                 <span className="font-medium">{pair.left}</span>
-                                {currentMapping[index] && <Link2 className="w-4 h-4 text-primary" />}
+                                {currentMapping[index] && <Link className="w-4 h-4 text-primary" />}
                             </button>
                         ))}
                     </div>

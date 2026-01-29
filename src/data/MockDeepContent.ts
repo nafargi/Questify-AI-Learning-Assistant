@@ -244,6 +244,7 @@ const handleChange = (field) => (event) => {
 \`\`\`
 
 Here, \`handleChange('email')\` returns a function that acts as the actual event handler, but it "remembers" that it is supposed to update the 'email' field.
+\`\`\`
             `
         },
         {
@@ -252,7 +253,7 @@ Here, \`handleChange('email')\` returns a function that acts as the actual event
             content: `
 # 7. React Hooks & Stale Closures
 
-In modern React, closures are everywhere. A "Stale Closure" happens when a `useEffect` or `useCallback` captures variables from an *old render* and never updates.
+In modern React, closures are everywhere. A "Stale Closure" happens when a \`useEffect\` or \`useCallback\` captures variables from an *old render* and never updates.
 
 \`\`\`javascript
 function Counter() {
@@ -271,6 +272,7 @@ function Counter() {
 
 **The Fix:**
 You must include \`count\` in the dependency array, OR use the functional update form \`setCount(c => c + 1)\`, which doesn't rely on the closure variable.
+            \`\`\`
             `
         },
     {
@@ -305,10 +307,10 @@ function createPerson(name) {
 *   Memory usage: Each object has its own copy of the methods (unless optimizing), whereas Classes share methods on the prototype.
             `
         },
-{
-    id: "chap-9",
+    {
+        id: "chap-9",
         title: "9. Summary & Mental Models",
-            content: `
+        content: `
 # 9. Summary for Mastery
 
 If you remember nothing else, remember this:

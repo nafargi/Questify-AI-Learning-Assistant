@@ -6,15 +6,15 @@ import {
   Palette,
   Globe,
   CreditCard,
-  HelpCircle,
-  ChevronRight,
+  Question,
+  CaretRight,
   Moon,
   Sun,
-  Volume2,
-  Mail,
-  Smartphone,
+  SpeakerHigh,
+  Envelope,
+  DeviceMobile,
   Check,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { cn } from "@/lib/utils";
 import { studentProfile } from "@/data/mockData";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/sonner";
 
 interface SettingSection {
   id: string;
@@ -37,11 +39,12 @@ const sections: SettingSection[] = [
   { id: "appearance", label: "Appearance", icon: Palette, description: "Customize your experience" },
   { id: "privacy", label: "Privacy & Security", icon: Shield, description: "Control your data and security" },
   { id: "billing", label: "Billing & Plans", icon: CreditCard, description: "Manage subscription" },
-  { id: "help", label: "Help & Support", icon: HelpCircle, description: "Get assistance" },
+  { id: "help", label: "Help & Support", icon: Question, description: "Get assistance" },
 ];
 
 export default function Settings() {
   const [activeSection, setActiveSection] = useState("account");
+  const navigate = useNavigate();
   const [settings, setSettings] = useState({
     emailNotifications: true,
     pushNotifications: true,
@@ -101,7 +104,7 @@ export default function Settings() {
                       </span>
                     </div>
                     <div>
-                      <Button variant="outline" size="sm">Change Photo</Button>
+                      <Button variant="outline" size="sm" onClick={() => toast.info("Photo upload coming soon!")}>Change Photo</Button>
                       <p className="text-xs text-muted-foreground mt-1">JPG, PNG up to 5MB</p>
                     </div>
                   </div>
@@ -125,7 +128,7 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button className="gradient-primary">Save Changes</Button>
+                  <Button className="gradient-primary" onClick={() => toast.success("Profile updated successfully!")}>Save Changes</Button>
                 </CardContent>
               </Card>
 
@@ -149,7 +152,7 @@ export default function Settings() {
                       <Input type="password" />
                     </div>
                   </div>
-                  <Button variant="outline">Update Password</Button>
+                  <Button variant="outline" onClick={() => toast.success("Password updated successfully!")}>Update Password</Button>
                 </CardContent>
               </Card>
             </div>
@@ -161,7 +164,7 @@ export default function Settings() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Mail className="w-5 h-5" />
+                    <Envelope className="w-5 h-5" />
                     Email Notifications
                   </CardTitle>
                 </CardHeader>
@@ -202,7 +205,7 @@ export default function Settings() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Smartphone className="w-5 h-5" />
+                    <DeviceMobile className="w-5 h-5" />
                     Push Notifications
                   </CardTitle>
                 </CardHeader>
@@ -223,7 +226,7 @@ export default function Settings() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Volume2 className="w-5 h-5" />
+                    <SpeakerHigh className="w-5 h-5" />
                     Sound Effects
                   </CardTitle>
                 </CardHeader>
@@ -288,7 +291,7 @@ export default function Settings() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-3">
-                    {["English", "Spanish", "French", "German", "Chinese", "Arabic"].map((lang) => (
+                    {["English", "Amharic", "Afaan Oromo", "German", "Chinese", "Arabic"].map((lang) => (
                       <button
                         key={lang}
                         onClick={() => setSettings((prev) => ({ ...prev, language: lang }))}
@@ -319,7 +322,7 @@ export default function Settings() {
                       <h3 className="text-2xl font-bold">Free Plan</h3>
                       <p className="text-muted-foreground">Basic features with limited exams</p>
                     </div>
-                    <Button className="gradient-primary">Upgrade to Pro</Button>
+                    <Button className="gradient-primary" onClick={() => navigate('/billing')}>Upgrade to Pro</Button>
                   </div>
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="p-4 rounded-xl bg-background/50">
@@ -347,7 +350,7 @@ export default function Settings() {
                   <div className="p-6 rounded-2xl gradient-primary text-primary-foreground mb-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-3xl font-bold">$9.99<span className="text-lg font-normal">/month</span></h3>
-                      <Button variant="secondary" size="lg">Subscribe Now</Button>
+                      <Button variant="secondary" size="lg" onClick={() => toast.info("Redirecting to checkout...")}>Subscribe Now</Button>
                     </div>
                     <div className="grid md:grid-cols-2 gap-3">
                       {[
@@ -406,7 +409,11 @@ export default function Settings() {
                         <p className="font-medium text-sm">Delete Account</p>
                         <p className="text-xs text-muted-foreground">Permanently delete your account and data</p>
                       </div>
-                      <Button variant="destructive" size="sm">Delete</Button>
+                      <Button variant="destructive" size="sm" onClick={() => {
+                        if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                          toast.error("Account deletion initiated. Contact support to complete.");
+                        }
+                      }}>Delete</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -436,7 +443,7 @@ export default function Settings() {
                         <p className="font-medium text-sm">{item.title}</p>
                         <p className="text-xs text-muted-foreground">{item.desc}</p>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      <CaretRight className="w-5 h-5 text-muted-foreground" />
                     </button>
                   ))}
                 </CardContent>

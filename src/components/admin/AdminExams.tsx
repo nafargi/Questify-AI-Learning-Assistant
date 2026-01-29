@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { 
-  ClipboardList, Settings, Sliders, Clock, Target,
-  CheckCircle, XCircle, BarChart2, Save, Plus
-} from "lucide-react";
+import {
+  ClipboardText, Gear, Sliders, Clock, Target,
+  CheckCircle, XCircle, ChartBar, FloppyDisk, Plus
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -66,7 +66,7 @@ const AdminExams = () => {
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <ClipboardList className="w-5 h-5 text-violet-400" />
+              <ClipboardText className="w-5 h-5 text-violet-400" />
               Question Types
             </h3>
             <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
@@ -75,15 +75,14 @@ const AdminExams = () => {
           </div>
           <div className="space-y-3">
             {types.map((type) => (
-              <div 
+              <div
                 key={type.id}
                 className="flex items-center justify-between p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-all"
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    type.enabled ? "bg-violet-500/20" : "bg-slate-700"
-                  }`}>
-                    {type.enabled 
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${type.enabled ? "bg-violet-500/20" : "bg-slate-700"
+                    }`}>
+                    {type.enabled
                       ? <CheckCircle className="w-5 h-5 text-violet-400" />
                       : <XCircle className="w-5 h-5 text-slate-500" />
                     }
@@ -93,7 +92,7 @@ const AdminExams = () => {
                     <p className="text-slate-500 text-sm">{type.description}</p>
                   </div>
                 </div>
-                <Switch 
+                <Switch
                   checked={type.enabled}
                   onCheckedChange={() => toggleType(type.id)}
                   className="data-[state=checked]:bg-violet-600"
@@ -112,7 +111,7 @@ const AdminExams = () => {
           <div className="mb-8">
             <div className="flex h-6 rounded-full overflow-hidden">
               {difficultyLevels.map((level, i) => (
-                <div 
+                <div
                   key={i}
                   className={`${level.color} flex items-center justify-center text-xs font-medium text-white`}
                   style={{ width: `${level.weight}%` }}
@@ -132,9 +131,9 @@ const AdminExams = () => {
                   </div>
                   <span className="text-slate-400">{level.weight}%</span>
                 </div>
-                <Slider 
-                  defaultValue={[level.weight]} 
-                  max={100} 
+                <Slider
+                  defaultValue={[level.weight]}
+                  max={100}
                   step={5}
                   className="[&_[role=slider]]:bg-violet-500"
                 />
@@ -157,10 +156,10 @@ const AdminExams = () => {
                   {timeThreshold[0]} seconds
                 </Badge>
               </div>
-              <Slider 
+              <Slider
                 value={timeThreshold}
                 onValueChange={setTimeThreshold}
-                max={60} 
+                max={60}
                 min={5}
                 step={5}
                 className="[&_[role=slider]]:bg-violet-500"
@@ -197,7 +196,7 @@ const AdminExams = () => {
               <Target className="w-5 h-5 text-violet-400" />
               Adaptive Exam Rules
             </h3>
-            <Switch 
+            <Switch
               checked={adaptiveEnabled}
               onCheckedChange={setAdaptiveEnabled}
               className="data-[state=checked]:bg-violet-600"
@@ -235,7 +234,7 @@ const AdminExams = () => {
       {/* Save Button */}
       <div className="flex justify-end">
         <Button className="bg-violet-600 hover:bg-violet-700 text-white px-8">
-          <Save className="w-4 h-4 mr-2" />
+          <FloppyDisk className="w-4 h-4 mr-2" />
           Save Configuration
         </Button>
       </div>

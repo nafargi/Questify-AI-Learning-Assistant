@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import {
   Check,
   Crown,
-  Sparkles,
-  Zap,
+  Sparkle,
+  Lightning,
   ArrowLeft,
   CreditCard,
   Shield,
@@ -13,11 +13,11 @@ import {
   Infinity,
   Brain,
   BookOpen,
-  BarChart3,
+  ChartBar,
   Users,
   FileText,
   Headphones,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +46,7 @@ const plans: Plan[] = [
     price: 0,
     period: "forever",
     description: "Perfect for getting started with Questify",
-    icon: Zap,
+    icon: Lightning,
     color: "from-slate-500 to-gray-500",
     features: [
       "10 exams per month",
@@ -391,7 +391,7 @@ export default function Billing() {
                   description: "Access all 10 AI-powered study methods: Pomodoro, Feynman, and more.",
                 },
                 {
-                  icon: BarChart3,
+                  icon: ChartBar,
                   title: "Advanced Analytics",
                   description: "Track your progress with detailed charts and performance insights.",
                 },
@@ -483,7 +483,7 @@ export default function Billing() {
 
         {/* CTA */}
         <div className="text-center mt-16 p-12 rounded-3xl gradient-primary text-white">
-          <Sparkles className="w-12 h-12 mx-auto mb-4" />
+          <Sparkle className="w-12 h-12 mx-auto mb-4" />
           <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Learning?</h2>
           <p className="text-lg opacity-90 mb-8 max-w-xl mx-auto">
             Join thousands of students who are already achieving their academic goals with Questify Pro.

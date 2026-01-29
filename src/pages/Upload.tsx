@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Upload as UploadIcon, FileText, X, Check, Loader2, ChevronRight, Sparkles } from "lucide-react";
+import { Upload as UploadIcon, FileText, X, Check, CircleNotch, CaretRight, Sparkle } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -162,10 +162,10 @@ export default function Upload() {
   };
 
   return (
-    <Layout>
-      <div className="min-h-screen p-6 lg:p-8 max-w-4xl mx-auto">
+    <Layout >
+      <div className="container py-6 max-w-5xl">
         {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-2 mb-12">
+        <div className="flex items-center justify-center gap-4 mb-8">
           {["Upload", "Confidence", "Review"].map((label, index) => {
             const stepIndex = index;
             const currentStep = step === "upload" ? 0 : step === "confidence" ? 1 : 2;
@@ -177,27 +177,22 @@ export default function Upload() {
                 <div className="flex items-center gap-2">
                   <div
                     className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all",
+                      "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
                       isComplete
-                        ? "gradient-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground"
                         : isActive
-                          ? "bg-primary/10 text-primary border border-primary"
+                          ? "bg-primary/20 text-primary border-2 border-primary"
                           : "bg-muted text-muted-foreground"
                     )}
                   >
                     {isComplete ? <Check className="w-4 h-4" /> : index + 1}
                   </div>
-                  <span
-                    className={cn(
-                      "text-sm font-medium hidden sm:block",
-                      isActive ? "text-foreground" : "text-muted-foreground"
-                    )}
-                  >
+                  <span className={cn("text-sm font-medium hidden sm:block", isActive ? "text-foreground" : "text-muted-foreground")}>
                     {label}
                   </span>
                 </div>
                 {index < 2 && (
-                  <ChevronRight className="w-5 h-5 text-muted-foreground mx-2" />
+                  <div className="h-[2px] w-8 bg-muted mx-4" />
                 )}
               </div>
             );
@@ -206,21 +201,17 @@ export default function Upload() {
 
         {/* Step 1: Upload */}
         {step === "upload" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2">Upload Your Materials</h1>
-              <p className="text-muted-foreground">
-                Drop your course materials and let AI analyze them
-              </p>
+          <div className="space-y-8 animate-fade-in">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold tracking-tight">Upload Materials</h1>
+              <p className="text-muted-foreground mt-2">Questy will analyze your documents to build a personalized study plan</p>
             </div>
 
             {/* Drop Zone */}
             <Card
               className={cn(
-                "border-2 border-dashed transition-all duration-300",
-                isDragOver
-                  ? "border-primary bg-primary/5 scale-[1.02]"
-                  : "border-border hover:border-primary/50"
+                "border-2 border-dashed transition-all duration-300 rounded-xl",
+                isDragOver ? "border-primary bg-primary/5 scale-[1.01]" : "border-muted hover:border-primary/50"
               )}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -229,26 +220,19 @@ export default function Upload() {
               onDragLeave={() => setIsDragOver(false)}
               onDrop={handleDrop}
             >
-              <CardContent className="p-12">
+              <CardContent className="p-8 md:p-12">
                 <div className="flex flex-col items-center text-center">
-                  <div
-                    className={cn(
-                      "w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all",
-                      isDragOver ? "gradient-primary scale-110" : "bg-muted"
-                    )}
-                  >
-                    <UploadIcon
-                      className={cn(
-                        "w-8 h-8 transition-colors",
-                        isDragOver ? "text-primary-foreground" : "text-muted-foreground"
-                      )}
-                    />
+                  <div className={cn(
+                    "w-20 h-20 rounded-3xl flex items-center justify-center mb-6 transition-colors",
+                    isDragOver ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                  )}>
+                    <UploadIcon className="w-10 h-10" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    {isDragOver ? "Drop files here" : "Drag & drop your files"}
+                  <h3 className="text-xl font-bold mb-2">
+                    {isDragOver ? "Drop files here" : "Drag & drop files to upload"}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    PDF, Word, PowerPoint, or any document format
+                  <p className="text-sm text-muted-foreground mb-8">
+                    Support for PDF, DOCX, PPTX, and TXT files
                   </p>
                   <label>
                     <input
@@ -258,8 +242,8 @@ export default function Upload() {
                       onChange={handleFileSelect}
                       accept=".pdf,.doc,.docx,.ppt,.pptx,.txt"
                     />
-                    <Button variant="outline" className="cursor-pointer" asChild>
-                      <span>Browse Files</span>
+                    <Button variant="outline" className="cursor-pointer rounded-full px-8 h-12" asChild>
+                      <span>Choose Files</span>
                     </Button>
                   </label>
                 </div>
@@ -268,42 +252,33 @@ export default function Upload() {
 
             {/* Uploaded Files */}
             {files.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Uploaded Files</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {files.map((file) => (
-                    <div
-                      key={file.id}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-muted/50"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-primary" />
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold flex items-center gap-2 px-2">
+                  <div className="w-1 h-4 bg-primary rounded-full" />
+                  Uploaded Documents
+                </h4>
+                {files.map((file) => (
+                  <Card key={file.id} className="rounded-lg border-none shadow-sm overflow-hidden group">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                        <FileText className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{file.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatFileSize(file.size)}
-                        </p>
+                        <p className="font-bold text-sm truncate">{file.name}</p>
+                        <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                         {file.status === "uploading" && (
-                          <Progress value={file.progress} className="h-1 mt-2" />
+                          <Progress value={file.progress} className="h-1.5 mt-2" />
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {file.status === "uploading" && (
-                          <span className="text-xs text-muted-foreground">
-                            {Math.round(file.progress)}%
-                          </span>
-                        )}
+                      <div className="flex items-center gap-3">
                         {file.status === "processing" && (
-                          <Badge variant="secondary" className="gap-1">
-                            <Loader2 className="w-3 h-3 animate-spin" />
+                          <Badge variant="secondary" className="gap-2 rounded-full py-1">
+                            <CircleNotch className="w-3 h-3 animate-spin" />
                             Processing
                           </Badge>
                         )}
                         {file.status === "done" && (
-                          <Badge className="bg-success text-success-foreground">
+                          <Badge className="bg-success/10 text-success border-none rounded-full py-1">
                             <Check className="w-3 h-3 mr-1" />
                             Ready
                           </Badge>
@@ -311,28 +286,32 @@ export default function Upload() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive transition-colors"
                           onClick={() => removeFile(file.id)}
                         >
                           <X className="w-4 h-4" />
                         </Button>
                       </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
 
-            {/* Continue Button */}
-            <div className="flex justify-end">
+            {/* Action Bar */}
+            <div className="flex justify-between items-center bg-card p-4 rounded-xl border  mt-8 animate-in slide-in-from-bottom-4 duration-500">
+              <div className="hidden md:block">
+                <p className="text-sm font-bold">{files.length} files selected</p>
+                <p className="text-xs text-muted-foreground">All files will be analyzed by Questy AI</p>
+              </div>
               <Button
                 size="lg"
-                className="gradient-primary"
+                className="w-full md:w-auto rounded-full px-12 h-12 font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95"
                 disabled={files.length === 0 || !files.every((f) => f.status === "done")}
                 onClick={handleContinueToConfidence}
               >
-                Continue
-                <ChevronRight className="w-4 h-4 ml-2" />
+                Analyze Content
+                <CaretRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -340,90 +319,63 @@ export default function Upload() {
 
         {/* Step 2: Confidence */}
         {step === "confidence" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2">Rate Your Confidence</h1>
-              <p className="text-muted-foreground">
-                How well do you understand this material?
-              </p>
+          <div className="space-y-8 animate-fade-in">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold tracking-tight">Sync Baseline</h1>
+              <p className="text-muted-foreground mt-2">How confident are you with these materials?</p>
             </div>
 
-            <Card>
-              <CardContent className="p-8">
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-sm text-muted-foreground">Not confident</span>
-                    <span className="text-sm text-muted-foreground">Very confident</span>
-                  </div>
-
-                  <div className="relative">
+            <Card className="rounded-xl  border-primary/10 overflow-hidden glass-card">
+              <CardContent className="p-8 md:p-12 text-center">
+                <div className="max-w-md mx-auto space-y-12">
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      <span>Beginner</span>
+                      <span>Expert</span>
+                    </div>
                     <Slider
                       value={confidence}
                       onValueChange={setConfidence}
                       max={100}
                       step={1}
-                      className="w-full"
+                      className="[&_[role=slider]]:w-8 [&_[role=slider]]:h-8"
                     />
-                    <div className="absolute -bottom-8 left-0 right-0 flex justify-between text-xs text-muted-foreground">
-                      <span>0%</span>
-                      <span>25%</span>
-                      <span>50%</span>
-                      <span>75%</span>
-                      <span>100%</span>
-                    </div>
                   </div>
-                </div>
 
-                <div className="mt-16 text-center">
-                  <div
-                    className={cn(
-                      "text-6xl font-bold mb-4 transition-colors",
+                  <div className="relative inline-block">
+                    <div className={cn(
+                      "text-8xl font-black mb-4 transition-colors",
                       getConfidenceColor(confidence[0])
-                    )}
-                  >
-                    {confidence[0]}%
+                    )}>
+                      {confidence[0]}%
+                    </div>
+                    <p className="text-lg font-bold text-muted-foreground min-h-[3rem]">
+                      {getConfidenceMessage(confidence[0])}
+                    </p>
                   </div>
-                  <p className="text-lg text-muted-foreground max-w-md mx-auto">
-                    {getConfidenceMessage(confidence[0])}
-                  </p>
-                </div>
-
-                {/* Visual Indicator */}
-                <div className="mt-8 h-2 rounded-full overflow-hidden bg-muted">
-                  <div
-                    className={cn(
-                      "h-full transition-all duration-500 rounded-full",
-                      confidence[0] < 40
-                        ? "bg-destructive"
-                        : confidence[0] < 70
-                          ? "bg-warning"
-                          : "bg-success"
-                    )}
-                    style={{ width: `${confidence[0]}%` }}
-                  />
                 </div>
               </CardContent>
             </Card>
 
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep("upload")}>
-                Back
+            <div className="flex justify-between gap-4 pt-12">
+              <Button variant="ghost" className="rounded-full px-8" onClick={() => setStep("upload")}>
+                Back to Upload
               </Button>
               <Button
                 size="lg"
-                className="gradient-primary"
+                className="rounded-full px-12 h-14 font-bold shadow-xl shadow-primary/20"
                 onClick={handleAnalyze}
                 disabled={isProcessing}
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Analyzing...
+                    <CircleNotch className="mr-2 w-5 h-5 animate-spin" />
+                    Analyzing Content
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Analyze Materials
+                    Start Neural Analysis
+                    <Sparkle className="ml-2 w-5 h-5" weight="fill" />
                   </>
                 )}
               </Button>
@@ -433,51 +385,40 @@ export default function Upload() {
 
         {/* Step 3: Units */}
         {step === "units" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2">Course Structure</h1>
-              <p className="text-muted-foreground">
-                We've extracted the following units from your materials
-              </p>
+          <div className="space-y-8 animate-fade-in">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold tracking-tight">Analysis Results</h1>
+              <p className="text-muted-foreground mt-2">We've identified the following study units from your documents</p>
             </div>
 
             <div className="grid gap-4">
               {extractedUnits.map((unit, index) => (
-                <Card
-                  key={unit.id}
-                  className="hover-lift overflow-hidden"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+                <Card key={unit.id} className="rounded-xl border-none shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
                   <CardContent className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center text-sm font-bold text-primary-foreground">
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                      <div className="flex-1 space-y-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-bold">
                             {index + 1}
                           </div>
-                          <h3 className="text-lg font-semibold">{unit.title}</h3>
+                          <h3 className="text-xl font-bold">{unit.title}</h3>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-4">
+                        <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
                           {unit.description}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {unit.topics.map((topic) => (
-                            <Badge key={topic} variant="secondary">
+                            <Badge key={topic} variant="secondary" className="rounded-full px-3 py-1">
                               {topic}
                             </Badge>
                           ))}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div
-                          className={cn(
-                            "text-2xl font-bold",
-                            getConfidenceColor(unit.confidence)
-                          )}
-                        >
+                      <div className="bg-muted/50 p-4 rounded-2xl min-w-[120px] text-center">
+                        <p className={cn("text-2xl font-black", getConfidenceColor(unit.confidence))}>
                           {unit.confidence}%
-                        </div>
-                        <p className="text-xs text-muted-foreground">confidence</p>
+                        </p>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1">Accuracy</p>
                       </div>
                     </div>
                   </CardContent>
@@ -485,14 +426,14 @@ export default function Upload() {
               ))}
             </div>
 
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep("confidence")}>
-                Back
+            <div className="flex justify-between gap-4 pt-12">
+              <Button variant="ghost" className="rounded-full px-8" onClick={() => setStep("confidence")}>
+                Go Back
               </Button>
-              <Button size="lg" className="gradient-primary" asChild>
+              <Button className="rounded-full px-12 h-14 font-bold shadow-xl shadow-primary/20 group" asChild>
                 <a href="/exam">
-                  Start Learning
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  Begin Study Protocol
+                  <CaretRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
               </Button>
             </div>

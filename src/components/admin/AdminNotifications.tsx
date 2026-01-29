@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { 
-  Bell, Plus, Send, Users, Filter, Clock, 
-  CheckCircle, AlertCircle, Info, Megaphone, Trash2, Edit
-} from "lucide-react";
+import {
+  Bell, Plus, PaperPlaneTilt, Users, Funnel, Clock,
+  CheckCircle, Warning, Info, Megaphone, Trash, PencilSimple
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,26 +18,26 @@ import {
 } from "@/components/ui/select";
 
 const recentNotifications = [
-  { 
-    id: 1, title: "New Study Technique Available", 
+  {
+    id: 1, title: "New Study Technique Available",
     message: "Try our new Spaced Repetition feature for better retention!",
     type: "feature", audience: "All Users", sent: "2 hours ago",
     delivered: 24567, opened: 18234
   },
-  { 
-    id: 2, title: "Scheduled Maintenance", 
+  {
+    id: 2, title: "Scheduled Maintenance",
     message: "Questify will be down for maintenance on Sunday 2AM-4AM EST.",
     type: "system", audience: "All Users", sent: "1 day ago",
     delivered: 24567, opened: 21345
   },
-  { 
-    id: 3, title: "Your Study Streak!", 
+  {
+    id: 3, title: "Your Study Streak!",
     message: "You've studied for 7 days in a row! Keep it up!",
     type: "engagement", audience: "Active Users", sent: "2 days ago",
     delivered: 18293, opened: 15678
   },
-  { 
-    id: 4, title: "Premium Features Unlocked", 
+  {
+    id: 4, title: "Premium Features Unlocked",
     message: "Enjoy your new premium benefits including unlimited exams.",
     type: "account", audience: "Premium Users", sent: "3 days ago",
     delivered: 5678, opened: 4567
@@ -58,7 +58,7 @@ const AdminNotifications = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "feature": return <Megaphone className="w-4 h-4 text-violet-400" />;
-      case "system": return <AlertCircle className="w-4 h-4 text-amber-400" />;
+      case "system": return <Warning className="w-4 h-4 text-amber-400" />;
       case "engagement": return <CheckCircle className="w-4 h-4 text-emerald-400" />;
       case "account": return <Info className="w-4 h-4 text-blue-400" />;
       default: return <Bell className="w-4 h-4 text-slate-400" />;
@@ -71,9 +71,9 @@ const AdminNotifications = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Notifications & System Messaging</h1>
-          <p className="text-slate-400">Send targeted notifications and manage system announcements</p>
+          <p className="text-slate-400">PaperPlaneTilt targeted notifications and manage system announcements</p>
         </div>
-        <Button 
+        <Button
           className="bg-violet-600 hover:bg-violet-700 text-white"
           onClick={() => setShowComposer(!showComposer)}
         >
@@ -86,21 +86,21 @@ const AdminNotifications = () => {
       {showComposer && (
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <Send className="w-5 h-5 text-violet-400" />
+            <PaperPlaneTilt className="w-5 h-5 text-violet-400" />
             Compose Notification
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
                 <label className="text-slate-300 text-sm mb-2 block">Title</label>
-                <Input 
+                <Input
                   placeholder="Notification title..."
                   className="bg-slate-800 border-slate-700 text-slate-200"
                 />
               </div>
               <div>
                 <label className="text-slate-300 text-sm mb-2 block">Message</label>
-                <Textarea 
+                <Textarea
                   placeholder="Write your message..."
                   className="bg-slate-800 border-slate-700 text-slate-200 min-h-[120px]"
                 />
@@ -141,7 +141,7 @@ const AdminNotifications = () => {
                 <label className="text-slate-300 text-sm mb-2 block">Target Audience</label>
                 <div className="space-y-2">
                   {audienceSegments.map((segment) => (
-                    <div 
+                    <div
                       key={segment.label}
                       className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-all cursor-pointer"
                     >
@@ -163,16 +163,16 @@ const AdminNotifications = () => {
             </div>
           </div>
           <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-800">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="bg-transparent border-slate-700 text-slate-300"
               onClick={() => setShowComposer(false)}
             >
               Cancel
             </Button>
             <Button className="bg-violet-600 hover:bg-violet-700 text-white">
-              <Send className="w-4 h-4 mr-2" />
-              Send Notification
+              <PaperPlaneTilt className="w-4 h-4 mr-2" />
+              PaperPlaneTilt Notification
             </Button>
           </div>
         </Card>
@@ -181,7 +181,7 @@ const AdminNotifications = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: "Sent Today", value: "3", icon: Send },
+          { label: "Sent Today", value: "3", icon: PaperPlaneTilt },
           { label: "Avg. Open Rate", value: "74.2%", icon: CheckCircle },
           { label: "Scheduled", value: "2", icon: Clock },
           { label: "Total Reach", value: "24,847", icon: Users },
@@ -208,12 +208,12 @@ const AdminNotifications = () => {
             Recent Notifications
           </h3>
           <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-200">
-            <Filter className="w-4 h-4 mr-1" /> Filter
+            <Funnel className="w-4 h-4 mr-1" /> Filter
           </Button>
         </div>
         <div className="divide-y divide-slate-800">
           {recentNotifications.map((notification) => (
-            <div 
+            <div
               key={notification.id}
               className="p-6 hover:bg-slate-800/30 transition-all"
             >
@@ -244,10 +244,10 @@ const AdminNotifications = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <button className="p-2 hover:bg-slate-700 rounded-lg transition-all">
-                    <Edit className="w-4 h-4 text-slate-400" />
+                    <PencilSimple className="w-4 h-4 text-slate-400" />
                   </button>
                   <button className="p-2 hover:bg-red-500/20 rounded-lg transition-all">
-                    <Trash2 className="w-4 h-4 text-red-400" />
+                    <Trash className="w-4 h-4 text-red-400" />
                   </button>
                 </div>
               </div>

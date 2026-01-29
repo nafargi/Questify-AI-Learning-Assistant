@@ -1,55 +1,55 @@
-import { 
-  Users, BookOpen, ClipboardList, FileText, MessageSquare, 
-  TrendingUp, TrendingDown, Minus, Activity, Zap, Brain, Target
-} from "lucide-react";
+import {
+  Users, BookOpen, ClipboardText, FileText, ChatCircle,
+  TrendUp, TrendDown, Minus, Pulse, Lightning, Brain, Target
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 const stats = [
-  { 
-    label: "Total Users", 
-    value: "24,847", 
-    change: "+12.5%", 
+  {
+    label: "Total Users",
+    value: "24,847",
+    change: "+12.5%",
     trend: "up",
     icon: Users,
     color: "from-violet-500 to-purple-600"
   },
-  { 
-    label: "Active Learners", 
-    value: "18,293", 
-    change: "+8.2%", 
+  {
+    label: "Active Learners",
+    value: "18,293",
+    change: "+8.2%",
     trend: "up",
-    icon: Activity,
+    icon: Pulse,
     color: "from-emerald-500 to-teal-600"
   },
-  { 
-    label: "Exams Generated", 
-    value: "142,567", 
-    change: "+23.1%", 
+  {
+    label: "Exams Generated",
+    value: "142,567",
+    change: "+23.1%",
     trend: "up",
-    icon: ClipboardList,
+    icon: ClipboardText,
     color: "from-blue-500 to-cyan-600"
   },
-  { 
-    label: "Notes Created", 
-    value: "89,234", 
-    change: "+15.7%", 
+  {
+    label: "Notes Created",
+    value: "89,234",
+    change: "+15.7%",
     trend: "up",
     icon: FileText,
     color: "from-amber-500 to-orange-600"
   },
-  { 
-    label: "AI Interactions", 
-    value: "1.2M", 
-    change: "+31.4%", 
+  {
+    label: "AI Interactions",
+    value: "1.2M",
+    change: "+31.4%",
     trend: "up",
-    icon: MessageSquare,
+    icon: ChatCircle,
     color: "from-pink-500 to-rose-600"
   },
-  { 
-    label: "Study Sessions", 
-    value: "56,789", 
-    change: "-2.3%", 
+  {
+    label: "Study Sessions",
+    value: "56,789",
+    change: "-2.3%",
     trend: "down",
     icon: BookOpen,
     color: "from-indigo-500 to-violet-600"
@@ -73,8 +73,8 @@ const recentActivity = [
 
 const AdminOverview = () => {
   const TrendIcon = ({ trend }: { trend: string }) => {
-    if (trend === "up") return <TrendingUp className="w-4 h-4 text-emerald-400" />;
-    if (trend === "down") return <TrendingDown className="w-4 h-4 text-red-400" />;
+    if (trend === "up") return <TrendUp className="w-4 h-4 text-emerald-400" />;
+    if (trend === "down") return <TrendDown className="w-4 h-4 text-red-400" />;
     return <Minus className="w-4 h-4 text-slate-400" />;
   };
 
@@ -89,7 +89,7 @@ const AdminOverview = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat) => (
-          <Card 
+          <Card
             key={stat.label}
             className="bg-slate-900/50 border-slate-800 p-6 hover:border-slate-700 transition-all"
           >
@@ -118,7 +118,7 @@ const AdminOverview = () => {
         {/* Platform Health */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-violet-400" />
+            <Lightning className="w-5 h-5 text-violet-400" />
             Platform Health
           </h3>
           <div className="space-y-6">
@@ -126,15 +126,14 @@ const AdminOverview = () => {
               <div key={metric.label}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-slate-300 text-sm">{metric.label}</span>
-                  <span className={`text-sm font-medium ${
-                    metric.status === "excellent" ? "text-emerald-400" : 
-                    metric.status === "good" ? "text-blue-400" : "text-amber-400"
-                  }`}>
+                  <span className={`text-sm font-medium ${metric.status === "excellent" ? "text-emerald-400" :
+                      metric.status === "good" ? "text-blue-400" : "text-amber-400"
+                    }`}>
                     {metric.inverted ? `${metric.value}%` : `${metric.value}%`}
                   </span>
                 </div>
-                <Progress 
-                  value={metric.inverted ? 100 - metric.value * 10 : metric.value} 
+                <Progress
+                  value={metric.inverted ? 100 - metric.value * 10 : metric.value}
                   className="h-2 bg-slate-800"
                 />
               </div>
@@ -145,22 +144,21 @@ const AdminOverview = () => {
         {/* Recent Activity */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-violet-400" />
+            <Pulse className="w-5 h-5 text-violet-400" />
             Recent Activity
           </h3>
           <div className="space-y-4">
             {recentActivity.map((item, i) => (
-              <div 
+              <div
                 key={i}
                 className="flex items-center gap-4 p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-all"
               >
-                <div className={`w-2 h-2 rounded-full ${
-                  item.type === "user" ? "bg-violet-400" :
-                  item.type === "exam" ? "bg-blue-400" :
-                  item.type === "system" ? "bg-amber-400" :
-                  item.type === "feedback" ? "bg-emerald-400" :
-                  "bg-pink-400"
-                }`} />
+                <div className={`w-2 h-2 rounded-full ${item.type === "user" ? "bg-violet-400" :
+                    item.type === "exam" ? "bg-blue-400" :
+                      item.type === "system" ? "bg-amber-400" :
+                        item.type === "feedback" ? "bg-emerald-400" :
+                          "bg-pink-400"
+                  }`} />
                 <div className="flex-1">
                   <p className="text-slate-200 text-sm">{item.action}</p>
                   <p className="text-slate-500 text-xs">{item.user}</p>
@@ -181,9 +179,9 @@ const AdminOverview = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-2">AI Intelligence Summary</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Platform engagement is up 18% this week. The most common weak points detected across users 
-              are in <span className="text-violet-300 font-medium">calculus derivatives</span> and 
-              <span className="text-violet-300 font-medium"> organic chemistry reactions</span>. 
+              Platform engagement is up 18% this week. The most common weak points detected across users
+              are in <span className="text-violet-300 font-medium">calculus derivatives</span> and
+              <span className="text-violet-300 font-medium"> organic chemistry reactions</span>.
               Consider promoting relevant study techniques for these areas.
             </p>
             <div className="flex gap-3 mt-4">

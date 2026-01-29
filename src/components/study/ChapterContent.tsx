@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { BookOpen, Lightbulb, AlertCircle, CheckCircle2, Quote, Code, ListOrdered, GraduationCap, ArrowRight, Target, Brain, HelpCircle, Clock, Sparkles } from "lucide-react";
+import { BookOpen, Lightbulb, Warning, CheckCircle, Quotes, Code, ListNumbers, GraduationCap, ArrowRight, Target, Brain, Question, Clock, Sparkle } from "@phosphor-icons/react";
 
 export interface ChapterSection {
   title: string;
@@ -98,7 +98,7 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
             <ul className="grid md:grid-cols-2 gap-x-8 gap-y-2 list-none p-0 m-0">
               {content.learningObjectives.map((obj, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-foreground/80">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-1 flex-shrink-0" />
+                  <CheckCircle className="w-4 h-4 text-success mt-1 flex-shrink-0" />
                   <span>{obj}</span>
                 </li>
               ))}
@@ -152,7 +152,7 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
           {/* Key Concepts & Example Boxes within section */}
           <div className="grid md:grid-cols-2 gap-6 mt-12 not-prose">
             {section.keyConcepts && section.keyConcepts.length > 0 && (
-              <div className="p-6 rounded-2xl bg-muted/40 border border-border shadow-sm">
+              <div className="p-6 bg-muted/40 border border-border shadow-sm">
                 <h4 className="font-bold text-foreground mb-4 flex items-center gap-2">
                   <Lightbulb className="w-5 h-5 text-warning" />
                   Key Terminology
@@ -171,7 +171,7 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
               <Card className="border-2 border-success/20 bg-success/5 shadow-sm">
                 <CardHeader className="py-4">
                   <CardTitle className="text-base flex items-center gap-2 text-success-foreground">
-                    <Sparkles className="w-4 h-4 text-success" />
+                    <Sparkle className="w-4 h-4 text-success" />
                     {section.exampleBox.title}
                   </CardTitle>
                 </CardHeader>
@@ -187,7 +187,7 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
       {/* Case Study */}
       {content.caseStudy && (
         <section className="mb-16">
-          <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-3xl p-8 border border-indigo-500/20 shadow-xl">
+          <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-8 border border-indigo-500/20 shadow-xl">
             <h2 className="text-3xl font-extrabold mb-6 text-foreground flex items-center gap-3">
               <span className="p-2 rounded-xl bg-indigo-500 text-white">
                 <Brain className="w-6 h-6" />
@@ -199,9 +199,9 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
             </div>
 
             {content.caseStudy.discussionQuestions && content.caseStudy.discussionQuestions.length > 0 && (
-              <div className="bg-background/60 p-6 rounded-2xl border border-indigo-500/10">
+              <div className="bg-background/60 p-6 border border-indigo-500/10">
                 <h4 className="font-bold text-indigo-700 dark:text-indigo-400 mb-4 flex items-center gap-2">
-                  <HelpCircle className="w-5 h-5" />
+                  <Question className="w-5 h-5" />
                   Critical Thinking Questions
                 </h4>
                 <ul className="space-y-3 m-0 p-0 list-none">
@@ -219,7 +219,7 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
       )}
 
       {/* Summary */}
-      <section className="mb-16 bg-muted/20 rounded-3xl p-10 border border-border">
+      <section className="mb-16 bg-muted/20 p-10 border border-border">
         <h2 className="text-3xl font-bold mb-6 text-foreground">Chapter Summary</h2>
         <div className="text-foreground/90 leading-relaxed text-lg italic">
           "{content.summary}"
@@ -230,7 +230,7 @@ export function ChapterContent({ title, courseName, readingProgress = 0, content
       {content.practiceProblems && content.practiceProblems.length > 0 && (
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-8 text-foreground flex items-center gap-3">
-            <ListOrdered className="w-7 h-7 text-primary" />
+            <ListNumbers className="w-7 h-7 text-primary" />
             Theoretical & Applied Problems
           </h2>
           <div className="grid gap-4">

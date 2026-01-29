@@ -1,17 +1,17 @@
-import { 
-  MessageSquare, TrendingUp, AlertTriangle, ThumbsUp, ThumbsDown,
-  Clock, Users, BarChart2, Filter
-} from "lucide-react";
+import {
+  ChatCircle, TrendUp, Warning, ThumbsUp, ThumbsDown,
+  Clock, Users, ChartBar, Funnel
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const stats = [
-  { label: "Total Queries Today", value: "34,567", change: "+12%", icon: MessageSquare },
+  { label: "Total Queries Today", value: "34,567", change: "+12%", icon: ChatCircle },
   { label: "Avg. Response Time", value: "1.2s", change: "-8%", icon: Clock },
   { label: "Satisfaction Rate", value: "94.2%", change: "+2.1%", icon: ThumbsUp },
-  { label: "Flagged Responses", value: "23", change: "-15%", icon: AlertTriangle },
+  { label: "Flagged Responses", value: "23", change: "-15%", icon: Warning },
 ];
 
 const topTopics = [
@@ -24,22 +24,22 @@ const topTopics = [
 ];
 
 const recentConversations = [
-  { 
+  {
     user: "Sarah C.", query: "Explain the chain rule in calculus",
     response: "The chain rule is used when...", rating: "positive",
     time: "2 min ago", topic: "Calculus"
   },
-  { 
+  {
     user: "Marcus J.", query: "Why do cells need mitochondria?",
     response: "Mitochondria are essential for...", rating: "positive",
     time: "5 min ago", topic: "Biology"
   },
-  { 
+  {
     user: "Emily R.", query: "What's the difference between arrays and lists?",
     response: "In programming, arrays and lists...", rating: "neutral",
     time: "8 min ago", topic: "Programming"
   },
-  { 
+  {
     user: "David K.", query: "Help me with quantum mechanics",
     response: "Quantum mechanics describes...", rating: "negative",
     time: "12 min ago", topic: "Physics"
@@ -87,7 +87,7 @@ const AdminQuestyMonitor = () => {
         {/* Top Topics */}
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-violet-400" />
+            <ChartBar className="w-5 h-5 text-violet-400" />
             Top Query Topics
           </h3>
           <div className="space-y-4">
@@ -118,15 +118,15 @@ const AdminQuestyMonitor = () => {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-slate-300">{metric.metric}</span>
                   <Badge className={
-                    metric.status === "excellent" 
+                    metric.status === "excellent"
                       ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                       : "bg-blue-500/20 text-blue-400 border-blue-500/30"
                   }>
                     {metric.value}%
                   </Badge>
                 </div>
-                <Progress 
-                  value={metric.value} 
+                <Progress
+                  value={metric.value}
                   className="h-2 bg-slate-800"
                 />
               </div>
@@ -138,16 +138,16 @@ const AdminQuestyMonitor = () => {
         <Card className="bg-slate-900/50 border-slate-800 p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-violet-400" />
+              <ChatCircle className="w-5 h-5 text-violet-400" />
               Recent Queries
             </h3>
             <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-200">
-              <Filter className="w-4 h-4 mr-1" /> Filter
+              <Funnel className="w-4 h-4 mr-1" /> Filter
             </Button>
           </div>
           <div className="space-y-4">
             {recentConversations.map((conv, i) => (
-              <div 
+              <div
                 key={i}
                 className="p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-all cursor-pointer"
               >
@@ -163,10 +163,9 @@ const AdminQuestyMonitor = () => {
                       <p className="text-slate-500 text-xs">{conv.time}</p>
                     </div>
                   </div>
-                  <div className={`p-1 rounded ${
-                    conv.rating === "positive" ? "bg-emerald-500/20" :
-                    conv.rating === "negative" ? "bg-red-500/20" : "bg-slate-700"
-                  }`}>
+                  <div className={`p-1 rounded ${conv.rating === "positive" ? "bg-emerald-500/20" :
+                      conv.rating === "negative" ? "bg-red-500/20" : "bg-slate-700"
+                    }`}>
                     {conv.rating === "positive" ? (
                       <ThumbsUp className="w-3 h-3 text-emerald-400" />
                     ) : conv.rating === "negative" ? (
@@ -188,12 +187,12 @@ const AdminQuestyMonitor = () => {
       <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20 p-6">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-6 h-6 text-amber-400" />
+            <Warning className="w-6 h-6 text-amber-400" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-white mb-2">23 Potential Misuse Patterns Detected</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
-              AI has flagged queries that may indicate misuse patterns including exam cheating attempts, 
+              AI has flagged queries that may indicate misuse patterns including exam cheating attempts,
               off-topic requests, or attempts to bypass content filters. Review these to maintain platform integrity.
             </p>
             <div className="flex gap-3 mt-4">

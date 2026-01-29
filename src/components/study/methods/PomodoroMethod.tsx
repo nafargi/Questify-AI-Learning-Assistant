@@ -1,214 +1,257 @@
 import { useState, useEffect } from "react";
-import { Play, Pause, RotateCcw, CheckCircle2, Circle, Plus, ListTodo } from "lucide-react";
+import { StudySessionLayout } from "@/components/study/StudySessionLayout";
+import { Timer, BookOpen, Play, Pause, ArrowCounterClockwise, ArrowsOut, Info } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { PDFViewer } from "@/components/study/PDFViewer";
+
+// --- Types ---
+type TimerState = 'IDLE' | 'RUNNING' | 'PAUSED' | 'BREAK';
 
 interface PomodoroMethodProps {
     chapterId: string;
     courseId: string;
+    bookFilename?: string; // New prop
     onBack: () => void;
 }
 
-export function PomodoroMethod({ chapterId, courseId, onBack }: PomodoroMethodProps) {
-    const [timeLeft, setTimeLeft] = useState(25 * 60);
-    const [isActive, setIsActive] = useState(false);
-    const [mode, setMode] = useState<'work' | 'shortBreak' | 'longBreak'>('work');
-    const [tasks, setTasks] = useState<{ id: string; text: string; completed: boolean }[]>([
-        { id: '1', text: `Read ${chapterId || 'Chapter'} introduction`, completed: false },
-        { id: '2', text: 'Summarize key concepts', completed: false }
-    ]);
-    const [newTask, setNewTask] = useState("");
+export function PomodoroMethod({ chapterId, courseId, bookFilename, onBack }: PomodoroMethodProps) {
+    // Timer State
+    const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes
+    const [timerState, setTimerState] = useState<TimerState>('IDLE');
+    const [cycleCount, setCycleCount] = useState(0);
+    const [isFullWidth, setIsFullWidth] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
 
+    // Content State
+    const [highlights, setHighlights] = useState<string[]>([]);
+
+    // --- Timer Logic ---
     useEffect(() => {
         let interval: NodeJS.Timeout;
-        if (isActive && timeLeft > 0) {
+
+        if (timerState === 'RUNNING' && timeLeft > 0) {
             interval = setInterval(() => {
                 setTimeLeft((prev) => prev - 1);
             }, 1000);
         } else if (timeLeft === 0) {
-            setIsActive(false);
-            // Play sound or notify
+            handleTimerComplete();
         }
+
         return () => clearInterval(interval);
-    }, [isActive, timeLeft]);
+    }, [timerState, timeLeft]);
 
-    const toggleTimer = () => setIsActive(!isActive);
-    const resetTimer = () => {
-        setIsActive(false);
-        if (mode === 'work') setTimeLeft(25 * 60);
-        else if (mode === 'shortBreak') setTimeLeft(5 * 60);
-        else setTimeLeft(15 * 60);
-    };
-
-    const handleModeChange = (newMode: 'work' | 'shortBreak' | 'longBreak') => {
-        setMode(newMode);
-        setIsActive(false);
-        if (newMode === 'work') setTimeLeft(25 * 60);
-        else if (newMode === 'shortBreak') setTimeLeft(5 * 60);
-        else setTimeLeft(15 * 60);
+    const handleTimerComplete = () => {
+        if (timerState === 'RUNNING') {
+            setCycleCount(c => c + 1);
+            setTimerState('BREAK');
+            setTimeLeft(5 * 60); // 5 min break
+            new Audio('/sounds/bell.mp3').play().catch(() => { }); // Mock sound
+        } else {
+            setTimerState('IDLE');
+            setTimeLeft(25 * 60);
+        }
     };
 
     const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const addTask = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newTask.trim()) return;
-        setTasks([...tasks, { id: Date.now().toString(), text: newTask, completed: false }]);
-        setNewTask("");
-    };
-
-    const toggleTask = (id: string) => {
-        setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-    };
-
-    const calculateProgress = () => {
-        if (mode === 'work') return ((25 * 60 - timeLeft) / (25 * 60)) * 100;
-        if (mode === 'shortBreak') return ((5 * 60 - timeLeft) / (5 * 60)) * 100;
-        return ((15 * 60 - timeLeft) / (15 * 60)) * 100;
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Ambience similar to Selector but calmer */}
-            <div className="absolute inset-0 bg-grid-white/[0.01] bg-[size:30px_30px]" />
+        <StudySessionLayout
+            title="Pomodoro Focus"
+            subtitle={bookFilename}
+            icon={Timer}
+            color="text-orange-500"
+            onExit={onBack}
+            rightAction={
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowInfo(!showInfo)}
+                        className="text-xs gap-1"
+                    >
+                        <Info className="w-4 h-4" />
+                        How it works
+                    </Button>
+                    <Badge variant={timerState === 'RUNNING' ? "destructive" : "secondary"}>
+                        {timerState === 'RUNNING' ? 'FOCUS MODE' : timerState === 'BREAK' ? 'BREAK TIME' : 'READY'}
+                    </Badge>
+                </div>
+            }
+        >
+            <div className="flex h-full relative">
+                {/* --- LEFT PANEL: PDF Viewer --- */}
+                <div className={cn(
+                    "flex-1 overflow-hidden flex flex-col relative border-r transition-all duration-500",
+                    isFullWidth ? "w-full" : ""
+                )}>
+                    {bookFilename ? (
+                        <div className={cn("h-full w-full", timerState === 'BREAK' && "blur-sm opacity-50")}>
+                            <PDFViewer
+                                filename={bookFilename}
+                                onHighlight={(text) => setHighlights([...highlights, text])}
+                            />
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center h-full text-muted-foreground">
+                            No Book Selected
+                        </div>
+                    )}
 
-            {/* Back Button */}
-            <div className="absolute top-4 left-4 z-20">
-                <Button variant="ghost" className="gap-2" onClick={onBack}>
-                    <ChevronLeft className="w-4 h-4" /> Exit Focus
-                </Button>
-            </div>
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setIsFullWidth(!isFullWidth)}
+                        className="absolute bottom-4 right-4 z-50 shadow-lg gap-2"
+                    >
+                        <ArrowsOut className="w-4 h-4" />
+                        {isFullWidth ? "Show Controls" : "Full Width PDF"}
+                    </Button>
 
-            <div className="max-w-md w-full z-10 space-y-8 animate-in fade-in zoom-in duration-500">
+                    {timerState === 'BREAK' && (
+                        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                            <h2 className="text-4xl font-bold text-green-600 bg-white/80 px-8 py-4 border shadow-xl backdrop-blur">
+                                TAKE A BREAK
+                            </h2>
+                        </div>
+                    )}
+                </div>
 
-                {/* Timer Card */}
-                <div className="relative">
-                    {/* Animated Glow Ring */}
-                    <div className={cn(
-                        "absolute inset-0 rounded-full blur-3xl opacity-20 transition-all duration-1000",
-                        isActive ? "bg-orange-500 scale-110" : "bg-primary/20 scale-90"
-                    )} />
-
-                    <div className="flex flex-col items-center justify-center space-y-8">
-                        <div className="relative w-72 h-72 flex items-center justify-center">
-                            {/* Progress Ring Implementation (simplified with CSS for now) */}
+                {/* --- RIGHT PANEL: Timer & Session Controls --- */}
+                <div className={cn(
+                    "bg-card/50 flex flex-col border-l transition-all duration-500 overflow-hidden",
+                    isFullWidth ? "w-0 p-0 border-none" : "w-80 p-6 gap-8"
+                )}>
+                    {/* Timer UI */}
+                    <div className="flex flex-col items-center justify-center py-6 relative shrink-0">
+                        <div className="relative w-48 h-48 flex items-center justify-center">
                             <svg className="w-full h-full -rotate-90">
+                                <circle cx="96" cy="96" r="88" className="stroke-muted" strokeWidth="12" fill="none" />
                                 <circle
-                                    cx="144" cy="144" r="130"
-                                    className="stroke-muted fill-none stroke-[8px]"
-                                />
-                                <circle
-                                    cx="144" cy="144" r="130"
-                                    className={cn(
-                                        "fill-none stroke-[8px] transition-all duration-1000 ease-linear",
-                                        mode === 'work' ? "stroke-orange-500" : "stroke-green-500"
-                                    )}
-                                    strokeDasharray={2 * Math.PI * 130}
-                                    strokeDashoffset={2 * Math.PI * 130 * (1 - calculateProgress() / 100)}
+                                    cx="96" cy="96" r="88"
+                                    className={cn("transition-all duration-1000", timerState === 'BREAK' ? "stroke-green-500" : "stroke-orange-500")}
+                                    strokeWidth="12" fill="none"
+                                    strokeDasharray={2 * Math.PI * 88}
+                                    strokeDashoffset={2 * Math.PI * 88 * (1 - timeLeft / (timerState === 'BREAK' ? 300 : 1500))}
+                                    strokeLinecap="round"
                                 />
                             </svg>
-                            <div className="absolute text-7xl font-mono font-bold tracking-tighter tabular-nums">
-                                {formatTime(timeLeft)}
-                            </div>
-                            <div className="absolute bottom-20 text-sm font-medium tracking-widest uppercase opacity-70">
-                                {mode === 'work' ? 'Focus Time' : 'Break Time'}
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-4xl font-mono font-bold tracking-tighter">{formatTime(timeLeft)}</span>
+                                <span className="text-xs text-muted-foreground uppercase font-semibold mt-1">{timerState === 'IDLE' ? 'Ready' : timerState}</span>
                             </div>
                         </div>
-
-                        {/* Controls */}
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="rounded-full w-12 h-12"
-                                onClick={resetTimer}
-                            >
-                                <RotateCcw className="w-5 h-5" />
+                        <div className="flex items-center gap-4 mt-8 w-full">
+                            <Button size="lg" className="flex-1" onClick={() => setTimerState(prev => prev === 'RUNNING' ? 'PAUSED' : 'RUNNING')}>
+                                {timerState === 'RUNNING' ? <Pause className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
+                                {timerState === 'RUNNING' ? "Pause" : "Start"}
                             </Button>
-                            <Button
-                                size="icon"
-                                className={cn(
-                                    "rounded-full w-20 h-20 shadow-lg transition-all active:scale-95",
-                                    isActive ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"
-                                )}
-                                onClick={toggleTimer}
-                            >
-                                {isActive ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
+                            <Button size="icon" variant="outline" onClick={() => { setTimerState('IDLE'); setTimeLeft(1500); }}>
+                                <ArrowCounterClockwise className="w-5 h-5" />
                             </Button>
                         </div>
+                    </div>
 
-                        {/* Mode Switcher */}
-                        <div className="flex gap-2 p-1 bg-muted/50 rounded-full">
-                            {(['work', 'shortBreak', 'longBreak'] as const).map(m => (
-                                <button
-                                    key={m}
-                                    onClick={() => handleModeChange(m)}
-                                    className={cn(
-                                        "px-4 py-1.5 rounded-full text-xs font-medium transition-all",
-                                        mode === m ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
-                                    )}
-                                >
-                                    {m === 'work' ? 'Pomodoro' : m === 'shortBreak' ? 'Short Break' : 'Long Break'}
-                                </button>
-                            ))}
+                    {/* Session Stats */}
+                    <div className="space-y-4 shrink-0">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Sessions Completed</span>
+                            <span className="font-bold">{cycleCount}</span>
                         </div>
+                        <Progress value={(cycleCount % 4) * 25} className="h-2" />
+                        <p className="text-xs text-muted-foreground text-center">
+                            Long break in {4 - (cycleCount % 4)} sessions
+                        </p>
+                    </div>
+
+                    <div className="flex-1 flex flex-col min-h-0 border-t pt-6">
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <BookOpen className="w-4 h-4 text-primary" />
+                            Highlights Log
+                        </h4>
+                        <ScrollArea className="flex-1 -mr-4 pr-4">
+                            {highlights.length === 0 ? (
+                                <div className="text-sm text-muted-foreground text-center py-8 opacity-50">
+                                    Select text to highlight important concepts.
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {highlights.map((h, i) => (
+                                        <div key={i} className="p-3 mb-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs">
+                                            {h}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </ScrollArea>
                     </div>
                 </div>
 
-                {/* Task List */}
-                <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                        <ListTodo className="w-5 h-5 text-primary" />
-                        <h3 className="font-semibold">Session Objectives</h3>
-                    </div>
-
-                    <div className="space-y-3 mb-4">
-                        {tasks.map(task => (
-                            <div
-                                key={task.id}
-                                className={cn(
-                                    "flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer group",
-                                    task.completed ? "bg-muted/50 border-transparent opacity-60" : "bg-background border-border hover:border-primary/30"
-                                )}
-                                onClick={() => toggleTask(task.id)}
-                            >
-                                {task.completed ? (
-                                    <CheckCircle2 className="w-5 h-5 text-primary" />
-                                ) : (
-                                    <Circle className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-                                )}
-                                <span className={cn("text-sm transition-all", task.completed && "line-through")}>{task.text}</span>
+                {/* --- OVERLAY: How it works --- */}
+                {showInfo && (
+                    <div className="absolute inset-0 z-[100] bg-background/95 backdrop-blur-md p-12 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-300">
+                        <div className="max-w-xl space-y-8">
+                            <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-3xl flex items-center justify-center mx-auto shadow-xl">
+                                <Timer className="w-10 h-10" />
                             </div>
-                        ))}
+                            <div className="space-y-2">
+                                <h2 className="text-3xl font-black tracking-tight">The Pomodoro Technique</h2>
+                                <p className="text-muted-foreground">A simple but powerful method for deep concentration.</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                                <div className="p-4 rounded-xl border bg-card">
+                                    <h4 className="font-bold text-sm mb-2 flex items-center gap-2 text-orange-500">
+                                        <div className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center text-[10px]">1</div>
+                                        The Work Sprint
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        Focus for 25 minutes on a single task. Avoid all distractions. No multitasking.
+                                    </p>
+                                </div>
+                                <div className="p-4 rounded-xl border bg-card">
+                                    <h4 className="font-bold text-sm mb-2 flex items-center gap-2 text-green-500">
+                                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-[10px]">2</div>
+                                        The Short Break
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        Rest for 5 minutes. Walk away, stretch, or grab water. No screens.
+                                    </p>
+                                </div>
+                                <div className="p-4 rounded-xl border bg-card">
+                                    <h4 className="font-bold text-sm mb-2 flex items-center gap-2 text-purple-500">
+                                        <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center text-[10px]">3</div>
+                                        Repeat 4 Times
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        Complete four work sessions to build momentum and master your topic.
+                                    </p>
+                                </div>
+                                <div className="p-4 rounded-xl border bg-card">
+                                    <h4 className="font-bold text-sm mb-2 flex items-center gap-2 text-blue-500">
+                                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-[10px]">4</div>
+                                        The Long Break
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        After 4 sprints, take a longer 20-30 minute break to fully recharge.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <Button onClick={() => setShowInfo(false)} className="w-full h-12 text-base font-bold shadow-lg shadow-orange-500/20">
+                                Got it, let's focus
+                            </Button>
+                        </div>
                     </div>
-
-                    <form onSubmit={addTask} className="relative">
-                        <Input
-                            value={newTask}
-                            onChange={(e) => setNewTask(e.target.value)}
-                            placeholder="Add purpose to your focus..."
-                            className="pr-10 bg-background/50 border-dashed"
-                        />
-                        <Button
-                            type="submit"
-                            size="icon"
-                            variant="ghost"
-                            className="absolute right-1 top-1 h-8 w-8 text-muted-foreground hover:text-foreground"
-                        >
-                            <Plus className="w-4 h-4" />
-                        </Button>
-                    </form>
-                </Card>
-
+                )}
             </div>
-        </div>
+        </StudySessionLayout>
     );
 }

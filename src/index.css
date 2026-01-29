@@ -46,20 +46,23 @@
     --warning-foreground: 0 0% 100%;
 
     /* Borders & Inputs */
-    --border: 225 20% 90%;
-    --input: 225 20% 90%;
+    --border: 225 20% 92%;
+    /* Lighter border for "thinner" feel */
+    --input: 225 20% 92%;
     --ring: 228 91% 59%;
 
-    --radius: 0.75rem;
+    --radius: 0.3rem;
+    /* "Small" radius as requested */
 
     /* Sidebar - Light Mode: Clean White */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 230 25% 15%;
     --sidebar-primary: 228 91% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 30% 96%;
+    --sidebar-accent: 225 30% 97%;
     --sidebar-accent-foreground: 230 25% 15%;
-    --sidebar-border: 225 20% 92%;
+    --sidebar-border: 225 20% 94%;
+    /* Even subtler for sidebar */
     --sidebar-ring: 228 91% 59%;
 
     /* Questify Custom Tokens */

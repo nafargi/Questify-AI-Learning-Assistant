@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { 
-  Search, Filter, MoreVertical, UserCheck, UserX, 
-  Shield, Mail, Download, ChevronLeft, ChevronRight,
-  Eye, Ban, RefreshCw
-} from "lucide-react";
+import {
+  MagnifyingGlass, Funnel, DotsThreeVertical, UserCheck, UserMinus,
+  Shield, Envelope, Download, CaretLeft, CaretRight,
+  Eye, Prohibit, ArrowsClockwise
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,34 +16,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const users = [
-  { 
-    id: 1, name: "Sarah Chen", email: "sarah.chen@email.com", 
-    role: "Student", status: "active", materials: 24, exams: 89, 
+  {
+    id: 1, name: "Sarah Chen", email: "sarah.chen@email.com",
+    role: "Student", status: "active", materials: 24, exams: 89,
     progress: 78, joined: "Jan 15, 2024", lastActive: "2 hours ago"
   },
-  { 
-    id: 2, name: "Marcus Johnson", email: "marcus.j@email.com", 
-    role: "Student", status: "active", materials: 12, exams: 45, 
+  {
+    id: 2, name: "Marcus Johnson", email: "marcus.j@email.com",
+    role: "Student", status: "active", materials: 12, exams: 45,
     progress: 65, joined: "Feb 3, 2024", lastActive: "5 min ago"
   },
-  { 
-    id: 3, name: "Emily Rodriguez", email: "emily.r@email.com", 
-    role: "Premium", status: "active", materials: 56, exams: 234, 
+  {
+    id: 3, name: "Emily Rodriguez", email: "emily.r@email.com",
+    role: "Premium", status: "active", materials: 56, exams: 234,
     progress: 92, joined: "Dec 8, 2023", lastActive: "1 hour ago"
   },
-  { 
-    id: 4, name: "David Kim", email: "david.kim@email.com", 
-    role: "Student", status: "suspended", materials: 8, exams: 23, 
+  {
+    id: 4, name: "David Kim", email: "david.kim@email.com",
+    role: "Student", status: "suspended", materials: 8, exams: 23,
     progress: 34, joined: "Mar 1, 2024", lastActive: "3 days ago"
   },
-  { 
-    id: 5, name: "Lisa Wang", email: "lisa.wang@email.com", 
-    role: "Premium", status: "active", materials: 41, exams: 167, 
+  {
+    id: 5, name: "Lisa Wang", email: "lisa.wang@email.com",
+    role: "Premium", status: "active", materials: 41, exams: 167,
     progress: 88, joined: "Nov 20, 2023", lastActive: "30 min ago"
   },
-  { 
-    id: 6, name: "James Brown", email: "james.b@email.com", 
-    role: "Student", status: "inactive", materials: 3, exams: 12, 
+  {
+    id: 6, name: "James Brown", email: "james.b@email.com",
+    role: "Student", status: "inactive", materials: 3, exams: 12,
     progress: 15, joined: "Feb 28, 2024", lastActive: "2 weeks ago"
   },
 ];
@@ -54,7 +54,7 @@ const AdminUsers = () => {
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchQuery.toLowerCase());
+      user.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = selectedFilter === "all" || user.status === selectedFilter;
     return matchesSearch && matchesFilter;
   });
@@ -73,7 +73,7 @@ const AdminUsers = () => {
             Export
           </Button>
           <Button className="bg-violet-600 hover:bg-violet-700 text-white">
-            <Mail className="w-4 h-4 mr-2" />
+            <Envelope className="w-4 h-4 mr-2" />
             Bulk Message
           </Button>
         </div>
@@ -97,7 +97,7 @@ const AdminUsers = () => {
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
             placeholder="Search users..."
             value={searchQuery}
@@ -110,11 +110,10 @@ const AdminUsers = () => {
             <button
               key={filter}
               onClick={() => setSelectedFilter(filter)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                selectedFilter === filter
-                  ? "bg-violet-500/20 text-violet-300 border border-violet-500/30"
-                  : "bg-slate-800 text-slate-400 hover:bg-slate-700"
-              }`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedFilter === filter
+                ? "bg-violet-500/20 text-violet-300 border border-violet-500/30"
+                : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                }`}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
@@ -156,7 +155,7 @@ const AdminUsers = () => {
                   </td>
                   <td className="px-6 py-4">
                     <Badge variant="outline" className={
-                      user.role === "Premium" 
+                      user.role === "Premium"
                         ? "border-amber-500/30 text-amber-400 bg-amber-500/10"
                         : "border-slate-600 text-slate-400"
                     }>
@@ -165,14 +164,12 @@ const AdminUsers = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        user.status === "active" ? "bg-emerald-400" :
+                      <div className={`w-2 h-2 rounded-full ${user.status === "active" ? "bg-emerald-400" :
                         user.status === "inactive" ? "bg-slate-400" : "bg-red-400"
-                      }`} />
-                      <span className={`text-sm capitalize ${
-                        user.status === "active" ? "text-emerald-400" :
+                        }`} />
+                      <span className={`text-sm capitalize ${user.status === "active" ? "text-emerald-400" :
                         user.status === "inactive" ? "text-slate-400" : "text-red-400"
-                      }`}>
+                        }`}>
                         {user.status}
                       </span>
                     </div>
@@ -182,7 +179,7 @@ const AdminUsers = () => {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-24 h-2 bg-slate-800 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full"
                           style={{ width: `${user.progress}%` }}
                         />
@@ -195,7 +192,7 @@ const AdminUsers = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button className="p-2 hover:bg-slate-700 rounded-lg transition-all">
-                          <MoreVertical className="w-4 h-4 text-slate-400" />
+                          <DotsThreeVertical className="w-4 h-4 text-slate-400" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="bg-slate-800 border-slate-700">
@@ -206,10 +203,10 @@ const AdminUsers = () => {
                           <Shield className="w-4 h-4 mr-2" /> Change Role
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-slate-300 hover:bg-slate-700 cursor-pointer">
-                          <RefreshCw className="w-4 h-4 mr-2" /> Reset Access
+                          <ArrowsClockwise className="w-4 h-4 mr-2" /> Reset Access
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-red-400 hover:bg-slate-700 cursor-pointer">
-                          <Ban className="w-4 h-4 mr-2" /> Suspend User
+                          <Prohibit className="w-4 h-4 mr-2" /> Suspend User
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -225,14 +222,14 @@ const AdminUsers = () => {
           <p className="text-slate-400 text-sm">Showing 1-6 of 24,847 users</p>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="bg-slate-800 border-slate-700 text-slate-400">
-              <ChevronLeft className="w-4 h-4" />
+              <CaretLeft className="w-4 h-4" />
             </Button>
             {[1, 2, 3, "...", 4141].map((page, i) => (
-              <Button 
+              <Button
                 key={i}
-                variant="outline" 
-                size="sm" 
-                className={page === 1 
+                variant="outline"
+                size="sm"
+                className={page === 1
                   ? "bg-violet-500/20 border-violet-500/30 text-violet-300"
                   : "bg-slate-800 border-slate-700 text-slate-400"
                 }
@@ -241,7 +238,7 @@ const AdminUsers = () => {
               </Button>
             ))}
             <Button variant="outline" size="sm" className="bg-slate-800 border-slate-700 text-slate-400">
-              <ChevronRight className="w-4 h-4" />
+              <CaretRight className="w-4 h-4" />
             </Button>
           </div>
         </div>

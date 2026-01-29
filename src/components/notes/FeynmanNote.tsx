@@ -1,7 +1,7 @@
 import { NoteContent } from "@/data/mockNotes";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircle, ArrowRight, Lightbulb, User } from "lucide-react";
+import { Warning, ArrowRight, Lightbulb, User } from "@phosphor-icons/react";
 
 export const FeynmanNote = ({ content }: { content: NoteContent }) => {
   return (
@@ -61,7 +61,7 @@ export const FeynmanNote = ({ content }: { content: NoteContent }) => {
             <div className="grid gap-3">
               {content.gaps?.map((gap, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/20">
-                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <Warning className="w-5 h-5 shrink-0" />
                   <span className="font-medium">{gap}</span>
                 </div>
               ))}

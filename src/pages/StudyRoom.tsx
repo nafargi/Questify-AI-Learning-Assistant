@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { StudyMethodId } from "@/types/study";
 import { StudyMethodSelector } from "@/components/study/StudyMethodSelector";
+import { BookSelector } from "@/components/study/BookSelector";
 import { StandardReadMethod } from "@/components/study/methods/StandardReadMethod";
 import { PomodoroMethod } from "@/components/study/methods/PomodoroMethod";
 import { FeynmanMethod } from "@/components/study/methods/FeynmanMethod";
@@ -13,6 +14,7 @@ import { SpacedRepetition } from "@/components/study/methods/SpacedRepetition";
 import { ActiveRecall } from "@/components/study/methods/ActiveRecall";
 import { InterleavedPractice } from "@/components/study/methods/InterleavedPractice";
 import { ReverseLearning } from "@/components/study/methods/ReverseLearning";
+import { Layout } from "@/components/layout/Layout";
 
 const GenericMethod = ({ name }: { name: string }) => <div className="p-10 text-center">{name} Method Coming Soon</div>;
 
@@ -21,17 +23,26 @@ export default function StudyRoom() {
   const location = useLocation();
   const { chapterId, courseId } = location.state || {};
 
+  const [activeBook, setActiveBook] = useState<string | null>(null);
   const [activeMethod, setActiveMethod] = useState<StudyMethodId | null>(null);
 
+  // Step 1: Browse Books
+  if (!activeBook) {
+    return <BookSelector onSelect={setActiveBook} />;
+  }
+
+  // Step 2: Choose Method
   if (!activeMethod) {
     return <StudyMethodSelector onSelect={setActiveMethod} />;
   }
 
+  // Step 3: Active Session
   const renderMethod = () => {
     const commonProps = {
       chapterId: chapterId || "demo-chapter",
       courseId: courseId || "demo-course",
-      onBack: () => setActiveMethod(null)
+      bookFilename: activeBook, // Pass the selected PDF
+      onBack: () => setActiveMethod(null) // Go back to method selector
     };
 
     switch (activeMethod) {
@@ -62,6 +73,10 @@ export default function StudyRoom() {
     }
   };
 
-  return renderMethod();
+  return (
+    <Layout showSidebar={false} title="Study Immersion Room">
+      {renderMethod()}
+    </Layout>
+  );
 }
 

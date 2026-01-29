@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { cn } from '../../lib/utils';
-import { Check, X } from 'lucide-react';
+import { Check, X } from '@phosphor-icons/react';
 
 interface TFRendererProps {
     question: {

@@ -1,7 +1,7 @@
-import { 
-  BarChart2, TrendingUp, TrendingDown, Target, Brain,
+import {
+  ChartBar, TrendUp, TrendDown, Target, Brain,
   Users, BookOpen, ArrowUpRight, ArrowDownRight
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -70,18 +70,16 @@ const AdminAnalytics = () => {
           </h3>
           <div className="space-y-4">
             {commonWeakPoints.map((point, i) => (
-              <div 
+              <div
                 key={point.topic}
                 className="flex items-center gap-4 p-4 rounded-xl bg-slate-800/50"
               >
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                  point.severity === "high" ? "bg-red-500/20" :
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${point.severity === "high" ? "bg-red-500/20" :
                   point.severity === "medium" ? "bg-amber-500/20" : "bg-emerald-500/20"
-                }`}>
-                  <span className={`font-bold ${
-                    point.severity === "high" ? "text-red-400" :
-                    point.severity === "medium" ? "text-amber-400" : "text-emerald-400"
                   }`}>
+                  <span className={`font-bold ${point.severity === "high" ? "text-red-400" :
+                    point.severity === "medium" ? "text-amber-400" : "text-emerald-400"
+                    }`}>
                     {i + 1}
                   </span>
                 </div>
@@ -91,8 +89,8 @@ const AdminAnalytics = () => {
                 </div>
                 <Badge className={
                   point.severity === "high" ? "bg-red-500/20 text-red-400 border-red-500/30" :
-                  point.severity === "medium" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" :
-                  "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                    point.severity === "medium" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" :
+                      "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                 }>
                   {point.severity}
                 </Badge>
@@ -133,7 +131,7 @@ const AdminAnalytics = () => {
           </h3>
           <div className="space-y-4">
             {studyPatterns.map((pattern) => (
-              <div 
+              <div
                 key={pattern.pattern}
                 className="flex items-center gap-4 p-4 rounded-xl bg-slate-800/50"
               >
@@ -146,12 +144,12 @@ const AdminAnalytics = () => {
                 </div>
                 {pattern.trend === "up" && (
                   <div className="flex items-center gap-1 text-emerald-400 text-sm">
-                    <TrendingUp className="w-4 h-4" /> Rising
+                    <TrendUp className="w-4 h-4" /> Rising
                   </div>
                 )}
                 {pattern.trend === "down" && (
                   <div className="flex items-center gap-1 text-red-400 text-sm">
-                    <TrendingDown className="w-4 h-4" /> Declining
+                    <TrendDown className="w-4 h-4" /> Declining
                   </div>
                 )}
                 {pattern.trend === "stable" && (

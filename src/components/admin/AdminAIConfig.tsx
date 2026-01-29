@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { 
-  Brain, Save, RotateCcw, Code, FileText, ClipboardList,
-  MessageSquare, Lightbulb, AlertTriangle, Eye
-} from "lucide-react";
+import {
+  Brain, FloppyDisk, ArrowCounterClockwise, Code, FileText, ClipboardText,
+  ChatCircle, Lightbulb, Warning, Eye
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -88,7 +88,7 @@ const AdminAIConfig = () => {
       {/* Warning */}
       <Card className="bg-amber-500/10 border-amber-500/20 p-4">
         <div className="flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+          <Warning className="w-5 h-5 text-amber-400 shrink-0" />
           <p className="text-amber-200 text-sm">
             Changes to AI configuration affect all users. Test thoroughly before saving.
           </p>
@@ -109,13 +109,13 @@ const AdminAIConfig = () => {
                   <FileText className="w-4 h-4 mr-1" /> Notes
                 </TabsTrigger>
                 <TabsTrigger value="exams" className="data-[state=active]:bg-violet-600">
-                  <ClipboardList className="w-4 h-4 mr-1" /> Exams
+                  <ClipboardText className="w-4 h-4 mr-1" /> Exams
                 </TabsTrigger>
                 <TabsTrigger value="explanations" className="data-[state=active]:bg-violet-600">
                   <Lightbulb className="w-4 h-4 mr-1" /> Explanations
                 </TabsTrigger>
                 <TabsTrigger value="questy" className="data-[state=active]:bg-violet-600">
-                  <MessageSquare className="w-4 h-4 mr-1" /> Questy
+                  <ChatCircle className="w-4 h-4 mr-1" /> Questy
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -136,7 +136,7 @@ const AdminAIConfig = () => {
                       <Eye className="w-4 h-4 mr-1" /> Preview
                     </Button>
                   </div>
-                  <Textarea 
+                  <Textarea
                     defaultValue={value}
                     className="min-h-[400px] bg-slate-800 border-slate-700 text-slate-200 font-mono text-sm"
                   />
@@ -169,10 +169,10 @@ const AdminAIConfig = () => {
                     {temperature[0]}
                   </Badge>
                 </div>
-                <Slider 
+                <Slider
                   value={temperature}
                   onValueChange={setTemperature}
-                  max={1} 
+                  max={1}
                   min={0}
                   step={0.1}
                   className="[&_[role=slider]]:bg-violet-500"
@@ -189,10 +189,10 @@ const AdminAIConfig = () => {
                     {maxTokens[0]}
                   </Badge>
                 </div>
-                <Slider 
+                <Slider
                   value={maxTokens}
                   onValueChange={setMaxTokens}
-                  max={4096} 
+                  max={4096}
                   min={256}
                   step={256}
                   className="[&_[role=slider]]:bg-violet-500"
@@ -219,11 +219,11 @@ const AdminAIConfig = () => {
           {/* Actions */}
           <div className="flex flex-col gap-3">
             <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white">
-              <Save className="w-4 h-4 mr-2" />
+              <FloppyDisk className="w-4 h-4 mr-2" />
               Save Configuration
             </Button>
             <Button variant="outline" className="w-full bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800">
-              <RotateCcw className="w-4 h-4 mr-2" />
+              <ArrowCounterClockwise className="w-4 h-4 mr-2" />
               Reset to Default
             </Button>
           </div>

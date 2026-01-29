@@ -6,14 +6,14 @@ import { Label } from "@/components/ui/label";
 import {
   Brain,
   Eye,
-  EyeOff,
+  EyeSlash,
   ArrowRight,
   Shield,
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  Loader2
-} from "lucide-react";
+  Sparkle,
+  CheckCircle,
+  Warning,
+  CircleNotch
+} from "@phosphor-icons/react";
 import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
@@ -175,7 +175,7 @@ const Auth = () => {
               <Brain className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="text-2xl font-bold tracking-tight">
-              Quest<span className="gradient-text">ify</span>
+              Quest<span className="gradient-textn">ify</span>
             </span>
           </Link>
 
@@ -197,7 +197,7 @@ const Auth = () => {
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <CheckCircle2 className="w-4 h-4 text-success" />
+                  <CheckCircle className="w-4 h-4 text-success" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">AI-Powered Diagnosis</p>
@@ -208,7 +208,7 @@ const Auth = () => {
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Sparkles className="w-4 h-4 text-primary" />
+                  <Sparkle className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">Adaptive Learning</p>
@@ -231,7 +231,7 @@ const Auth = () => {
             </div>
           </div>
 
-          {/* Footer Quote */}
+          {/* Footer Quotes */}
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground italic">
               "The only way to master something is to know exactly where you're weak."
@@ -292,7 +292,7 @@ const Auth = () => {
                   />
                   {touched.name && errors.name && (
                     <div className="flex items-center gap-1.5 text-destructive text-sm animate-slide-down">
-                      <AlertCircle className="w-3.5 h-3.5" />
+                      <Warning className="w-3.5 h-3.5" />
                       <span>{errors.name}</span>
                     </div>
                   )}
@@ -315,12 +315,12 @@ const Auth = () => {
                     className={`h-12 px-4 pr-10 transition-all duration-200 ${inputStateClasses("email")}`}
                   />
                   {touched.email && !errors.email && email && (
-                    <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-success animate-scale-in" />
+                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-success animate-scale-in" />
                   )}
                 </div>
                 {touched.email && errors.email && (
                   <div className="flex items-center gap-1.5 text-destructive text-sm animate-slide-down">
-                    <AlertCircle className="w-3.5 h-3.5" />
+                    <Warning className="w-3.5 h-3.5" />
                     <span>{errors.email}</span>
                   </div>
                 )}
@@ -348,7 +348,7 @@ const Auth = () => {
                     tabIndex={-1}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
+                      <EyeSlash className="w-4 h-4" />
                     ) : (
                       <Eye className="w-4 h-4" />
                     )}
@@ -356,7 +356,7 @@ const Auth = () => {
                 </div>
                 {touched.password && errors.password && (
                   <div className="flex items-center gap-1.5 text-destructive text-sm animate-slide-down">
-                    <AlertCircle className="w-3.5 h-3.5" />
+                    <Warning className="w-3.5 h-3.5" />
                     <span>{errors.password}</span>
                   </div>
                 )}
@@ -384,7 +384,7 @@ const Auth = () => {
                   />
                   {touched.confirmPassword && errors.confirmPassword && (
                     <div className="flex items-center gap-1.5 text-destructive text-sm animate-slide-down">
-                      <AlertCircle className="w-3.5 h-3.5" />
+                      <Warning className="w-3.5 h-3.5" />
                       <span>{errors.confirmPassword}</span>
                     </div>
                   )}
@@ -410,7 +410,7 @@ const Auth = () => {
                 className="w-full h-12 gradient-primary text-primary-foreground font-medium text-base shadow-glow hover:shadow-lg transition-all duration-300 group"
               >
                 {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <CircleNotch className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
                     {isSignUp ? "Create account" : "Sign in"}

@@ -25,8 +25,8 @@ export interface Question {
   type: 'mcq' | 'true-false' | 'fill-blank' | 'matching' | 'coding' | 'short-answer';
   difficulty: 'easy' | 'medium' | 'hard';
   question: string;
-  options?: string[]; // For MCQ
-  correctAnswer: string | string[]; // Single string or array of strings for Matching/Fill-blank/Coding
+  options?: string[]; 
+  correctAnswer: string | string[];
   explanation: string;
   timeEstimate: number;
   // Matching specific
@@ -396,7 +396,7 @@ export interface Achievement { id: string; name: string; description: string; ic
 export interface StudentProfile { id: string; name: string; email: string; avatar: string; academicYear: string; enrolledCourses: string[]; joinDate: string; totalStudyHours: number; examsCompleted: number; averageScore: number; currentStreak: number; longestStreak: number; learningStyle: string; peakPerformanceTime: string; achievements: Achievement[]; }
 
 export const studentProfile: StudentProfile = {
-  id: 'student1', name: 'Alex Johnson', email: 'alex@uni.edu', avatar: '', academicYear: '3rd Year', enrolledCourses: ['is-db-201', 'is-prog-101'], joinDate: '2023-09-01', totalStudyHours: 156, examsCompleted: 47, averageScore: 78, currentStreak: 12, longestStreak: 28, learningStyle: 'Visual', peakPerformanceTime: '7PM-9PM',
+  id: 'student1', name: 'Abate Alemu', email: 'abatealemu@aau.edu', avatar: '', academicYear: '4th Year', enrolledCourses: ['is-db-201', 'is-prog-101'], joinDate: '2023-09-01', totalStudyHours: 156, examsCompleted: 47, averageScore: 78, currentStreak: 12, longestStreak: 28, learningStyle: 'Visual', peakPerformanceTime: '7PM-9PM',
   achievements: [{ id: 'a1', name: 'First steps', description: 'Done', icon: '🎯', unlockedAt: '2023-09-02' }],
 };
 

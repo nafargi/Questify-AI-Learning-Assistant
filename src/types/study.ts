@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { Icon } from "@phosphor-icons/react";
 
 export type StudyMethodId =
     | 'standard'
@@ -17,7 +17,7 @@ export interface StudyMethodConfig {
     id: StudyMethodId;
     label: string;
     description: string;
-    icon: LucideIcon;
+    icon: Icon;
     color: string;
     gradient: string;
     badge?: string;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Clock, Flag, CheckCircle2 } from 'lucide-react';
+import { Clock, Flag, CheckCircle } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Question } from '@/data/mockData';
 
@@ -76,7 +76,7 @@ export function ExamHeader({
                             className="gradient-primary shadow-lg shadow-primary/20 gap-2"
                             onClick={onFinish}
                         >
-                            <CheckCircle2 className="w-4 h-4" />
+                            <CheckCircle className="w-4 h-4" />
                             Finish Exam
                         </Button>
                     </div>

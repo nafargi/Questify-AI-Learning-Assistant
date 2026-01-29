@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import {
     BookOpen,
-    StickyNote,
-    Library,
-    ChevronLeft,
-    Maximize2,
-    Minimize2,
-    Settings2,
-    Share2,
+    Note,
+    Books,
+    CaretLeft,
+    ArrowsOut,
+    CornersIn,
+    Faders,
+    ShareNetwork,
     Highlighter,
-    Send,
-    Sparkles,
-    Bot
-} from "lucide-react";
+    PaperPlaneTilt,
+    Sparkle,
+    Robot
+} from "@phosphor-icons/react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 interface StandardReadMethodProps {
     chapterId: string;
     courseId: string;
+    bookFilename?: string;
     onBack: () => void;
 }
 
@@ -80,7 +81,7 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
             <header className="h-14 border-b flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-50">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-muted rounded-full">
-                        <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+                        <CaretLeft className="w-5 h-5 text-muted-foreground" />
                     </Button>
                     <div>
                         <h1 className="text-sm font-bold flex items-center gap-2">
@@ -95,10 +96,10 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
 
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm" className="hidden md:flex gap-2">
-                        <Share2 className="w-4 h-4" /> Share
+                        <ShareNetwork className="w-4 h-4" /> Share
                     </Button>
                     <Button variant="ghost" size="icon" onClick={toggleFullscreen}>
-                        {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                        {isFullscreen ? <CornersIn className="w-4 h-4" /> : <ArrowsOut className="w-4 h-4" />}
                     </Button>
                 </div>
             </header>
@@ -111,11 +112,11 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
                     <ScrollArea className="flex-1">
                         <div className="max-w-3xl mx-auto py-12 px-8">
                             {/* Paper Surface */}
-                            <div className="bg-card border shadow-sm rounded-xl min-h-[800px] p-10 md:p-14 mb-20 relative">
+                            <div className="bg-card border shadow-sm min-h-[800px] p-10 md:p-14 mb-20 relative">
                                 {/* Reader Controls */}
                                 <div className="absolute top-4 right-4 flex gap-2 opacity-0 hover:opacity-100 transition-opacity">
                                     <Button variant="ghost" size="icon" className="h-8 w-8"><Highlighter className="w-4 h-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8"><Settings2 className="w-4 h-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8"><Faders className="w-4 h-4" /></Button>
                                 </div>
 
                                 {isLoading ? (
@@ -148,9 +149,9 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
 
                         <div className="px-4 pt-4 pb-2 border-b">
                             <TabsList className="w-full grid grid-cols-3">
-                                <TabsTrigger value="notes" className="gap-2"><StickyNote className="w-4 h-4" /> Notes</TabsTrigger>
-                                <TabsTrigger value="chat" className="gap-2"><Sparkles className="w-4 h-4" /> AI Chat</TabsTrigger>
-                                <TabsTrigger value="cards" className="gap-2"><Library className="w-4 h-4" /> Cards</TabsTrigger>
+                                <TabsTrigger value="notes" className="gap-2"><Note className="w-4 h-4" /> Notes</TabsTrigger>
+                                <TabsTrigger value="chat" className="gap-2"><Sparkle className="w-4 h-4" /> AI Chat</TabsTrigger>
+                                <TabsTrigger value="cards" className="gap-2"><Books className="w-4 h-4" /> Cards</TabsTrigger>
                             </TabsList>
                         </div>
 
@@ -180,7 +181,7 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
                                                 "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
                                                 msg.role === 'ai' ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                                             )}>
-                                                {msg.role === 'ai' ? <Bot className="w-5 h-5" /> : "Me"}
+                                                {msg.role === 'ai' ? <Robot className="w-5 h-5" /> : "Me"}
                                             </div>
                                             <div className={cn(
                                                 "p-3 rounded-2xl max-w-[80%]",
@@ -207,7 +208,7 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
                                         className="absolute right-1 bottom-1 hover:bg-transparent text-primary"
                                         onClick={handleSendMessage}
                                     >
-                                        <Send className="w-5 h-5" />
+                                        <PaperPlaneTilt className="w-5 h-5" />
                                     </Button>
                                 </div>
                             </div>
@@ -216,7 +217,7 @@ export function StandardReadMethod({ chapterId, courseId, onBack }: StandardRead
                         {/* Flashcards Tab */}
                         <TabsContent value="cards" className="flex-1 p-4 m-0 data-[state=active]:flex flex-col gap-4">
                             <Card className="flex-1 border-dashed border-2 flex flex-col items-center justify-center text-center p-6 bg-muted/20">
-                                <Library className="w-12 h-12 text-muted-foreground mb-4" />
+                                <Books className="w-12 h-12 text-muted-foreground mb-4" />
                                 <h3 className="font-semibold">Contextual Cards</h3>
                                 <p className="text-sm text-muted-foreground mb-4">Select text to instantly generate a flashcard.</p>
                                 <Button variant="outline">Generate from Chapter</Button>

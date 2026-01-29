@@ -1,7 +1,7 @@
 import { NoteContent } from "@/data/mockNotes";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link2, Tag } from "lucide-react";
+import { Link, Tag } from "@phosphor-icons/react";
 
 export const ZettelkastenNote = ({ content }: { content: NoteContent }) => {
   return (
@@ -20,7 +20,7 @@ export const ZettelkastenNote = ({ content }: { content: NoteContent }) => {
                 <div className="flex gap-1">
                   {cards.links.map(link => (
                     <Badge key={link} variant="outline" className="text-[10px] h-5 px-1 gap-1 hover:bg-primary hover:text-white cursor-pointer transition-colors">
-                      <Link2 className="w-2 h-2" /> {link}
+                      <Link className="w-2 h-2" /> {link}
                     </Badge>
                   ))}
                 </div>
